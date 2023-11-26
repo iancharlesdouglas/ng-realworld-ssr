@@ -10,7 +10,8 @@ export class HomeService {
   constructor(private readonly http: HttpClient) {}
 
   getArticles(): Observable<ArticleApiResponse> {
-    const url = `https://api.realworld.io/api/articles?limit=5`;
+    const url = 'http://localhost:3000/api/articles';
+    // const url = `https://api.realworld.io/api/articles?limit=5`;
     return this.http.get<ArticleApiResponse>(url);
   }
 }

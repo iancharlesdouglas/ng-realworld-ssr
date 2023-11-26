@@ -14,6 +14,7 @@ describe('HomeService', () => {
   let service: HomeService;
 
   const httpHandler: HttpHandler = {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
     handle(_: HttpRequest<any>): Observable<HttpEvent<any>> {
       return of();
     },
