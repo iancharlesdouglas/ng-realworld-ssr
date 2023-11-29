@@ -1,7 +1,8 @@
 #
-# Dockerfile for testing locally with Apache 2 (static files)
+# Dockerfile for testing with NodeJS Express server
 #
-FROM httpd:2.4
+FROM node
 
-COPY ./dist/ng-realworld-ssr/browser/ /usr/local/apache2/htdocs/
-COPY ./apache/httpd.conf /usr/local/apache2/conf/httpd.conf
+COPY ./dist/ng-realworld-ssr/server/ .
+
+CMD ["node", "server.mjs"]
