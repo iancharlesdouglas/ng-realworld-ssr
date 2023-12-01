@@ -5,7 +5,7 @@ import compression from 'express-compression';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import bootstrap from './src/main.server';
-import { TtlCache } from './src/app/server/ttl-cache';
+import { EntryLoader, TtlCache } from './src/app/server/ttl-cache';
 import { ArticleApiResponse } from './src/app/features/home/model/article-api-response';
 
 // The Express app is exported so that it can be used by serverless Functions.
@@ -22,7 +22,32 @@ export function app(): express.Express {
   server.set('view engine', 'html');
   server.set('views', browserDistFolder);
 
-  const refDataCache = new TtlCache<ArticleApiResponse>(60);
+  /**
+   * Function that loads articles from the remote service
+   * @returns Articles
+   */
+  const articlesLoader: EntryLoader<ArticleApiResponse> = async () => {
+    const response = await fetch(
+      `https://api.realworld.io/api/articles?limit=20`
+    );
+    if (response.ok) {
+      console.log(
+        'article loader - got response from remote articles server; storing'
+      );
+      const articlesPayload = await response.json();
+      return articlesPayload;
+    } else {
+      return null;
+    }
+  };
+
+  /**
+   * Articles cache
+   */
+  const articlesCache = new TtlCache<ArticleApiResponse>(
+    20,
+    new Map([['/api/articles', articlesLoader]])
+  );
 
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
@@ -39,34 +64,12 @@ export function app(): express.Express {
     '*',
     async (req: any, res: any, next: any) => {
       console.info('middleware invoked; req.path', req.path);
-      if (req.path === '/api/articles') {
-        const cached = await refDataCache.get(req.path, async () => {
-          const response = await fetch(
-            `https://api.realworld.io/api/articles?limit=5`
-          );
-          if (response.ok) {
-            console.log('got response from remote articles server; storing');
-            const articlesPayload = await response.json();
-            return articlesPayload;
-          } else {
-            return null;
-          }
-        });
+      const path = req.path as string;
+      if (path.startsWith('/api/articles')) {
+        const cached = await articlesCache.get(req.path, articlesLoader);
         if (cached) {
           console.log('returning from cache');
           res.send(cached);
-        } else {
-          console.log('not found in cache - api/articles called');
-          // const response = await fetch(
-          //   `https://api.realworld.io/api/articles?limit=5`
-          // );
-          // if (response.ok) {
-          //   const articlesPayload = await response.json();
-          //   refDataCache.put(req, articlesPayload);
-          //   res.send(articlesPayload);
-          // } else {
-          //   next('Cannot retrieve remote articles list');
-          // }
         }
       } else {
         next();
@@ -93,7 +96,7 @@ export function app(): express.Express {
 }
 
 function run(): void {
-  const port = process.env['PORT'] || 4000;
+  const port = process.env['PORT'] || 3000;
 
   // Start up the Node server
   const server = app();

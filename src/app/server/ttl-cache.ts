@@ -1,7 +1,12 @@
 import NodeCache from 'node-cache';
 
 /**
- * Cache to optimise serving of initial data requested by Express backend (SSR)
+ * Function to load a cache entry
+ */
+export type EntryLoader<T> = () => Promise<T>;
+
+/**
+ * Cache to optimise serving of initial data requested by Express backend (SSR), with optional preloading
  */
 export class TtlCache<T> {
   private cache: NodeCache;
@@ -9,30 +14,44 @@ export class TtlCache<T> {
   /**
    * Creates a new cache with the given TTL in seconds
    * @param ttlSeconds TTL in seconds
+   * @param preloadEntries Cache entries to preload
    */
-  constructor(ttlSeconds: number) {
+  constructor(
+    ttlSeconds: number,
+    preloadEntries?: Map<string, EntryLoader<T>>
+  ) {
     this.cache = new NodeCache({
       stdTTL: ttlSeconds,
       checkperiod: ttlSeconds * 0.2,
       useClones: false,
+    });
+    if (preloadEntries) {
+      console.log('Preloading cache...');
+      this.preloadCache(preloadEntries);
+    }
+  }
+
+  private preloadCache(preloadEntries: Map<string, EntryLoader<T>>) {
+    Array.from(preloadEntries.entries()).forEach(async (entry) => {
+      const [key, entryLoader] = entry;
+      const value = await entryLoader();
+      this.cache.set(key, value);
     });
   }
 
   /**
    * Retrieves a value from the cache, or the store if it has not been cached
    * @param key Key
-   * @param storeFunction Store retrieval function
+   * @param entryLoader Store retrieval function
    * @returns Value
    */
-  async get(key: string, storeFunction: () => Promise<T>): Promise<T> {
-    const value = this.cache.get<T>(key);
-    if (value) {
-      console.log('cache: hit for', key);
-      return value;
+  async get(key: string, entryLoader: EntryLoader<T>): Promise<T> {
+    let value = this.cache.get<T>(key);
+    if (!value) {
+      value = await entryLoader();
+      this.cache.set(key, value);
     }
-    const storeValue = await storeFunction();
-    this.cache.set(key, storeValue);
-    return storeValue;
+    return value;
   }
 
   /**
