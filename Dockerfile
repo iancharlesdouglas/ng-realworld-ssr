@@ -3,6 +3,10 @@
 #
 FROM node
 
-COPY ./dist/ng-realworld-ssr/server/ .
+WORKDIR /ng-realworld-ssr
+
+COPY ./dist/ng-realworld-ssr/server/ /ng-realworld-ssr/
+
+EXPOSE 4000
 
 CMD ["node", "server.mjs"]

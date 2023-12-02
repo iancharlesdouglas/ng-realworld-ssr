@@ -34,8 +34,12 @@ export class TtlCache<T> {
   private preloadCache(preloadEntries: Map<string, EntryLoader<T>>) {
     Array.from(preloadEntries.entries()).forEach(async (entry) => {
       const [key, entryLoader] = entry;
-      const value = await entryLoader();
+      let value = await entryLoader();
       this.cache.set(key, value);
+      this.cache.on('expired', async (key: string) => {
+        value = await entryLoader();
+        this.cache.set(key, value);
+      });
     });
   }
 
@@ -47,9 +51,15 @@ export class TtlCache<T> {
    */
   async get(key: string, entryLoader: EntryLoader<T>): Promise<T> {
     let value = this.cache.get<T>(key);
+    console.log('Cache hit - value retrieved from cache');
     if (!value) {
+      console.log('Cache miss - value being loaded from remote source');
       value = await entryLoader();
       this.cache.set(key, value);
+      this.cache.on('expired', async (key: string) => {
+        value = await entryLoader();
+        this.cache.set(key, value);
+      });
     }
     return value;
   }

@@ -31,9 +31,6 @@ export function app(): express.Express {
       `https://api.realworld.io/api/articles?limit=20`
     );
     if (response.ok) {
-      console.log(
-        'article loader - got response from remote articles server; storing'
-      );
       const articlesPayload = await response.json();
       return articlesPayload;
     } else {
@@ -63,12 +60,10 @@ export function app(): express.Express {
   server.get(
     '*',
     async (req: any, res: any, next: any) => {
-      console.info('middleware invoked; req.path', req.path);
       const path = req.path as string;
       if (path.startsWith('/api/articles')) {
         const cached = await articlesCache.get(req.path, articlesLoader);
         if (cached) {
-          console.log('returning from cache');
           res.send(cached);
         }
       } else {
@@ -76,7 +71,6 @@ export function app(): express.Express {
       }
     },
     (req: any, res: any, next: any) => {
-      console.log('Angular middleware invoked');
       const { protocol, originalUrl, baseUrl, headers } = req;
 
       commonEngine
@@ -96,7 +90,7 @@ export function app(): express.Express {
 }
 
 function run(): void {
-  const port = process.env['PORT'] || 3000;
+  const port = process.env['PORT'] || 4000;
 
   // Start up the Node server
   const server = app();
