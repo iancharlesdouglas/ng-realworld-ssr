@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
+  afterRender,
   afterNextRender,
 } from '@angular/core';
 import { HomeService } from './services/home.service';
@@ -28,18 +29,18 @@ export class HomeComponent implements OnInit {
 
   constructor(private readonly homeService: HomeService) {
     afterNextRender(() => {
-      const updatedArticles = this.homeService.getArticles().pipe(
-        tap((response) => {
-          console.log(
-            'received updated count of articles',
-            response.articlesCount
-          );
-          if (response.articlesCount !== this.articlesCount) {
-            this.articles = updatedArticles;
-          }
-        }),
-        map((response) => response.articles)
-      );
+      console.log('afterNextRender');
+      const updatedArticles = this.homeService.getArticlesFull().pipe(
+        map((response) => response.articles));
+      const updatedArticlesSub = updatedArticles.pipe(tap(articles => {
+        if (articles.length !== this.articlesCount) {
+          console.log('replacing list of articles');
+          this.articles = updatedArticles;
+        }
+      })).subscribe();
+    });
+    afterRender(() => {
+      console.log('afterRender');
     });
   }
 

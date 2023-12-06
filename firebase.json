@@ -1,0 +1,36 @@
+{
+  "hosting": {
+    "public": "dist/ng-realworld-ssr/server",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "function": "app"
+      }
+    ],
+    "headers": [{
+      "source": "**",
+      "headers": [{
+        "key": "Cache-Control",
+        "value": "max-age=300"
+      }]
+    }]
+  },
+  "functions": [
+    {
+      "source": ".",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint",
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ],
+      "runtime": "nodejs18"
+    }
+  ]
+}

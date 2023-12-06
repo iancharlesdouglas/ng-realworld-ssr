@@ -1,20 +1,33 @@
+import { ArticleApiResponse } from './../model/article-api-response';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ArticleApiResponse } from '../model/article-api-response';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
+/**
+ * Provides services to the home page
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class HomeService {
   constructor(private readonly http: HttpClient) {}
 
+  /**
+   * Retrieves articles (global feed)
+   * @returns Articles response object
+   */
   getArticles(): Observable<ArticleApiResponse> {
-    // fetch('http://localhost:4200/api/nonesuch');
-    const url = 'http://localhost:4000/api/articles';
-    // const url =
-    //   'https://fly-builder-withered-butterfly-8762.fly.dev/api/articles';
-    // const url = `https://api.realworld.io/api/articles?limit=5`;
+    const url = `${environment.host}/api/articles`;
+    return this.http.get<ArticleApiResponse>(url);
+  }
+
+  /**
+   * Retrieves full list of articles (global feed)
+   * @returns Articles response object
+   */
+  getArticlesFull(): Observable<ArticleApiResponse> {
+    const url = 'https://api.realworld.io/api/articles?limit=20';
     return this.http.get<ArticleApiResponse>(url);
   }
 }

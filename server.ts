@@ -7,9 +7,10 @@ import { dirname, join, resolve } from 'node:path';
 import bootstrap from './src/main.server';
 import { EntryLoader, TtlCache } from './src/app/server/ttl-cache';
 import { ArticleApiResponse } from './src/app/features/home/model/article-api-response';
+import { onRequest } from "firebase-functions/v2/https";
 
 // The Express app is exported so that it can be used by serverless Functions.
-export function app(): express.Express {
+export function createApp() {//}: express.Express {
   const server = express();
   const serverDistFolder = dirname(fileURLToPath(import.meta.url));
   const browserDistFolder = resolve(serverDistFolder, '../browser');
@@ -61,9 +62,10 @@ export function app(): express.Express {
     '*',
     async (req: any, res: any, next: any) => {
       const path = req.path as string;
-      if (path.startsWith('/api/articles')) {
+      if (path === '/api/articles') {
         const cached = await articlesCache.get(req.path, articlesLoader);
         if (cached) {
+          // res.set("\"Cache-Control\"", "public, max-age=300");
           res.send(cached);
         }
       } else {
@@ -72,7 +74,7 @@ export function app(): express.Express {
     },
     (req: any, res: any, next: any) => {
       const { protocol, originalUrl, baseUrl, headers } = req;
-
+      // res.set("\"Cache-Control\"", "public, max-age=300");
       commonEngine
         .render({
           bootstrap,
@@ -86,17 +88,21 @@ export function app(): express.Express {
     }
   );
 
-  return server;
+  // return server;
+  return onRequest(server);
 }
 
-function run(): void {
-  const port = process.env['PORT'] || 4000;
+export const app = createApp();
 
-  // Start up the Node server
-  const server = app();
-  server.listen(port, () => {
-    console.log(`Node Express server listening on http://localhost:${port}`);
-  });
-}
+// function run(): void {
+//   const port = process.env['PORT'] || 4000;
 
-run();
+//   // Start up the Node server
+//   const server = app();
+//   export const app = onRequest(expressApp);
+//   server.listen(port, () => {
+//     console.log(`Node Express server listening on http://localhost:${port}`);
+//   });
+// }
+
+// run();
