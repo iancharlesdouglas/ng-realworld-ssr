@@ -32,7 +32,7 @@ export class HomeComponent implements OnInit {
       console.log('afterNextRender');
       const updatedArticles = this.homeService.getArticlesFull().pipe(
         map((response) => response.articles));
-      const updatedArticlesSub = updatedArticles.pipe(tap(articles => {
+      updatedArticles.pipe(tap(articles => {
         if (articles.length !== this.articlesCount) {
           console.log('replacing list of articles');
           this.articles = updatedArticles;
