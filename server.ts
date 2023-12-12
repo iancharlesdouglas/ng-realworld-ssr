@@ -28,8 +28,9 @@ export function createApp() {//}: express.Express {
    * @returns Articles
    */
   const articlesLoader: EntryLoader<ArticleApiResponse> = async () => {
+    console.log('Articles loader invoked');
     const response = await fetch(
-      `https://api.realworld.io/api/articles?limit=20`
+      `https://api.realworld.io/api/articles`
     );
     if (response.ok) {
       const articlesPayload = await response.json();

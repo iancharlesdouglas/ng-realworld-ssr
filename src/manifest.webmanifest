@@ -1,6 +1,6 @@
 {
-  "name": "ng-realworld-ssr",
-  "short_name": "ng-realworld-ssr",
+  "name": "Angular RealWorld SSR Demo Application",
+  "short_name": "NG RealWorld SSR",
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "standalone",

@@ -1,6 +1,6 @@
 import { ArticleApiResponse } from './../model/article-api-response';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, take } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 
@@ -19,7 +19,7 @@ export class HomeService {
    */
   getArticles(): Observable<ArticleApiResponse> {
     const url = `${environment.host}/api/articles`;
-    return this.http.get<ArticleApiResponse>(url);
+    return this.http.get<ArticleApiResponse>(url).pipe(take(5));
   }
 
   /**
