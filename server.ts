@@ -6,8 +6,9 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import bootstrap from './src/main.server';
 import { EntryLoader, TtlCache } from './src/app/server/ttl-cache';
-import { ArticleApiResponse } from './src/app/features/home/model/article-api-response';
 import { onRequest } from "firebase-functions/v2/https";
+import { articlesLoader } from './src/app/shared/loaders/articles-loader';
+import { tagsLoader } from './src/app/shared/loaders/tags-loader';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function createApp() {//}: express.Express {
@@ -23,34 +24,14 @@ export function createApp() {//}: express.Express {
   server.set('view engine', 'html');
   server.set('views', browserDistFolder);
 
-  /**
-   * Function that loads articles from the remote service
-   * @returns Articles
-   */
-  const articlesLoader: EntryLoader<ArticleApiResponse> = async () => {
-    console.log('Articles loader invoked');
-    const response = await fetch(
-      `https://api.realworld.io/api/articles`
-    );
-    if (response.ok) {
-      const articlesPayload = await response.json();
-      return articlesPayload;
-    } else {
-      return null;
-    }
-  };
+  const loaders = new Map([['/api/articles', articlesLoader], ['/api/tags', tagsLoader]]);
 
   /**
-   * Articles cache
+   * Data cache
    */
-  const articlesCache = new TtlCache<ArticleApiResponse>(
-    20,
-    new Map([['/api/articles', articlesLoader]])
-  );
+  const dataCache = new TtlCache(20, loaders);
 
-  // Example Express Rest API endpoints
-  // server.get('/api/**', (req, res) => { });
-  // Serve static files from /browser
+  // Serve static files from browser dist. folder
   server.get(
     '*.*',
     express.static(browserDistFolder, {
@@ -63,10 +44,10 @@ export function createApp() {//}: express.Express {
     '*',
     async (req: any, res: any, next: any) => {
       const path = req.path as string;
-      if (path === '/api/articles') {
-        const cached = await articlesCache.get(req.path, articlesLoader);
+      if (loaders.has(path)) {
+        const loader = loaders.get(path) as EntryLoader;
+        const cached = await dataCache.get(path, loader);
         if (cached) {
-          // res.set("\"Cache-Control\"", "public, max-age=300");
           res.send(cached);
         }
       } else {
@@ -75,7 +56,6 @@ export function createApp() {//}: express.Express {
     },
     (req: any, res: any, next: any) => {
       const { protocol, originalUrl, baseUrl, headers } = req;
-      // res.set("\"Cache-Control\"", "public, max-age=300");
       commonEngine
         .render({
           bootstrap,
@@ -89,21 +69,7 @@ export function createApp() {//}: express.Express {
     }
   );
 
-  // return server;
   return onRequest(server);
 }
 
 export const app = createApp();
-
-// function run(): void {
-//   const port = process.env['PORT'] || 4000;
-
-//   // Start up the Node server
-//   const server = app();
-//   export const app = onRequest(expressApp);
-//   server.listen(port, () => {
-//     console.log(`Node Express server listening on http://localhost:${port}`);
-//   });
-// }
-
-// run();

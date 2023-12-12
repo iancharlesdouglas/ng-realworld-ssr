@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { HomeService } from './services/home.service';
-import { Article } from './model/article';
+import { Article } from '../../shared/model/article';
 import { ArticlesComponent } from './components/articles/articles.component';
 import { EMPTY, Observable, map,  take, tap } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -19,7 +19,7 @@ import { AsyncPipe } from '@angular/common';
 export class HomeComponent implements OnInit {
   articles: Observable<Article[]> = EMPTY;
   articlesCount = 0;
-  articlesExist = false;
+  tags: Observable<string[]> = EMPTY;
 
   constructor(private readonly homeService: HomeService) {}
 
@@ -31,5 +31,6 @@ export class HomeComponent implements OnInit {
       map((response) => response.articles),
       take(5)
     );
+    this.tags = this.homeService.getTags().pipe(map((response) => response.tags));
   }
 }

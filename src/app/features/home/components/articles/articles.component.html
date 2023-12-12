@@ -16,14 +16,14 @@
       <div class="article-preview">
         <div class="article-meta">
           <a href="/profile/eric-simons"
-            ><img src="http://i.imgur.com/Qr71crq.jpg" alt="An image"
+            ><img [src]="article.author.image" alt="Image of author"
           /></a>
           <div class="info">
-            <a href="/profile/eric-simons" class="author">Eric Simons</a>
+            <a href="/profile/eric-simons" class="author">{{ article.author.username }}</a>
             <span class="date">January 20th</span>
           </div>
           <button class="btn btn-outline-primary btn-sm pull-xs-right">
-            <i class="ion-heart"></i> 29
+            <i class="ion-heart"></i> {{ article.favoritesCount }}
           </button>
         </div>
         <a href="/article/how-to-build-webapps-that-scale" class="preview-link">
@@ -52,17 +52,7 @@
     <div class="col-md-3">
       <div class="sidebar">
         <p>Popular Tags</p>
-
-        <div class="tag-list">
-          <a href="" class="tag-pill tag-default">programming</a>
-          <a href="" class="tag-pill tag-default">javascript</a>
-          <a href="" class="tag-pill tag-default">emberjs</a>
-          <a href="" class="tag-pill tag-default">angularjs</a>
-          <a href="" class="tag-pill tag-default">react</a>
-          <a href="" class="tag-pill tag-default">mean</a>
-          <a href="" class="tag-pill tag-default">node</a>
-          <a href="" class="tag-pill tag-default">rails</a>
-        </div>
+        <app-tags [tags]="tags"></app-tags>
       </div>
     </div>
   </div>

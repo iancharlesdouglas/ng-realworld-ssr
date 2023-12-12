@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Article } from '../../model/article';
+import { Article } from '../../../../shared/model/article';
 import { EMPTY, Observable } from 'rxjs';
+import { TagsComponent } from '../tags/tags.component';
+import { AsyncPipe } from '@angular/common';
 
 /**
  * List of articles (by feed) incl. set of available tags from which to filter
@@ -9,11 +10,12 @@ import { EMPTY, Observable } from 'rxjs';
 @Component({
   selector: 'app-articles',
   standalone: true,
-  imports: [CommonModule],
+  imports: [AsyncPipe, TagsComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './articles.component.html',
   styleUrls: ['./articles.component.scss'],
 })
 export class ArticlesComponent {
   @Input() articles: Observable<Article[]> = EMPTY;
+  @Input() tags: Observable<string[]> = EMPTY;
 }

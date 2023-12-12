@@ -1,8 +1,9 @@
-import { ArticleApiResponse } from './../model/article-api-response';
+import { ArticleApiResponse } from '../../../shared/model/article-api-response';
 import { Injectable } from '@angular/core';
 import { Observable, take } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
+import { TagsApiResponse } from '../../../shared/model/tags-api-response';
 
 /**
  * Provides services to the home page
@@ -23,11 +24,11 @@ export class HomeService {
   }
 
   /**
-   * Retrieves full list of articles (global feed)
-   * @returns Articles response object
+   * Retrieves all tags
+   * @returns Tags response object
    */
-  getArticlesFull(): Observable<ArticleApiResponse> {
-    const url = 'https://api.realworld.io/api/articles?limit=20';
-    return this.http.get<ArticleApiResponse>(url);
+  getTags(): Observable<TagsApiResponse> {
+    const url = `${environment.host}/api/tags`;
+    return this.http.get<TagsApiResponse>(url);
   }
 }

@@ -3,12 +3,12 @@ import NodeCache from 'node-cache';
 /**
  * Function to load a cache entry
  */
-export type EntryLoader<T> = () => Promise<T>;
+export type EntryLoader = () => Promise<unknown>;
 
 /**
  * Cache to optimise serving of initial data requested by Express backend (SSR), with optional preloading
  */
-export class TtlCache<T> {
+export class TtlCache {
   private cache: NodeCache;
 
   /**
@@ -18,7 +18,7 @@ export class TtlCache<T> {
    */
   constructor(
     ttlSeconds: number,
-    preloadEntries?: Map<string, EntryLoader<T>>
+    preloadEntries?: Map<string, EntryLoader>
   ) {
     this.cache = new NodeCache({
       stdTTL: ttlSeconds,
@@ -26,15 +26,15 @@ export class TtlCache<T> {
       useClones: false,
     });
     if (preloadEntries) {
-      console.log('Preloading cache...');
       this.preloadCache(preloadEntries);
     }
   }
 
-  private preloadCache(preloadEntries: Map<string, EntryLoader<T>>) {
+  private preloadCache(preloadEntries: Map<string, EntryLoader>) {
     Array.from(preloadEntries.entries()).forEach(async (entry) => {
       const [key, entryLoader] = entry;
       let value = await entryLoader();
+      console.log('Preloading cache entry', key);
       this.cache.set(key, value);
       this.cache.on('expired', async (key: string) => {
         value = await entryLoader();
@@ -49,19 +49,17 @@ export class TtlCache<T> {
    * @param entryLoader Store retrieval function
    * @returns Value
    */
-  async get(key: string, entryLoader: EntryLoader<T>): Promise<T> {
+  async get<T>(key: string, entryLoader: EntryLoader): Promise<T> {
     let value = this.cache.get<T>(key);
-    console.log('Cache hit - value retrieved from cache');
     if (!value) {
-      console.log('Cache miss - value being loaded from remote source');
-      value = await entryLoader();
+      value = await entryLoader() as T;
       this.cache.set(key, value);
       this.cache.on('expired', async (key: string) => {
-        value = await entryLoader();
+        value = await entryLoader() as T;
         this.cache.set(key, value);
       });
     }
-    return value;
+    return value as T;
   }
 
   /**

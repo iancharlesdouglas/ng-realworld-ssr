@@ -1,4 +1,4 @@
-import { Author } from '../../../shared/model/author';
+import { Author } from './author';
 
 /**
  * An article

@@ -8,7 +8,7 @@ import {
 } from '@angular/common/http';
 import { Observable, firstValueFrom, of } from 'rxjs';
 import { vi } from 'vitest';
-import { ArticleApiResponse } from '../model/article-api-response';
+import { ArticleApiResponse } from '../../../shared/model/article-api-response';
 
 describe('HomeService', () => {
   let service: HomeService;
