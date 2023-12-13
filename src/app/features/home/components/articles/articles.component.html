@@ -40,12 +40,18 @@
       }
 
       <ul class="pagination">
-        <li class="page-item active">
+        @for (pg of pages | async; track pg) {
+        <li class="page-item">
+          <a class="page-link" href="">{{ pg + 1 }}</a>
+        </li>
+        }
+        <!-- <li class="page-item active">
+           [ngClass]="{active: pg === page}">
           <a class="page-link" href="">1</a>
         </li>
         <li class="page-item">
           <a class="page-link" href="">2</a>
-        </li>
+        </li> -->
       </ul>
     </div>
 
