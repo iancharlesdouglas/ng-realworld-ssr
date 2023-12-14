@@ -1,7 +1,7 @@
 <ul class="pagination">
   @for (pg of pages | async; track pg) {
-  <li class="page-item" [ngClass]="{active: pg === page}">
-    <a class="page-link" href="">{{ pg + 1 }}</a>
-  </li>
+    <li class="page-item" [ngClass]="{active: pg === page}">
+      <a class="page-link" href="">{{ pg + 1 }}</a>
+    </li>
   }
 </ul>

@@ -14,36 +14,36 @@
       </div>
 
       @for (article of articles | async; track article.slug) {
-      <div class="article-preview">
-        <div class="article-meta">
-          <a href="/profile/eric-simons"
-            ><img [src]="article.author.image" alt="Image of author"
-          /></a>
-          <div class="info">
-            <a href="/profile/eric-simons" class="author">{{ article.author.username }}</a>
-            <span class="date">January 20th</span>
+        <div class="article-preview">
+          <div class="article-meta">
+            <a href="/profile/eric-simons"
+              ><img [src]="article.author.image" alt="Image of author"
+            /></a>
+            <div class="info">
+              <a href="/profile/eric-simons" class="author">{{ article.author.username }}</a>
+              <span class="date">January 20th</span>
+            </div>
+            <button class="btn btn-outline-primary btn-sm pull-xs-right">
+              <i class="ion-heart"></i> {{ article.favoritesCount }}
+            </button>
           </div>
-          <button class="btn btn-outline-primary btn-sm pull-xs-right">
-            <i class="ion-heart"></i> {{ article.favoritesCount }}
-          </button>
+          <a href="/article/how-to-build-webapps-that-scale" class="preview-link">
+            <h1>{{ article.title }}</h1>
+            <p>{{ article.description }}</p>
+            <span>Read more...</span>
+            <ul class="tag-list">
+              @for (tag of article.tagList; track tag) {
+                <li class="tag-default tag-pill tag-outline">{{ tag }}</li>
+              }
+            </ul>
+          </a>
         </div>
-        <a href="/article/how-to-build-webapps-that-scale" class="preview-link">
-          <h1>{{ article.title }}</h1>
-          <p>{{ article.description }}</p>
-          <span>Read more...</span>
-          <ul class="tag-list">
-            @for (tag of article.tagList; track tag) {
-            <li class="tag-default tag-pill tag-outline">{{ tag }}</li>
-            }
-          </ul>
-        </a>
-      </div>
       }
 
       @defer(on viewport) {
-      <app-pagination [pages]="pages" [page]="page"></app-pagination>
+        <app-pagination [pages]="pages" [page]="page"></app-pagination>
       } @placeholder {
-      <div></div>
+        <div></div>
       }
     </div>
 
