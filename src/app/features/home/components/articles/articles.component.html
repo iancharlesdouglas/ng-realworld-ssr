@@ -1,6 +1,7 @@
 <div class="container page">
   <div class="row">
     <div class="col-md-9">
+
       <div class="feed-toggle">
         <ul class="nav nav-pills outline-active">
           <li class="nav-item">
@@ -39,20 +40,11 @@
       </div>
       }
 
-      <ul class="pagination">
-        @for (pg of pages | async; track pg) {
-        <li class="page-item">
-          <a class="page-link" href="">{{ pg + 1 }}</a>
-        </li>
-        }
-        <!-- <li class="page-item active">
-           [ngClass]="{active: pg === page}">
-          <a class="page-link" href="">1</a>
-        </li>
-        <li class="page-item">
-          <a class="page-link" href="">2</a>
-        </li> -->
-      </ul>
+      @defer(on viewport) {
+      <app-pagination [pages]="pages" [page]="page"></app-pagination>
+      } @placeholder {
+      <div></div>
+      }
     </div>
 
     <div class="col-md-3">
