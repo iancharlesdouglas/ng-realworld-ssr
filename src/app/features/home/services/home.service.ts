@@ -1,6 +1,6 @@
 import { ArticleApiResponse } from '../../../shared/model/article-api-response';
 import { Injectable } from '@angular/core';
-import { Observable, take } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { TagsApiResponse } from '../../../shared/model/tags-api-response';
@@ -16,11 +16,13 @@ export class HomeService {
 
   /**
    * Retrieves articles (global feed)
+   * @param page Page
+   * @param pageSize Page size
    * @returns Articles response object
    */
-  getArticles(): Observable<ArticleApiResponse> {
-    const url = `${environment.host}/api/articles`;
-    return this.http.get<ArticleApiResponse>(url).pipe(take(5));
+  getArticles(page: number, pageSize: number): Observable<ArticleApiResponse> {
+    const url = `${environment.host}/api/articles?offset=${page * pageSize}&limit=${pageSize}`;
+    return this.http.get<ArticleApiResponse>(url);
   }
 
   /**

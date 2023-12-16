@@ -5,10 +5,12 @@ import compression from 'express-compression';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import bootstrap from './src/main.server';
-import { EntryLoader, TtlCache } from './src/app/server/ttl-cache';
+import { TtlCache } from './src/app/server/ttl-cache';
 import { onRequest } from "firebase-functions/v2/https";
-import { articlesLoader } from './src/app/shared/loaders/articles-loader';
-import { tagsLoader } from './src/app/shared/loaders/tags-loader';
+import { ArticlesLoader } from './src/app/shared/loaders/articles-loader';
+import { TagsLoader } from './src/app/shared/loaders/tags-loader';
+import { CacheLoader } from './src/app/server/cache-loader';
+import { keyframes } from '@angular/animations';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function createApp() {//}: express.Express {
@@ -24,7 +26,7 @@ export function createApp() {//}: express.Express {
   server.set('view engine', 'html');
   server.set('views', browserDistFolder);
 
-  const loaders = new Map([['/api/articles', articlesLoader], ['/api/tags', tagsLoader]]);
+  const loaders: CacheLoader[] = [new ArticlesLoader(), new TagsLoader()];
 
   /**
    * Data cache
@@ -43,13 +45,20 @@ export function createApp() {//}: express.Express {
   server.get(
     '*',
     async (req: any, res: any, next: any) => {
-      const path = req.path as string;
-      if (loaders.has(path)) {
-        const loader = loaders.get(path) as EntryLoader;
-        const cached = await dataCache.get(path, loader);
+      const path = req.url as string;
+      const pathLoader = loaders.find(loader => loader.matches(path));
+      console.log('request url', path);
+      if (pathLoader?.cacheable(path)) {
+        console.log('path is cacheable', path);
+        const cached = await dataCache.get(path, pathLoader);
         if (cached) {
+          console.log('sending cached response for', path);
           res.send(cached);
         }
+      } else if (pathLoader) {
+        console.log('path is not cacheable; fetching resource', path);
+        const resource = await pathLoader.load(path);
+        res.send(resource);
       } else {
         next();
       }

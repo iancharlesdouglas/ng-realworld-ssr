@@ -1,5 +1,5 @@
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { EMPTY, Observable } from 'rxjs';
 
 @Component({
@@ -13,4 +13,13 @@ import { EMPTY, Observable } from 'rxjs';
 export class PaginationComponent {
   @Input() pages: Observable<number[]> = EMPTY;
   @Input() page: number | undefined;
+  @Output() pageChanged = new EventEmitter<number>();
+
+  /**
+   * Handles page selection
+   * @param page Page
+   */
+  pageSelected(page: number): void {
+    this.pageChanged.emit(page);
+  }
 }

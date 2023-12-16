@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { Article } from '../../../../shared/model/article';
 import { EMPTY, Observable } from 'rxjs';
 import { TagsComponent } from '../tags/tags.component';
@@ -21,4 +21,13 @@ export class ArticlesComponent {
   @Input() pages: Observable<number[]> = EMPTY;
   @Input() page: number | undefined;
   @Input() tags: Observable<string[]> = EMPTY;
+  @Output() pageChanged = new EventEmitter<number>();
+
+  /**
+   * Handles page selection
+   * @param page Page
+   */
+  pageSelected(page: number): void {
+    this.pageChanged.emit(page);
+  }
 }

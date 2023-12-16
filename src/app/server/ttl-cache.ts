@@ -1,9 +1,5 @@
 import NodeCache from 'node-cache';
-
-/**
- * Function to load a cache entry
- */
-export type EntryLoader = () => Promise<unknown>;
+import { CacheLoader } from './cache-loader';
 
 /**
  * Cache to optimise serving of initial data requested by Express backend (SSR), with optional preloading
@@ -18,44 +14,54 @@ export class TtlCache {
    */
   constructor(
     ttlSeconds: number,
-    preloadEntries?: Map<string, EntryLoader>
+    private readonly loaders: CacheLoader[]
+    // preloadEntries?: Map<string, CacheLoader>
   ) {
     this.cache = new NodeCache({
       stdTTL: ttlSeconds,
       checkperiod: ttlSeconds * 0.2,
       useClones: false,
     });
-    if (preloadEntries) {
-      this.preloadCache(preloadEntries);
-    }
+    // if (preloadEntries) {
+    //   this.preloadCache(preloadEntries);
+    // }
   }
 
-  private preloadCache(preloadEntries: Map<string, EntryLoader>) {
-    Array.from(preloadEntries.entries()).forEach(async (entry) => {
-      const [key, entryLoader] = entry;
-      let value = await entryLoader();
-      console.log('Preloading cache entry', key);
-      this.cache.set(key, value);
-      this.cache.on('expired', async (key: string) => {
-        value = await entryLoader();
-        this.cache.set(key, value);
-      });
-    });
+  /**
+   * Returns a loader that can load for a path
+   * @param path Path
+   * @returns Loader or undefined if none can load the path
+   */
+  matches(path: string): CacheLoader | undefined {
+    return this.loaders.find(loader => loader.matches(path));
   }
+
+  // private preloadCache(preloadEntries: Map<string, CacheLoader>) {
+  //   Array.from(preloadEntries.entries()).forEach(async (entry) => {
+  //     const [key, cacheLoader] = entry;
+  //     let value = await cacheLoader.load();
+  //     console.log('Preloading cache entry', key);
+  //     this.cache.set(key, value);
+  //     this.cache.on('expired', async (key: string) => {
+  //       value = await cacheLoader.load();
+  //       this.cache.set(key, value);
+  //     });
+  //   });
+  // }
 
   /**
    * Retrieves a value from the cache, or the store if it has not been cached
    * @param key Key
-   * @param entryLoader Store retrieval function
+   * @param cacheLoader Store retrieval function
    * @returns Value
    */
-  async get<T>(key: string, entryLoader: EntryLoader): Promise<T> {
+  async get<T>(key: string, cacheLoader: CacheLoader): Promise<T> {
     let value = this.cache.get<T>(key);
     if (!value) {
-      value = await entryLoader() as T;
+      value = await cacheLoader.load(key) as T;
       this.cache.set(key, value);
       this.cache.on('expired', async (key: string) => {
-        value = await entryLoader() as T;
+        value = await cacheLoader.load(key) as T;
         this.cache.set(key, value);
       });
     }
