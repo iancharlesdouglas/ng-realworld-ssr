@@ -1,4 +1,4 @@
-import { ArticleApiResponse } from '../../../shared/model/article-api-response';
+import { ArticlesApiResponse } from '../../../shared/model/articles-api-response';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -20,9 +20,9 @@ export class HomeService {
    * @param pageSize Page size
    * @returns Articles response object
    */
-  getArticles(page: number, pageSize: number): Observable<ArticleApiResponse> {
+  getArticles(page: number, pageSize: number): Observable<ArticlesApiResponse> {
     const url = `${environment.host}/api/articles?offset=${page * pageSize}&limit=${pageSize}`;
-    return this.http.get<ArticleApiResponse>(url);
+    return this.http.get<ArticlesApiResponse>(url);
   }
 
   /**

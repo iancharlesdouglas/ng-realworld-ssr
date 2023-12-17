@@ -8,7 +8,7 @@ import {
 } from '@angular/common/http';
 import { Observable, firstValueFrom, of } from 'rxjs';
 import { vi } from 'vitest';
-import { ArticleApiResponse } from '../../../shared/model/article-api-response';
+import { ArticlesApiResponse } from '../../../shared/model/articles-api-response';
 
 describe('HomeService', () => {
   let service: HomeService;
@@ -40,7 +40,7 @@ describe('HomeService', () => {
   });
 
   it('returns articles when the getArticles method is called', async () => {
-    const expectedArticles: ArticleApiResponse = {
+    const expectedArticles: ArticlesApiResponse = {
       articlesCount: 1,
       articles: [
         {

@@ -1,9 +1,8 @@
-import { Article } from './article';
+import { Article } from "./article"
 
 /**
- * Articles API response
+ * Single article API response
  */
 export type ArticleApiResponse = {
-  articles: Article[];
-  articlesCount: number;
+  article: Article
 };

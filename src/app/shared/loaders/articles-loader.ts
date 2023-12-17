@@ -1,3 +1,4 @@
+import { environment } from "../../../environments/environment";
 import { CacheLoader } from "../../server/cache-loader";
 
 /**
@@ -12,9 +13,8 @@ export class ArticlesLoader extends CacheLoader {
   override async load(key: string): Promise<unknown> {
     try {
       const queryString = key.split('?')[1];
-      const response = await fetch(
-        `https://api.realworld.io/api/articles?${queryString}`
-      );
+      const { remoteApiHost } = environment;
+      const response = await fetch(`${remoteApiHost}/api/articles?${queryString}`);
       if (response.ok) {
         const articlesPayload = await response.json();
         return articlesPayload;
