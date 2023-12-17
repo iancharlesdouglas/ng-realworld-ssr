@@ -10,16 +10,23 @@ export class TagsLoader extends CacheLoader {
    * @returns Tags payload
    */
   override async load(key: string): Promise<unknown> {
-    const response = await fetch(
-      `https://api.realworld.io/api/tags`
-    );
-    if (response.ok) {
-      const articlesPayload = await response.json();
-      return articlesPayload;
-    } else {
-      return null;
+    try {
+      if (key) {
+        const response = await fetch(
+          `https://api.realworld.io/api/tags`
+        );
+        if (response.ok) {
+          const articlesPayload = await response.json();
+          return articlesPayload;
+        } else {
+          return null;
+        }
+      }
+    } catch (error) {
+      console.error(`Error occurred in tags-loader load for key ${key}`, error);
     }
-  }
+  return null;
+}
 
   /**
    * Whether a path matches this loader

@@ -7,7 +7,7 @@ export abstract class CacheLoader {
    * @param key Key to load
    */
   async load(key: string): Promise<unknown> {
-    return null;
+    return key;
   }
 
   /**
@@ -16,7 +16,7 @@ export abstract class CacheLoader {
    * @returns True if can be loaded
    */
   matches(path: string): boolean {
-    return true;
+    return !!path;
   }
 
   /**
@@ -25,6 +25,6 @@ export abstract class CacheLoader {
    * @returns True if can be cached
    */
   cacheable(path: string): boolean {
-    return true;
+    return !!path;
   }
 }

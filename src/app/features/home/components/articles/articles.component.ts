@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Article } from '../../../../shared/model/article';
 import { EMPTY, Observable } from 'rxjs';
 import { TagsComponent } from '../tags/tags.component';

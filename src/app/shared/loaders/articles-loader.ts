@@ -10,14 +10,19 @@ export class ArticlesLoader extends CacheLoader {
    * @returns Articles payload
    */
   override async load(key: string): Promise<unknown> {
-    const queryString = key.split('?')[1];
-    const response = await fetch(
-      `https://api.realworld.io/api/articles?${queryString}`
-    );
-    if (response.ok) {
-      const articlesPayload = await response.json();
-      return articlesPayload;
-    } else {
+    try {
+      const queryString = key.split('?')[1];
+      const response = await fetch(
+        `https://api.realworld.io/api/articles?${queryString}`
+      );
+      if (response.ok) {
+        const articlesPayload = await response.json();
+        return articlesPayload;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error(`Error occurred in articles-loader load for key ${key}`, error);
       return null;
     }
   }

@@ -3,7 +3,6 @@ import { AppComponent } from './app/app.component';
 import { config } from './app/app.config.server';
 
 const bootstrap = () => {
-  console.log('bootstrapping application');
   return bootstrapApplication(AppComponent, config);
 };
 
