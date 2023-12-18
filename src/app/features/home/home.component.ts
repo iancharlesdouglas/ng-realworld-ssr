@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit {
         this.pages = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
           .pipe(toArray());
       }),
-      map(response => response.articles)
+      map(response => response.articles),
     );
   }
 
