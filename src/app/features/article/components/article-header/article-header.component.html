@@ -1,0 +1,10 @@
+<div class="banner">
+  <div class="container">
+    <h1>{{article!.title}}</h1>
+    <div class="article-meta">
+      <app-authorship [article]="article"></app-authorship>
+      <app-article-controls [article]="article" [signedIn]="signedIn"></app-article-controls>
+    </div>
+  </div>
+</div>
+

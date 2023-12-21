@@ -1,0 +1,17 @@
+<button class="btn btn-sm btn-outline-secondary follow-control">
+  <i class="ion-plus-round"></i>
+  &nbsp; Follow {{ article!.author.username }} <span class="counter"></span>
+</button>
+&nbsp;&nbsp;
+<button class="btn btn-sm btn-outline-primary favorite-control">
+  <i class="ion-heart"></i>
+  &nbsp; Favorite Post <span class="counter">({{ article!.favoritesCount | number }})</span>
+</button>
+@if (signedIn) {
+  <button class="btn btn-sm btn-outline-secondary edit-control">
+    <i class="ion-edit"></i> Edit Article
+  </button>
+  <button class="btn btn-sm btn-outline-danger delete-control">
+    <i class="ion-trash-a"></i> Delete Article
+  </button>
+}
