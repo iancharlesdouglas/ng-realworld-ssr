@@ -8,17 +8,19 @@ import { MarkdownPipe } from '../../layout/pipes/markdown-pipe';
 import { ArticleHeaderComponent } from './components/article-header/article-header.component';
 import { ArticleControlsComponent } from './components/article-controls/article-controls.component';
 import { AuthorshipComponent } from './components/authorship/authorship.component';
+import { ArticleCommentsComponent } from './components/article-comments/article-comments.component';
 
 @Component({
   selector: 'app-article',
   standalone: true,
-  imports: [AsyncPipe, MarkdownPipe, RouterLink, ArticleHeaderComponent, ArticleControlsComponent, AuthorshipComponent],
+  imports: [AsyncPipe, MarkdownPipe, RouterLink, ArticleHeaderComponent, ArticleControlsComponent, AuthorshipComponent, ArticleCommentsComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './article.component.html',
   styleUrl: './article.component.scss'
 })
 export class ArticleComponent {
   article$: Observable<Article> = EMPTY;
+  signedIn = false;
 
   constructor(private readonly activatedRoute: ActivatedRoute, private readonly articleService: ArticleService) {
     this.article$ = this.activatedRoute.params.pipe(

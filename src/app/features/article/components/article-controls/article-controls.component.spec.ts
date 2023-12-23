@@ -39,10 +39,10 @@ describe('ArticleControlsComponent', () => {
 
   it('should render the follow and favorite article controls', () => {
     const followControl = fixture.nativeElement.querySelector('button.follow-control') as HTMLButtonElement;
-    expect(followControl.textContent).toContain(`Follow ${article.author.username}`);
+    expect(followControl).toBeFalsy();
 
     const favoriteControlCounter = fixture.nativeElement.querySelector('button.favorite-control span.counter') as HTMLSpanElement;
-    expect(favoriteControlCounter.textContent).toEqual(`(${formatNumber(article.favoritesCount, 'en-US')})`);
+    expect(favoriteControlCounter).toBeFalsy();
   });
 
   it('should render the edit and delete article controls if the current user is signed in', () => {

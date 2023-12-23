@@ -16,13 +16,7 @@
       @for (article of articles | async; track article.slug) {
         <div class="article-preview">
           <div class="article-meta">
-            <a href="/profile/eric-simons"
-              ><img [src]="article.author.image" alt="Image of author"
-            /></a>
-            <div class="info">
-              <a href="/profile/eric-simons" class="author">{{ article.author.username }}</a>
-              <span class="date">January 20th</span>
-            </div>
+            <app-authorship [article]="article"></app-authorship>
             <button class="btn btn-outline-primary btn-sm pull-xs-right">
               <i class="ion-heart"></i> {{ article.favoritesCount }}
             </button>

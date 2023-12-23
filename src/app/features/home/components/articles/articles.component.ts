@@ -5,6 +5,7 @@ import { TagsComponent } from '../tags/tags.component';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { RouterLink } from '@angular/router';
+import { AuthorshipComponent } from '../../../article/components/authorship/authorship.component';
 
 /**
  * List of articles (by feed) incl. set of available tags from which to filter
@@ -12,7 +13,7 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-articles',
   standalone: true,
-  imports: [AsyncPipe, NgClass, PaginationComponent, RouterLink, TagsComponent],
+  imports: [AsyncPipe, NgClass, PaginationComponent, RouterLink, TagsComponent, AuthorshipComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './articles.component.html',
   styleUrls: ['./articles.component.scss'],
