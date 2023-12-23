@@ -1,6 +1,6 @@
 <ul class="pagination">
   @for (pg of pages | async; track pg) {
-    <li class="page-item" [ngClass]="{active: pg === page}">
+    <li class="page-item" [ngClass]="{active: pg === (page$ | async)}">
       <button class="page-link" (click)="pageSelected(pg)">{{ pg + 1 }}</button>
     </li>
   }

@@ -12,7 +12,7 @@ import { EMPTY, Observable } from 'rxjs';
 })
 export class PaginationComponent {
   @Input() pages: Observable<number[]> = EMPTY;
-  @Input() page: number | undefined;
+  @Input() page$: Observable<number> = EMPTY;
   @Output() pageChanged = new EventEmitter<number>();
 
   /**

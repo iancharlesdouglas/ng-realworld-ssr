@@ -37,7 +37,7 @@
       }
 
       @defer(on viewport) {
-        <app-pagination [pages]="pages" [page]="page" (pageChanged)="pageSelected($event)"></app-pagination>
+        <app-pagination [pages]="pages" [page$]="page$" (pageChanged)="pageSelected($event)"></app-pagination>
       } @placeholder {
         <div></div>
       }

@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ArticleControlsComponent } from "./article-controls.component";
 import { Article } from "../../../../shared/model/article";
 import { DateTime } from "luxon";
-import { formatNumber } from "@angular/common";
 
 describe('ArticleControlsComponent', () => {
   let component: ArticleControlsComponent;

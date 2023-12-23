@@ -1,4 +1,3 @@
-import { Author } from './author';
 import { Authorship } from './authorshsip';
 
 /**

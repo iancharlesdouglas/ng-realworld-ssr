@@ -21,7 +21,7 @@ import { AuthorshipComponent } from '../../../article/components/authorship/auth
 export class ArticlesComponent {
   @Input() articles: Observable<Article[]> = EMPTY;
   @Input() pages: Observable<number[]> = EMPTY;
-  @Input() page: number | undefined;
+  @Input() page$: Observable<number> = EMPTY;
   @Input() tags: Observable<string[]> = EMPTY;
   @Output() pageChanged = new EventEmitter<number>();
 
