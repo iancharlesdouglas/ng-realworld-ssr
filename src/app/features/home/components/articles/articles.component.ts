@@ -20,6 +20,7 @@ import { AuthorshipComponent } from '../../../article/components/authorship/auth
 })
 export class ArticlesComponent {
   @Input() articles: Observable<Article[]> = EMPTY;
+  @Input() signedIn = false;
   @Input() pages: Observable<number[]> = EMPTY;
   @Input() page$: Observable<number> = EMPTY;
   @Input() tags: Observable<string[]> = EMPTY;

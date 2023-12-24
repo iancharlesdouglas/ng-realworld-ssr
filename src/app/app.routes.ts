@@ -6,5 +6,11 @@ export const routes: Routes = [
   },
   {
     path: 'article/:id', loadComponent: () => import('./features/article/article.component').then(comp => comp.ArticleComponent)
+  },
+  {
+    path: 'login', loadComponent: () => import('./features/authentication/login/login.component').then(comp => comp.LoginComponent)
+  },
+  {
+    path: 'register', loadComponent: () => import('./features/authentication/register/register.component').then(comp => comp.RegisterComponent)
   }
 ];

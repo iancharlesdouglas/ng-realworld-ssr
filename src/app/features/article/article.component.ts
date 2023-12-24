@@ -16,7 +16,6 @@ import { ArticleCommentsComponent } from './components/article-comments/article-
   imports: [AsyncPipe, MarkdownPipe, RouterLink, ArticleHeaderComponent, ArticleControlsComponent, AuthorshipComponent, ArticleCommentsComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './article.component.html',
-  styleUrl: './article.component.scss'
 })
 export class ArticleComponent {
   article$: Observable<Article> = EMPTY;

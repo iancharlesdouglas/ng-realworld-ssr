@@ -7,7 +7,7 @@ import { AsyncPipe } from '@angular/common';
 import { StateService } from '../../shared/services/state/state.service';
 
 /**
- * Home page component, incl. banner and initial list of articles
+ * Home page component, incl. banner and list of articles
  */
 @Component({
   selector: 'app-home',
@@ -15,7 +15,6 @@ import { StateService } from '../../shared/services/state/state.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ArticlesComponent, AsyncPipe],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
   articles: Observable<Article[]> = EMPTY;

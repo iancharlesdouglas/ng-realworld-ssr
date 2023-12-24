@@ -4,11 +4,13 @@
 
       <div class="feed-toggle">
         <ul class="nav nav-pills outline-active">
+          @if (signedIn) {
+            <li class="nav-item">
+              <a class="nav-link" href="" id="your-feed-link">Your Feed</a>
+            </li>
+          }
           <li class="nav-item">
-            <a class="nav-link" href="">Your Feed</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="">Global Feed</a>
+            <a class="nav-link active" href="" id="global-feed-link">Global Feed</a>
           </li>
         </ul>
       </div>
@@ -17,7 +19,7 @@
         <div class="article-preview">
           <div class="article-meta">
             <app-authorship [article]="article"></app-authorship>
-            <button class="btn btn-outline-primary btn-sm pull-xs-right">
+            <button class="btn btn-outline-primary btn-sm pull-xs-right favorite-the-article">
               <i class="ion-heart"></i> {{ article.favoritesCount }}
             </button>
           </div>
