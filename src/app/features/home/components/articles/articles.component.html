@@ -4,11 +4,12 @@
 
       <div class="feed-toggle">
         <ul class="nav nav-pills outline-active">
-          @if (signedIn) {
+          @if ((user$ | async)) {
             <li class="nav-item">
               <a class="nav-link" href="" id="your-feed-link">Your Feed</a>
             </li>
           }
+          <!-- TODO: tag search feed -->
           <li class="nav-item">
             <a class="nav-link active" href="" id="global-feed-link">Global Feed</a>
           </li>

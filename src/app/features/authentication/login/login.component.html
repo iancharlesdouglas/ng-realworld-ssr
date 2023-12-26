@@ -7,18 +7,25 @@
           <a href="/register">Need an account?</a>
         </p>
 
-        <ul class="error-messages">
-          <li>That email is already taken</li>
-        </ul>
+        @if (form.invalid && (form.dirty || form.touched || submitted)) {
+          <ul class="error-messages">
+            @if (form.controls['email'].invalid && form.controls['email'].errors?.['required']) {
+              <li>Email is required</li>
+            }
+            @if (form.controls['password'].invalid && form.controls['password'].errors?.['required']) {
+              <li>Password is required</li>
+            }
+          </ul>
+        }
 
-        <form>
+        <form [formGroup]="form" (submit)="checkForm()">
           <fieldset class="form-group">
-            <input class="form-control form-control-lg" type="text" placeholder="Email" />
+            <input class="form-control form-control-lg" type="text" placeholder="Email" formControlName="email" />
           </fieldset>
           <fieldset class="form-group">
-            <input class="form-control form-control-lg" type="password" placeholder="Password" />
+            <input class="form-control form-control-lg" type="password" placeholder="Password" formControlName="password" />
           </fieldset>
-          <button class="btn btn-lg btn-primary pull-xs-right">Sign in</button>
+          <button class="btn btn-lg btn-primary pull-xs-right" type="submit">Sign in</button>
         </form>
       </div>
     </div>

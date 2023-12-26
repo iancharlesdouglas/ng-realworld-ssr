@@ -6,6 +6,7 @@ import { AsyncPipe, NgClass } from '@angular/common';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { RouterLink } from '@angular/router';
 import { AuthorshipComponent } from '../../../article/components/authorship/authorship.component';
+import { User } from '../../../../shared/model/user';
 
 /**
  * List of articles (by feed) incl. set of available tags from which to filter
@@ -20,6 +21,7 @@ import { AuthorshipComponent } from '../../../article/components/authorship/auth
 })
 export class ArticlesComponent {
   @Input() articles: Observable<Article[]> = EMPTY;
+  @Input() user$: Observable<User | undefined> = EMPTY;
   @Input() signedIn = false;
   @Input() pages: Observable<number[]> = EMPTY;
   @Input() page$: Observable<number> = EMPTY;

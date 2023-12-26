@@ -5,14 +5,7 @@
       <li class="nav-item">
         <a class="nav-link" [ngClass]="{active: (url$ | async) === '/'}" href="/">Home</a>
       </li>
-      @if (!loggedIn) {
-        <li class="nav-item">
-          <a class="nav-link" [ngClass]="{active: (url$ | async) === '/login'}" href="/login">Sign in</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [ngClass]="{active: (url$ | async) === '/register'}" href="/register">Sign up</a>
-        </li>
-      } @else {
+      @if (user$ | async; as user) {
         <li class="nav-item">
           <a class="nav-link" href="/editor">
             <i class="ion-compose"></i>New Article
@@ -24,10 +17,17 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/profile/eric-simons">
+          <a class="nav-link" [routerLink]="['/profile', '/' + user.username]">
             <img src="" class="user-pic" alt="User"/>
             Eric Simons
           </a>
+        </li>
+      } @else {
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{active: (url$ | async) === '/login'}" href="/login">Sign in</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{active: (url$ | async) === '/register'}" href="/register">Sign up</a>
         </li>
       }
     </ul>

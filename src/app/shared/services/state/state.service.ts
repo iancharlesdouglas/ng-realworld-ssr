@@ -24,6 +24,9 @@ export class StateService {
    */
   page$: Observable<number>;
 
+  /**
+   * Creates a new instance
+   */
   constructor() {
     this.state$ = new Store(initialState);
     this.lastState = initialState;
@@ -46,5 +49,16 @@ export class StateService {
    */
   async setPage(page: number): Promise<void> {
     this.setState({...this.lastState, page});
+  }
+
+  /**
+   * Sets the user in the state
+   * @param user User
+   * @returns New state
+   */
+  async setUser(user: User): Promise<State> {
+    const newState = {...this.lastState, user};
+    this.setState(newState);
+    return newState;
   }
 }

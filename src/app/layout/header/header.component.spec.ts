@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HeaderComponent } from './header.component';
 import { By } from '@angular/platform-browser';
-import { ReplaySubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { Event, Router, NavigationEnd } from '@angular/router';
 
 describe('HeaderComponent', () => {

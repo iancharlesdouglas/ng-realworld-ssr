@@ -5,6 +5,7 @@ import { ArticlesComponent } from './components/articles/articles.component';
 import { EMPTY, Observable, Subscription, map, range, tap, toArray } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { StateService } from '../../shared/services/state/state.service';
+import { User } from '../../shared/model/user';
 
 /**
  * Home page component, incl. banner and list of articles
@@ -21,15 +22,18 @@ export class HomeComponent implements OnInit, OnDestroy {
   articlesCount = 0;
   page$: Observable<number>;
   private pageSub?: Subscription;
+  user$: Observable<User | undefined>;
   pageSize = 10;
   pages: Observable<number[]> = EMPTY;
   tags: Observable<string[]> = EMPTY;
 
   constructor(private readonly homeService: HomeService, private readonly stateService: StateService) {
+    this.user$ = this.stateService.user$;
     this.page$ = this.stateService.page$;
   }
 
   async ngOnInit(): Promise<void> {
+
     this.getArticles();
     this.tags = this.homeService.getTags().pipe(map((response) => response.tags));
   }
