@@ -32,10 +32,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.submitted = true;
     if (this.form.valid) {
       const user$ = this.authenticationService.login({ user: this.form.value });
-      this.userSub = user$.subscribe(() => {
-        // Navigate to home page
-        this.router.navigate(['/']);
-      })
+      this.userSub = user$.subscribe(() => (this.router.navigate(['/'])));
     }
   }
 

@@ -18,8 +18,8 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" [routerLink]="['/profile', '/' + user.username]">
-            <img src="" class="user-pic" alt="User"/>
-            Eric Simons
+            <img [src]="user.image" class="user-pic" alt="User"/>
+            {{ user.username }}
           </a>
         </li>
       } @else {

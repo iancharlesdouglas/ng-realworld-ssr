@@ -9,6 +9,8 @@ import { ArticleHeaderComponent } from './components/article-header/article-head
 import { ArticleControlsComponent } from './components/article-controls/article-controls.component';
 import { AuthorshipComponent } from './components/authorship/authorship.component';
 import { ArticleCommentsComponent } from './components/article-comments/article-comments.component';
+import { User } from '../../shared/model/user';
+import { StateService } from '../../shared/services/state/state.service';
 
 @Component({
   selector: 'app-article',
@@ -19,12 +21,13 @@ import { ArticleCommentsComponent } from './components/article-comments/article-
 })
 export class ArticleComponent {
   article$: Observable<Article> = EMPTY;
-  signedIn = false;
+  user$: Observable<User | undefined>;
 
-  constructor(private readonly activatedRoute: ActivatedRoute, private readonly articleService: ArticleService) {
+  constructor(private readonly activatedRoute: ActivatedRoute, private readonly articleService: ArticleService, private readonly stateService: StateService) {
     this.article$ = this.activatedRoute.params.pipe(
       map(params => this.articleService.getArticle(params['id'])),
       concatAll(),
     );
+    this.user$ = this.stateService.user$;
   }
 }

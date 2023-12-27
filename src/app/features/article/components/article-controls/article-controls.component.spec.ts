@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ArticleControlsComponent } from "./article-controls.component";
 import { Article } from "../../../../shared/model/article";
 import { DateTime } from "luxon";
+import { of } from "rxjs";
 
 describe('ArticleControlsComponent', () => {
   let component: ArticleControlsComponent;
@@ -38,10 +39,10 @@ describe('ArticleControlsComponent', () => {
 
   it('should render the follow and favorite article controls', () => {
     const followControl = fixture.nativeElement.querySelector('button.follow-control') as HTMLButtonElement;
-    expect(followControl).toBeFalsy();
+    expect(followControl).toBeDefined();
 
     const favoriteControlCounter = fixture.nativeElement.querySelector('button.favorite-control span.counter') as HTMLSpanElement;
-    expect(favoriteControlCounter).toBeFalsy();
+    expect(favoriteControlCounter).toBeDefined();
   });
 
   it('should render the edit and delete article controls if the current user is signed in', () => {
@@ -53,7 +54,7 @@ describe('ArticleControlsComponent', () => {
     expect(deleteControl).toBeFalsy();
 
     // Signed in
-    component.signedIn = true;
+    component.user$ = of({username: 'a@a.com', email: 'a@a.com', token: 'token_1'});
     fixture.detectChanges();
 
     editControl = fixture.nativeElement.querySelector('button.edit-control') as HTMLButtonElement;

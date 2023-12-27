@@ -4,6 +4,8 @@ import { RouterLink } from '@angular/router';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ArticleControlsComponent } from '../article-controls/article-controls.component';
 import { AuthorshipComponent } from '../authorship/authorship.component';
+import { EMPTY, Observable } from 'rxjs';
+import { User } from '../../../../shared/model/user';
 
 @Component({
   selector: 'app-article-header',
@@ -13,5 +15,5 @@ import { AuthorshipComponent } from '../authorship/authorship.component';
 })
 export class ArticleHeaderComponent {
   @Input() article: Article | undefined;
-  @Input() signedIn = true;
+  @Input() user$: Observable<User | undefined> = EMPTY;
 }

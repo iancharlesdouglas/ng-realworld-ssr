@@ -20,15 +20,20 @@ export class UserPersistenceService implements OnDestroy {
   }
 
   /**
-   * Saves user details to local storage
+   * Saves user details to localStorage
    * @param user User to save
    */
   saveUser(user: User | undefined): void {
     if (user) {
       localStorage?.setItem(UserPersistenceService.userKey, JSON.stringify(user));
-    } else {
-      localStorage?.removeItem(UserPersistenceService.userKey);
     }
+  }
+
+  /**
+   * Deletes user from localStorage
+   */
+  deleteUser(): void {
+    localStorage?.removeItem(UserPersistenceService.userKey);
   }
 
   /**

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ArticlesComponent } from "./articles.component";
 import { Article } from "../../../../shared/model/article";
-import { from, of } from "rxjs";
+import { EMPTY, from, of } from "rxjs";
 import { ActivatedRoute } from "@angular/router";
 
 describe('ArticlesComponent', () => {
@@ -34,13 +34,13 @@ describe('ArticlesComponent', () => {
   });
 
   it('shows Your Feed only when logged in', () => {
-    component.signedIn = false;
+    component.user$ = EMPTY;
     fixture.detectChanges();
 
     let yourFeedLink = fixture.debugElement.nativeElement.querySelector('#your-feed-link') as HTMLAnchorElement;
     expect(yourFeedLink).toBeFalsy();
 
-    component.signedIn = true;
+    component.user$ = of({username: 'x@a.com', email: 'x@a.com', token: 'token_1234'});
     fixture.detectChanges();
 
     yourFeedLink = fixture.debugElement.nativeElement.querySelector('#your-feed-link') as HTMLAnchorElement;

@@ -22,7 +22,6 @@ import { User } from '../../../../shared/model/user';
 export class ArticlesComponent {
   @Input() articles: Observable<Article[]> = EMPTY;
   @Input() user$: Observable<User | undefined> = EMPTY;
-  @Input() signedIn = false;
   @Input() pages: Observable<number[]> = EMPTY;
   @Input() page$: Observable<number> = EMPTY;
   @Input() tags: Observable<string[]> = EMPTY;
