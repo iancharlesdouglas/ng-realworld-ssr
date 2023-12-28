@@ -22,13 +22,13 @@ export class AuthenticationService {
   login(loginUser: LoginUserRequest): Observable<User> {
     const url = `${environment.remoteApiHost}/api/users/login`;
     return this.http.post<LoginUserResponse>(url, loginUser).pipe(
-      catchError(this.handleError),
+      // catchError(this.handleError),
       map(response => response?.user),
       tap(user => this.stateService.setUser(user)));
   }
 
   private handleError<T>(error: unknown, caught: Observable<T>) {
     console.error(`Error occurred - ${caught}`, error);
-    return EMPTY;
+    return caught;
   }
 }

@@ -3,7 +3,7 @@
     <a class="navbar-brand" href="/">conduit</a>
     <ul class="nav navbar-nav pull-xs-right">
       <li class="nav-item">
-        <a class="nav-link" [ngClass]="{active: (url$ | async) === '/'}" href="/">Home</a>
+        <a class="nav-link" [routerLink]="['/']" ruoterLinkActive="active">Home</a>
       </li>
       @if (user$ | async; as user) {
         <li class="nav-item">
@@ -17,17 +17,17 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/profile', '/' + user.username]">
+          <a class="nav-link" [routerLink]="['/profile', user.username]">
             <img [src]="user.image" class="user-pic" alt="User"/>
             {{ user.username }}
           </a>
         </li>
       } @else {
         <li class="nav-item">
-          <a class="nav-link" [ngClass]="{active: (url$ | async) === '/login'}" href="/login">Sign in</a>
+          <a class="nav-link" [routerLink]="['/login']" routerLinkActive="active">Sign in</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" [ngClass]="{active: (url$ | async) === '/register'}" href="/register">Sign up</a>
+          <a class="nav-link" [routerLink]="['/register']" routerLinkActive="active">Sign up</a>
         </li>
       }
     </ul>

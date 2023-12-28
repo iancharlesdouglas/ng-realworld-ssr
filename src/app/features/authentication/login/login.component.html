@@ -15,6 +15,9 @@
             @if (form.controls['password'].invalid && form.controls['password'].errors?.['required']) {
               <li>Password is required</li>
             }
+            @if (form.controls['password'].invalid && form.controls['password'].errors?.['loginFailed']) {
+              <li>Login failed</li>
+            }
           </ul>
         }
 

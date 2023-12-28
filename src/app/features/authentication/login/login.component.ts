@@ -3,6 +3,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { AuthenticationService } from '../services/authentication.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { LoginValidator } from '../validators/login-validator';
 
 /**
  * Login screen
@@ -19,13 +20,17 @@ export class LoginComponent implements OnInit, OnDestroy {
   submitted = false;
   private userSub: Subscription | undefined;
 
-  constructor(private readonly authenticationService: AuthenticationService, private readonly router: Router) {}
+  constructor(private readonly authenticationService: AuthenticationService, private readonly router: Router, private readonly loginValidator: LoginValidator) {}
 
   ngOnInit(): void {
     this.form = new FormGroup({
       email: new FormControl('', Validators.required),
-      password: new FormControl('', Validators.required)
+      password: new FormControl('', {
+        asyncValidators: this.loginValidator.validate.bind(this.loginValidator),
+        validators: Validators.required,
+        updateOn: 'blur' })
     });
+    new FormControl()
   }
 
   checkForm(): void {
