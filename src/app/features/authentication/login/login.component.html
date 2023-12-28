@@ -7,7 +7,8 @@
           <a href="/register">Need an account?</a>
         </p>
 
-        @if (form.invalid && (form.dirty || form.touched || submitted)) {
+        @if ((form.invalid && (form.dirty || form.touched || submitted)) || loginFailed) {
+          <h4 class="error-messages">Errors</h4>
           <ul class="error-messages">
             @if (form.controls['email'].invalid && form.controls['email'].errors?.['required']) {
               <li>Email is required</li>
@@ -15,13 +16,15 @@
             @if (form.controls['password'].invalid && form.controls['password'].errors?.['required']) {
               <li>Password is required</li>
             }
-            @if (form.controls['password'].invalid && form.controls['password'].errors?.['loginFailed']) {
-              <li>Login failed</li>
+            @if (loginFailedCredentials) {
+              <li>Sign in failed (are your email and password correct)?</li>
+            } @else if (loginFailed) {
+              <li>A problem occurred when signing in</li>
             }
           </ul>
         }
 
-        <form [formGroup]="form" (submit)="checkForm()">
+        <form [formGroup]="form" (submit)="attemptLogin()">
           <fieldset class="form-group">
             <input class="form-control form-control-lg" type="text" placeholder="Email" formControlName="email" />
           </fieldset>

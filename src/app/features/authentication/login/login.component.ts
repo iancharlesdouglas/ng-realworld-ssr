@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthenticationService } from '../services/authentication.service';
-import { Subscription } from 'rxjs';
+import { EMPTY, Subscription, catchError } from 'rxjs';
 import { Router } from '@angular/router';
-import { LoginValidator } from '../validators/login-validator';
 
 /**
  * Login screen
@@ -18,26 +17,35 @@ import { LoginValidator } from '../validators/login-validator';
 export class LoginComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   submitted = false;
+  loginFailedCredentials = false;
+  loginFailed = false;
   private userSub: Subscription | undefined;
 
-  constructor(private readonly authenticationService: AuthenticationService, private readonly router: Router, private readonly loginValidator: LoginValidator) {}
+  constructor(private readonly authenticationService: AuthenticationService, private readonly router: Router, private readonly formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
-    this.form = new FormGroup({
-      email: new FormControl('', Validators.required),
-      password: new FormControl('', {
-        asyncValidators: this.loginValidator.validate.bind(this.loginValidator),
-        validators: Validators.required,
-        updateOn: 'blur' })
+    this.form = this.formBuilder.group({
+      email: ['', Validators.required],
+      password: ['', Validators.required]
     });
-    new FormControl()
   }
 
-  checkForm(): void {
+  /**
+   * Tries to log in
+   */
+  attemptLogin(): void {
     this.submitted = true;
+    this.loginFailed = false;
+    this.loginFailedCredentials = false;
     if (this.form.valid) {
       const user$ = this.authenticationService.login({ user: this.form.value });
-      this.userSub = user$.subscribe(() => (this.router.navigate(['/'])));
+      this.userSub = user$.pipe(catchError((error, caught) => {
+        if (error.status === 403) {
+          this.loginFailedCredentials = true;
+        }
+        this.loginFailed = true;
+        return EMPTY;
+      })).subscribe(() => (this.router.navigate(['/'])));
     }
   }
 
