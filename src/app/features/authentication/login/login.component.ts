@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthenticationService } from '../services/authentication.service';
-import { EMPTY, Subscription, catchError } from 'rxjs';
+import { EMPTY, ReplaySubject, Subscription, catchError } from 'rxjs';
 import { Router } from '@angular/router';
 
 /**
@@ -10,15 +11,15 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [AsyncPipe, ReactiveFormsModule, FormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   submitted = false;
-  loginFailedCredentials = false;
-  loginFailed = false;
+  loginErrors$ = new ReplaySubject<string>();
   private userSub: Subscription | undefined;
 
   constructor(private readonly authenticationService: AuthenticationService, private readonly router: Router, private readonly formBuilder: FormBuilder) {}
@@ -35,15 +36,14 @@ export class LoginComponent implements OnInit, OnDestroy {
    */
   attemptLogin(): void {
     this.submitted = true;
-    this.loginFailed = false;
-    this.loginFailedCredentials = false;
     if (this.form.valid) {
       const user$ = this.authenticationService.login({ user: this.form.value });
       this.userSub = user$.pipe(catchError((error, caught) => {
         if (error.status === 403) {
-          this.loginFailedCredentials = true;
+          this.loginErrors$.next('Sign in failed (are your email and password correct)?');
+        } else {
+          this.loginErrors$.next('A problem occurred while signing you in');
         }
-        this.loginFailed = true;
         return EMPTY;
       })).subscribe(() => (this.router.navigate(['/'])));
     }
