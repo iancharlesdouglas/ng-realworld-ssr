@@ -56,9 +56,17 @@ export class StateService {
    * @param user User
    * @returns New state
    */
-  async setUser(user: User): Promise<State> {
+  async setUser(user: User | undefined): Promise<State> {
     const newState = {...this.lastState, user};
     this.setState(newState);
     return newState;
+  }
+
+  /**
+   * Returns the last user
+   * @returns Last user state
+   */
+  getLastUser(): User | undefined {
+    return this.lastState.user;
   }
 }

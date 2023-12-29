@@ -4,7 +4,7 @@ import { User } from "../../../shared/model/user";
 import { Observable, map, tap } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
-import { LoginUserResponse } from "../model/login-user-response";
+import { UserResponse } from "../../../shared/model/user-response";
 import { StateService } from "../../../shared/services/state/state.service";
 
 /**
@@ -21,7 +21,7 @@ export class AuthenticationService {
    */
   login(loginUser: LoginUserRequest): Observable<User> {
     const url = `${environment.remoteApiHost}/api/users/login`;
-    return this.http.post<LoginUserResponse>(url, loginUser).pipe(
+    return this.http.post<UserResponse>(url, loginUser).pipe(
       map(response => response?.user),
       tap(user => this.stateService.setUser(user)));
   }

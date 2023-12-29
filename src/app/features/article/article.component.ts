@@ -12,6 +12,9 @@ import { ArticleCommentsComponent } from './components/article-comments/article-
 import { User } from '../../shared/model/user';
 import { StateService } from '../../shared/services/state/state.service';
 
+/**
+ * Single article component
+ */
 @Component({
   selector: 'app-article',
   standalone: true,

@@ -32,7 +32,7 @@ export class UserPersistenceService implements OnDestroy {
   /**
    * Deletes user from localStorage
    */
-  deleteUser(): void {
+  forgetUser(): void {
     localStorage?.removeItem(UserPersistenceService.userKey);
   }
 
