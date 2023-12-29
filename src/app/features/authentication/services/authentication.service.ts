@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { LoginUserRequest } from "../model/login-user-request";
 import { User } from "../../../shared/model/user";
-import { EMPTY, Observable, catchError, map, tap } from "rxjs";
+import { Observable, map, tap } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
 import { LoginUserResponse } from "../model/login-user-response";
@@ -22,13 +22,7 @@ export class AuthenticationService {
   login(loginUser: LoginUserRequest): Observable<User> {
     const url = `${environment.remoteApiHost}/api/users/login`;
     return this.http.post<LoginUserResponse>(url, loginUser).pipe(
-      // catchError(this.handleError),
       map(response => response?.user),
       tap(user => this.stateService.setUser(user)));
-  }
-
-  private handleError<T>(error: unknown, caught: Observable<T>) {
-    console.error(`Error occurred - ${caught}`, error);
-    return caught;
   }
 }

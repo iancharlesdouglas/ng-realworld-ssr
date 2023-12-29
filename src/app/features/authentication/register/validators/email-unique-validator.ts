@@ -8,7 +8,7 @@ import { LoginUserRequest } from "../../model/login-user-request";
 export class EmailUniqueValidator implements AsyncValidator {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
-  validate(control: AbstractControl<any, any>): Observable<ValidationErrors | null> {
+  validate(control: AbstractControl): Observable<ValidationErrors | null> {
     const email = control.parent?.get('email')?.value;
     const password = control.parent?.get('password')?.value;
     const user: LoginUserRequest = { user: { email, password } };

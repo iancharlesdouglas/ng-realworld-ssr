@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-settings',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  templateUrl: './settings.component.html',
+  styleUrl: './settings.component.scss'
 })
-export class RegisterComponent {
+export class SettingsComponent {
 
 }
