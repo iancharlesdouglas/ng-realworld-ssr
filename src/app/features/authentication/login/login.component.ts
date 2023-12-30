@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
   }
 
   /**
-   * Attempt to log in
+   * Attempt to log in the user
    */
   attemptLogin(): void {
     this.submitted = true;

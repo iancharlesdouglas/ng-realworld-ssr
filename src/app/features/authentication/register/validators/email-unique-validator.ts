@@ -1,24 +1,21 @@
 import { Injectable } from "@angular/core";
 import { AbstractControl, AsyncValidator, ValidationErrors } from "@angular/forms";
-import { AuthenticationService } from "../../services/authentication.service";
-import { Observable, catchError, map, of } from "rxjs";
-import { LoginUserRequest } from "../../model/login-user-request";
+import { Observable, map } from "rxjs";
+import { ProfileService } from "../../../../shared/services/profile.service";
 
+/**
+ * Validates whether an email address has already been taken
+ */
 @Injectable({ providedIn: 'root' })
 export class EmailUniqueValidator implements AsyncValidator {
-  constructor(private readonly authenticationService: AuthenticationService) {}
+  constructor(private readonly profileService: ProfileService) {}
 
   validate(control: AbstractControl): Observable<ValidationErrors | null> {
-    const email = control.parent?.get('email')?.value;
-    const password = control.parent?.get('password')?.value;
-    const user: LoginUserRequest = { user: { email, password } };
-    return this.authenticationService.login(user).pipe(
-      map(() => {
-        return of(null);
-      }),
-      catchError(() => {
-        return of({ loginFailed: true });
-      }),
+    const email = control.value;
+    return this.profileService.find(email).pipe(
+      map(profile => {
+        return profile ? { emailTaken: true } : null;
+      })
     );
   }
 }

@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Router, RouterLink } from '@angular/router';
 import { EMPTY, Observable, catchError, map, of, tap } from 'rxjs';
 import { AuthenticationService } from '../services/authentication.service';
+import { EmailUniqueValidator } from './validators/email-unique-validator';
 
 /**
  * Registration page
@@ -20,12 +21,17 @@ export class RegisterComponent {
   error$: Observable<string> = EMPTY;
   submitted = false;
 
-  constructor(private readonly authenticationService: AuthenticationService, private readonly router: Router, private readonly formBuilder: FormBuilder) {}
+  constructor(
+    private readonly authenticationService: AuthenticationService,
+    private readonly router: Router,
+    private readonly formBuilder: FormBuilder,
+    private readonly emailUniqueValidator: EmailUniqueValidator)
+  {}
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
       username: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.email], [this.emailUniqueValidator]],
       password: ['', Validators.required]
     });
   }
@@ -38,7 +44,6 @@ export class RegisterComponent {
     if (this.form.valid) {
       const user$ = this.authenticationService.login({ user: this.form.value });
       this.error$ = user$.pipe(catchError(error => {
-        // That email is already taken
         return of('A problem occurred while registering you');
       }), tap(result => {
         if (typeof result !== 'string') {

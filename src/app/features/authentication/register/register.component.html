@@ -10,7 +10,7 @@
         @if ((form.invalid && (form.dirty || form.touched || submitted)) || (error$ | async)) {
           <h5 class="error-messages">Errors</h5>
           <ul class="error-messages">
-            @if (form.get('username')?.invalid && form.get('username')?.errors?.['required']) {
+            @if (form.controls['username'].invalid && form.controls['username'].errors?.['required']) {
               <li>Username is required</li>
             }
             @if (form.controls['email'].invalid && form.controls['email'].errors?.['required']) {
@@ -19,6 +19,10 @@
             @if (form.controls['email'].invalid && form.controls['email'].errors?.['email']) {
               <li>Email should be a valid email format</li>
             }
+            @if (form.controls['email'].invalid && form.controls['email'].errors?.['emailTaken']) {
+              <li>That email is already taken</li>
+            }
+
             @if (form.controls['password'].invalid && form.controls['password'].errors?.['required']) {
               <li>Password is required</li>
             }
