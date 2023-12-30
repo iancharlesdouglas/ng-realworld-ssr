@@ -68,7 +68,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
         } as SettingsWithoutPassword;
       }
       const userResponse$ = this.settingsService.updateSettings(settings);
-      this.errors$ = userResponse$.pipe(catchError(error => {
+      this.errors$ = userResponse$.pipe(catchError(() => {
         this.submitted = false;
         return of('A problem occurred while updating the settings');
       }),

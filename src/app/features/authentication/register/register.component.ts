@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { EMPTY, Observable, catchError, map, of, tap } from 'rxjs';
@@ -16,7 +16,7 @@ import { EmailUniqueValidator } from './validators/email-unique-validator';
   imports: [AsyncPipe, ReactiveFormsModule, FormsModule, RouterLink],
   templateUrl: './register.component.html',
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   form!: FormGroup;
   error$: Observable<string> = EMPTY;
   submitted = false;
@@ -43,7 +43,7 @@ export class RegisterComponent {
     this.submitted = true;
     if (this.form.valid) {
       const user$ = this.authenticationService.login({ user: this.form.value });
-      this.error$ = user$.pipe(catchError(error => {
+      this.error$ = user$.pipe(catchError(() => {
         return of('A problem occurred while registering you');
       }), tap(result => {
         if (typeof result !== 'string') {

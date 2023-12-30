@@ -18,7 +18,7 @@ export class UserPersistenceService implements OnDestroy {
    * @param stateService State service whose user observable is watched
    * @param platformId Platform ID to determine whether running in browser or on server
    */
-  constructor(private readonly stateService: StateService, @Inject(PLATFORM_ID) platformId: Object) {
+  constructor(private readonly stateService: StateService, @Inject(PLATFORM_ID) platformId: object) {
     this.stateSub = this.stateService.user$.subscribe(user => this.saveUser(user));
     this.inBrowser = isPlatformBrowser(platformId);
   }
