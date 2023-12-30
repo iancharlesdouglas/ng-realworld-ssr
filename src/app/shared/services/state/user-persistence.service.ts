@@ -1,7 +1,8 @@
-import { Injectable, OnDestroy } from "@angular/core";
+import { Inject, Injectable, OnDestroy, PLATFORM_ID } from "@angular/core";
 import { StateService } from "./state.service";
 import { User } from "../../model/user";
 import { Subscription } from "rxjs";
+import { isPlatformBrowser } from "@angular/common";
 
 /**
  * Persists user details to localStorage
@@ -10,13 +11,16 @@ import { Subscription } from "rxjs";
 export class UserPersistenceService implements OnDestroy {
   private static userKey = '__realworld-user__';
   private stateSub: Subscription;
+  private inBrowser;
 
   /**
    * Creates a new instance that observes the given state service
    * @param stateService State service whose user observable is watched
+   * @param platformId Platform ID to determine whether running in browser or on server
    */
-  constructor(private readonly stateService: StateService) {
+  constructor(private readonly stateService: StateService, @Inject(PLATFORM_ID) platformId: Object) {
     this.stateSub = this.stateService.user$.subscribe(user => this.saveUser(user));
+    this.inBrowser = isPlatformBrowser(platformId);
   }
 
   /**
@@ -24,7 +28,7 @@ export class UserPersistenceService implements OnDestroy {
    * @param user User to save
    */
   saveUser(user: User | undefined): void {
-    if (user) {
+    if (user && this.inBrowser) {
       localStorage?.setItem(UserPersistenceService.userKey, JSON.stringify(user));
     }
   }
@@ -33,7 +37,9 @@ export class UserPersistenceService implements OnDestroy {
    * Deletes user from localStorage
    */
   forgetUser(): void {
-    localStorage?.removeItem(UserPersistenceService.userKey);
+    if (this.inBrowser) {
+      localStorage?.removeItem(UserPersistenceService.userKey);
+    }
   }
 
   /**
@@ -41,8 +47,11 @@ export class UserPersistenceService implements OnDestroy {
    * @returns User instance, or undefined if none is found
    */
   loadUser(): User | undefined {
-    const user = localStorage?.getItem(UserPersistenceService.userKey);
-    return user ? JSON.parse(user) : undefined;
+    if (this.inBrowser){
+      const user = localStorage?.getItem(UserPersistenceService.userKey);
+      return user ? JSON.parse(user) : undefined;
+    }
+    return undefined;
   }
 
   ngOnDestroy(): void {

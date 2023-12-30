@@ -1,9 +1,9 @@
 import { User } from "../../../shared/model/user";
 
 /**
- * Settings to send to the back end
+ * Settings to send to the back end (with password)
  */
-export type Settings = {
+export type SettingsWithPassword = {
   user: User & {
     password: string;
   }

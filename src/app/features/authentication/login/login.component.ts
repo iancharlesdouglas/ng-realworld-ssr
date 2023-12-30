@@ -17,8 +17,8 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
   form!: FormGroup;
-  submitted = false;
   loginErrors$: Observable<string> = EMPTY;
+  submitted = false;
 
   constructor(private readonly authenticationService: AuthenticationService, private readonly router: Router, private readonly formBuilder: FormBuilder) {}
 

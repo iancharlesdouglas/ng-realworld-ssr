@@ -4,27 +4,42 @@
       <div class="col-md-6 offset-md-3 col-xs-12">
         <h1 class="text-xs-center">Your Settings</h1>
 
-        <ul class="error-messages">
-          <li>That name is required</li>
-        </ul>
+        @if ((form.invalid && (form.dirty || form.touched || submitted)) || (errors$ | async)) {
+          <h5 class="error-messages">Errors</h5>
+          <ul class="error-messages">
+            @if (form.controls['username'].invalid && form.controls['username'].errors?.['required']) {
+              <li>Your name is required</li>
+            }
+            @if (form.controls['email'].invalid && form.controls['email'].errors?.['required']) {
+              <li>Email is required</li>
+            }
+            @if (form.controls['email'].invalid && form.controls['email'].errors?.['email']) {
+              <li>Email should be a valid email format</li>
+            }
+            @if (errors$ | async; as error) {
+              <li>{{ error }}</li>
+            }
+          </ul>
+        }
 
-        <form>
+        <form [formGroup]="form" (submit)="updateSettings()">
           <fieldset>
             <fieldset class="form-group">
-              <input class="form-control" type="text" placeholder="URL of profile picture" />
+              <input class="form-control" type="text" formControlName="image" placeholder="URL of profile picture" />
             </fieldset>
             <fieldset class="form-group">
-              <input class="form-control form-control-lg" type="text" placeholder="Your Name" />
+              <input class="form-control form-control-lg" type="text" formControlName="username" placeholder="Your Name" />
             </fieldset>
             <fieldset class="form-group">
               <textarea
                 class="form-control form-control-lg"
+                formControlName="bio"
                 rows="8"
                 placeholder="Short bio about you"
               ></textarea>
             </fieldset>
             <fieldset class="form-group">
-              <input class="form-control form-control-lg" type="text" placeholder="Email" />
+              <input class="form-control form-control-lg" type="text" formControlName="email" placeholder="Email" />
             </fieldset>
             <fieldset class="form-group">
               <input
@@ -33,10 +48,11 @@
                 placeholder="New Password"
               />
             </fieldset>
-            <button class="btn btn-lg btn-primary pull-xs-right">Update Settings</button>
+            <button type="submit" class="btn btn-lg btn-primary pull-xs-right">Update Settings</button>
           </fieldset>
         </form>
         <hr />
+
         <button (click)="logOut()" class="btn btn-outline-danger">Or click here to logout.</button>
       </div>
     </div>
