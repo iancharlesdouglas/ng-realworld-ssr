@@ -11,7 +11,7 @@ import { SettingsWithPassword } from './model/settings-with-password';
 import { SettingsWithoutPassword } from './model/settings-without-password';
 
 /**
- * Component to change user settings, or log out
+ * User settings page, where user may also log out
  */
 @Component({
   selector: 'app-settings',

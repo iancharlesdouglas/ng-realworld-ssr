@@ -4,24 +4,41 @@
       <div class="col-md-6 offset-md-3 col-xs-12">
         <h1 class="text-xs-center">Sign up</h1>
         <p class="text-xs-center">
-          <a href="/login">Have an account?</a>
+          <a [routerLink]="['/login']" title="Go to sign in page">Have an account?</a>
         </p>
 
-        <ul class="error-messages">
-          <li>That email is already taken</li>
-        </ul>
+        @if ((form.invalid && (form.dirty || form.touched || submitted)) || (error$ | async)) {
+          <h5 class="error-messages">Errors</h5>
+          <ul class="error-messages">
+            @if (form.get('username')?.invalid && form.get('username')?.errors?.['required']) {
+              <li>Username is required</li>
+            }
+            @if (form.controls['email'].invalid && form.controls['email'].errors?.['required']) {
+              <li>Email is required</li>
+            }
+            @if (form.controls['email'].invalid && form.controls['email'].errors?.['email']) {
+              <li>Email should be a valid email format</li>
+            }
+            @if (form.controls['password'].invalid && form.controls['password'].errors?.['required']) {
+              <li>Password is required</li>
+            }
+            @if (error$ | async; as error) {
+              <li>{{ error }}</li>
+            }
+          </ul>
+        }
 
-        <form>
+        <form [formGroup]="form" (submit)="attemptRegistration()">
           <fieldset class="form-group">
-            <input class="form-control form-control-lg" type="text" placeholder="Username" />
+            <input class="form-control form-control-lg" type="text" formControlName="username" placeholder="Username" />
           </fieldset>
           <fieldset class="form-group">
-            <input class="form-control form-control-lg" type="text" placeholder="Email" />
+            <input class="form-control form-control-lg" type="text" formControlName="email" placeholder="Email" />
           </fieldset>
           <fieldset class="form-group">
-            <input class="form-control form-control-lg" type="password" placeholder="Password" />
+            <input class="form-control form-control-lg" type="password" formControlName="password" placeholder="Password" />
           </fieldset>
-          <button class="btn btn-lg btn-primary pull-xs-right">Sign up</button>
+          <button type="submit" class="btn btn-lg btn-primary pull-xs-right">Sign up</button>
         </form>
       </div>
     </div>

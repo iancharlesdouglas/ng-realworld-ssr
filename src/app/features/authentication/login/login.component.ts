@@ -6,7 +6,7 @@ import { EMPTY, Observable, catchError, map, of, tap } from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
 
 /**
- * Login screen
+ * Login page
  */
 @Component({
   selector: 'app-login',
@@ -17,14 +17,14 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
   form!: FormGroup;
-  loginErrors$: Observable<string> = EMPTY;
+  error$: Observable<string> = EMPTY;
   submitted = false;
 
   constructor(private readonly authenticationService: AuthenticationService, private readonly router: Router, private readonly formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
-      email: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
   }
@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
     this.submitted = true;
     if (this.form.valid) {
       const user$ = this.authenticationService.login({ user: this.form.value });
-      this.loginErrors$ = user$.pipe(catchError(error => {
+      this.error$ = user$.pipe(catchError(error => {
         if (error.status === 403) {
           return of('Sign in failed (are your email and password correct)?');
         }

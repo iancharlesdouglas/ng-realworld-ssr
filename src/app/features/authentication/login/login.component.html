@@ -7,16 +7,19 @@
           <a [routerLink]="['/register']" title="Go to register page">Need an account?</a>
         </p>
 
-        @if ((form.invalid && (form.dirty || form.touched || submitted)) || (loginErrors$ | async)) {
+        @if ((form.invalid && (form.dirty || form.touched || submitted)) || (error$ | async)) {
           <h5 class="error-messages">Errors</h5>
           <ul class="error-messages">
             @if (form.controls['email'].invalid && form.controls['email'].errors?.['required']) {
               <li>Email is required</li>
             }
+            @if (form.controls['email'].invalid && form.controls['email'].errors?.['email']) {
+              <li>Email should be a valid email format</li>
+            }
             @if (form.controls['password'].invalid && form.controls['password'].errors?.['required']) {
               <li>Password is required</li>
             }
-            @if (loginErrors$ | async; as error) {
+            @if (error$ | async; as error) {
               <li>{{ error }}</li>
             }
           </ul>
