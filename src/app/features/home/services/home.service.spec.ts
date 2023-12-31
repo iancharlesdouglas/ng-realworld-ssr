@@ -1,37 +1,28 @@
 import { TestBed } from '@angular/core/testing';
 import { HomeService } from './home.service';
-import {
-  HttpClient,
-  HttpEvent,
-  HttpHandler,
-  HttpRequest,
-} from '@angular/common/http';
-import { Observable, firstValueFrom, of } from 'rxjs';
+import { HttpClient, HttpHandler } from '@angular/common/http';
+import { firstValueFrom, of } from 'rxjs';
 import { vi } from 'vitest';
 import { ArticlesApiResponse } from '../../../shared/model/api/articles-api-response';
+import { mockHttpClient, mockHttpHandler } from '../../../shared/tests/mock-http-client';
 
 describe('HomeService', () => {
   let service: HomeService;
-
-  const httpHandler: HttpHandler = {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
-    handle(_: HttpRequest<any>): Observable<HttpEvent<any>> {
-      return of();
-    },
-  };
-  const httpClient = new HttpClient(httpHandler);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         {
           provide: HttpClient,
-          useValue: httpClient,
+          useValue: mockHttpClient,
         },
-        { provide: HttpHandler, useValue: httpHandler },
+        {
+          provide: HttpHandler,
+          useValue: mockHttpHandler
+        },
       ],
     });
-    vi.spyOn(httpClient, 'get');
+    vi.spyOn(mockHttpClient, 'get');
     service = TestBed.inject(HomeService);
   });
 
@@ -64,11 +55,11 @@ Angular, the Google-born TypeScript-based juggernaut. Its initial bundle, a veri
         },
       ],
     };
-    vi.spyOn(httpClient, 'get').mockReturnValue(of(expectedArticles));
+    vi.spyOn(mockHttpClient, 'get').mockReturnValue(of(expectedArticles));
     const articles$ = service.getArticles(0, 10);
     const articlesResponse = await firstValueFrom(articles$);
 
-    expect(httpClient.get).toHaveBeenCalled();
+    expect(mockHttpClient.get).toHaveBeenCalled();
     expect(articlesResponse.articles.length).toBe(1);
   });
 });

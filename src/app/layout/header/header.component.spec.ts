@@ -2,20 +2,26 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HeaderComponent } from './header.component';
 import { By } from '@angular/platform-browser';
-import { Subject } from 'rxjs';
-import { Event, Router, NavigationEnd } from '@angular/router';
+import { Subject, from } from 'rxjs';
+import { Event, Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { vi } from 'vitest';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
   const router = {
-    events: new Subject<Event>()
+    events: new Subject<Event>(),
+    createUrlTree: vi.fn(),
+    serializeUrl: vi.fn()
   };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HeaderComponent],
-      providers: [{provide: Router, useValue: router}]
+      providers: [
+        { provide: Router, useValue: router },
+        { provide: ActivatedRoute, useValue: {params: from([{id: 'x'}])} }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HeaderComponent);

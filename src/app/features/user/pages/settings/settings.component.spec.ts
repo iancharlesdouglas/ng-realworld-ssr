@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SettingsComponent } from './settings.component';
+import { HttpClient, HttpHandler } from '@angular/common/http';
+import { mockHttpClient, mockHttpHandler } from '../../../../shared/tests/mock-http-client';
 
 describe('SettingsComponent', () => {
   let component: SettingsComponent;
@@ -8,7 +10,11 @@ describe('SettingsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SettingsComponent]
+      imports: [SettingsComponent],
+      providers: [
+        { provide: HttpClient, useValue: mockHttpClient },
+        { provide: HttpHandler, useValue: mockHttpHandler }
+      ]
     })
     .compileComponents();
 
