@@ -30,6 +30,13 @@ describe('RegisterComponent', () => {
     let errorMessages = fixture.nativeElement.querySelectorAll('ul.error-messages li') as HTMLLIElement[];
     expect(errorMessages.length).toBe(0);
 
+    const submitButton = fixture.nativeElement.querySelector('button[type=submit]') as HTMLButtonElement;
+    submitButton.click();
+    fixture.detectChanges();
+
+    errorMessages = fixture.nativeElement.querySelectorAll('ul.error-messages li') as HTMLLIElement[];
+    expect(errorMessages.length).toBe(3);
+
     const usernameField = fixture.nativeElement.querySelector('input[formControlName=username]') as HTMLInputElement;
     const emailField = fixture.nativeElement.querySelector('input[formControlName=email]') as HTMLInputElement;
     const passwordField = fixture.nativeElement.querySelector('input[formControlName=password]') as HTMLInputElement;
@@ -45,27 +52,8 @@ describe('RegisterComponent', () => {
     errorMessages = fixture.nativeElement.querySelectorAll('ul.error-messages li') as HTMLLIElement[];
     expect(errorMessages.length).toBe(0);
 
-    // usernameField.value = '';
-    // usernameField.dispatchEvent(new Event('input'));
-    // fixture.detectChanges();
-
-    // errorMessages = fixture.nativeElement.querySelectorAll('ul.error-messages li') as HTMLLIElement[];
-    // console.log('errors',errorMessages);
-    // expect(errorMessages.length).toBeGreaterThan(0);
-
-    usernameField.value = 'username1';
-    usernameField.dispatchEvent(new Event('input'));
     emailField.value = 'someinvalidemail.com';
     emailField.dispatchEvent(new Event('input'));
-    fixture.detectChanges();
-
-    errorMessages = fixture.nativeElement.querySelectorAll('ul.error-messages li') as HTMLLIElement[];
-    expect(errorMessages.length).toBeGreaterThan(0);
-
-    emailField.value = 'some@validemail.com';
-    emailField.dispatchEvent(new Event('input'));
-    passwordField.value = '';
-    passwordField.dispatchEvent(new Event('input'));
     fixture.detectChanges();
 
     errorMessages = fixture.nativeElement.querySelectorAll('ul.error-messages li') as HTMLLIElement[];
