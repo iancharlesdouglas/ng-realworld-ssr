@@ -1,5 +1,5 @@
 import { Author } from "./author";
-import { Authorship } from "./authorshsip";
+import { Authorship } from "./authorship";
 
 /**
  * A comment on an article

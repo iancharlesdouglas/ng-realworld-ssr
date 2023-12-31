@@ -1,4 +1,4 @@
-import { User } from "../../../shared/model/user";
+import { User } from "../../../../../shared/model/user";
 
 /**
  * Settings to send to the back end (without password)

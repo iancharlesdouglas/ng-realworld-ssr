@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { UserPersistenceService } from '../../shared/services/state/user-persistence.service';
 import { Router } from '@angular/router';
-import { StateService } from '../../shared/services/state/state.service';
 import { SettingsService } from './services/settings.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EMPTY, Observable, Subscription, catchError, map, of, tap } from 'rxjs';
-import { UserResponse } from '../../shared/model/user-response';
 import { AsyncPipe } from '@angular/common';
 import { SettingsWithPassword } from './model/settings-with-password';
 import { SettingsWithoutPassword } from './model/settings-without-password';
+import { UserPersistenceService } from '../../../../shared/services/state/user-persistence.service';
+import { StateService } from '../../../../shared/services/state/state.service';
+import { UserResponse } from '../../../../shared/model/api/user-response';
 
 /**
  * User settings page, where user may also log out

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UserResponse } from '../../../shared/model/user-response';
 import { SettingsWithPassword } from '../model/settings-with-password';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../environments/environment';
 import { SettingsWithoutPassword } from '../model/settings-without-password';
+import { UserResponse } from '../../../../../shared/model/api/user-response';
+import { environment } from '../../../../../../environments/environment';
 
 /**
  * Settings service which saves settings to the back end

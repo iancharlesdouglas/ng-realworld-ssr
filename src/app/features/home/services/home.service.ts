@@ -1,9 +1,9 @@
-import { ArticlesApiResponse } from '../../../shared/model/articles-api-response';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { TagsApiResponse } from '../../../shared/model/tags-api-response';
+import { TagsApiResponse } from '../../../shared/model/api/tags-api-response';
+import { ArticlesApiResponse } from '../../../shared/model/api/articles-api-response';
 
 /**
  * Provides services to the home page

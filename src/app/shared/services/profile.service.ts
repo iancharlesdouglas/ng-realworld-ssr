@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable, map } from "rxjs";
 import { Profile } from "../model/profile";
 import { environment } from "../../../environments/environment";
-import { ProfileResponse } from "../model/profile-response";
+import { ProfileResponse } from "../model/api/profile-response";
 
 /**
  * Controls access to backend services for profiles

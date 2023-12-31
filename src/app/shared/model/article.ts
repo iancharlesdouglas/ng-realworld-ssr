@@ -1,4 +1,4 @@
-import { Authorship } from './authorshsip';
+import { Authorship } from './authorship';
 
 /**
  * An article

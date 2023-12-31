@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { AbstractControl, AsyncValidator, ValidationErrors } from "@angular/forms";
 import { Observable, map } from "rxjs";
-import { ProfileService } from "../../../../shared/services/profile.service";
+import { ProfileService } from "../../../../../shared/services/profile.service";
 
 /**
  * Validates whether an email address has already been taken

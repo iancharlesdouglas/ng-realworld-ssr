@@ -3,7 +3,7 @@ import { Article } from "../model/article";
 import { Observable, map } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
-import { ArticleApiResponse } from "../model/article-api-response";
+import { ArticleApiResponse } from "../model/api/article-api-response";
 
 /**
  * Controls access to backend services for articles

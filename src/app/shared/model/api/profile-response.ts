@@ -1,4 +1,4 @@
-import { Profile } from "./profile";
+import { Profile } from "../profile";
 
 /**
  * Profile response from service

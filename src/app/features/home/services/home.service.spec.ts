@@ -8,7 +8,7 @@ import {
 } from '@angular/common/http';
 import { Observable, firstValueFrom, of } from 'rxjs';
 import { vi } from 'vitest';
-import { ArticlesApiResponse } from '../../../shared/model/articles-api-response';
+import { ArticlesApiResponse } from '../../../shared/model/api/articles-api-response';
 
 describe('HomeService', () => {
   let service: HomeService;
@@ -65,7 +65,7 @@ Angular, the Google-born TypeScript-based juggernaut. Its initial bundle, a veri
       ],
     };
     vi.spyOn(httpClient, 'get').mockReturnValue(of(expectedArticles));
-    const articles$ = service.getArticles();
+    const articles$ = service.getArticles(0, 10);
     const articlesResponse = await firstValueFrom(articles$);
 
     expect(httpClient.get).toHaveBeenCalled();
