@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { AbstractControl, AsyncValidator, ValidationErrors } from "@angular/forms";
-import { Observable, map } from "rxjs";
+import { Observable, catchError, map, of } from "rxjs";
 import { ProfileService } from "../../../../../shared/services/profile.service";
 
 /**
@@ -13,6 +13,7 @@ export class EmailUniqueValidator implements AsyncValidator {
   validate(control: AbstractControl): Observable<ValidationErrors | null> {
     const email = control.value;
     return this.profileService.find(email).pipe(
+      catchError(() => of(null)),
       map(profile => {
         return profile ? { emailTaken: true } : null;
       })
