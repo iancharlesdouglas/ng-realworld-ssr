@@ -3,17 +3,16 @@ import { LoginComponent } from './login.component';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { mockHttpClient, mockHttpHandler } from '../../../../shared/tests/mock-http-client';
 import { ActivatedRoute } from '@angular/router';
-import { from, of, throwError } from 'rxjs';
-import { vi } from 'vitest';
+import { from, throwError } from 'rxjs';
+import { expect, vi } from 'vitest';
 import { AuthenticationService } from '../../services/authentication.service';
+import { LoginUserRequest } from '../../services/model/login-user-request';
+import { environment } from '../../../../../environments/environment';
 import { StateService } from '../../../../shared/services/state/state.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
-  const stateService = new StateService();
-  const authenticationService = new AuthenticationService(mockHttpClient, stateService);
-  authenticationService.login = vi.fn().mockResolvedValue(of({username: 'x', email: 'x@x.com'}));
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -22,10 +21,14 @@ describe('LoginComponent', () => {
         { provide: HttpClient, useValue: mockHttpClient },
         { provide: HttpHandler, useValue: mockHttpHandler },
         { provide: ActivatedRoute, useValue: {params: from([{id: 'x'}])} },
-        { provide: AuthenticationService, useValue: authenticationService }
+        { provide: AuthenticationService },
+        { provide: StateService }
       ]
     })
     .compileComponents();
+
+    // @ts-ignore mock method format
+    mockHttpClient.post = vi.fn();
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
@@ -74,10 +77,16 @@ describe('LoginComponent', () => {
   it('logs in with the service if valid email and password are supplied', () => {
     const emailField = fixture.nativeElement.querySelector('input[formControlName=email]') as HTMLInputElement;
     const passwordField = fixture.nativeElement.querySelector('input[formControlName=password]') as HTMLInputElement;
+    const userRequest: LoginUserRequest = {
+      user: {
+        email: 'some@email.com',
+        password: 'somePassword1234'
+      }
+    };
 
-    emailField.value = 'valid@email.com';
+    emailField.value = userRequest.user.email;
     emailField.dispatchEvent(new Event('input'));
-    passwordField.value = 'somePassword123';
+    passwordField.value = userRequest.user.password;
     passwordField.dispatchEvent(new Event('input'));
     fixture.detectChanges();
 
@@ -85,11 +94,11 @@ describe('LoginComponent', () => {
     submitButton.click();
     fixture.detectChanges();
 
-    expect(authenticationService.login).toHaveBeenCalled();
+    expect(mockHttpClient.post).toHaveBeenCalledWith(expect.anything(), userRequest);
   });
 
   it('presents an error message when login fails using the service', () => {
-    authenticationService.login = vi.fn().mockReturnValue(throwError(() => '** DELIBERATE ERROR **'));
+    mockHttpClient.post = vi.fn().mockReturnValue(throwError(() => '** DELIBERATE ERROR **'));
     const emailField = fixture.nativeElement.querySelector('input[formControlName=email]') as HTMLInputElement;
     const passwordField = fixture.nativeElement.querySelector('input[formControlName=password]') as HTMLInputElement;
 
@@ -103,8 +112,33 @@ describe('LoginComponent', () => {
     submitButton.click();
     fixture.detectChanges();
 
-    expect(authenticationService.login).toHaveBeenCalled();
+    expect(mockHttpClient.post).toHaveBeenCalled();
     const errorMessages = fixture.nativeElement.querySelectorAll('ul.error-messages li') as HTMLLIElement[];
     expect(errorMessages.length).toBeGreaterThan(0);
+  });
+
+  it('passes expected values to expected URL when logging in', () => {
+    fixture.detectChanges();
+    const userRequest: LoginUserRequest = {
+      user: {
+        email: 'some@email.com',
+        password: 'somePassword1234'
+      }
+    };
+    const emailField = fixture.nativeElement.querySelector('input[formControlName=email]') as HTMLInputElement;
+    const passwordField = fixture.nativeElement.querySelector('input[formControlName=password]') as HTMLInputElement;
+    const submitButton = fixture.nativeElement.querySelector('button[type=submit]') as HTMLButtonElement;
+
+    emailField.value = userRequest.user.email;
+    passwordField.value = userRequest.user.password;
+    emailField.dispatchEvent(new Event('input'));
+    passwordField.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    submitButton.click();
+    fixture.detectChanges();
+
+    const expectedUrl = `${environment.remoteApiHost}/api/users/login`;
+    expect(mockHttpClient.post).toHaveBeenCalledWith(expectedUrl, userRequest);
   });
 });

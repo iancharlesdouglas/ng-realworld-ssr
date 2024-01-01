@@ -1,14 +1,22 @@
-import { ComponentFixture, TestBed, fakeAsync, flush, tick } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RegisterComponent } from './register.component';
 import { mockHttpClient, mockHttpHandler } from '../../../../shared/tests/mock-http-client';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { from } from 'rxjs';
+import { from, of } from 'rxjs';
+import { AuthenticationService } from '../../services/authentication.service';
+import { environment } from '../../../../../environments/environment';
+import { RegisterUserRequest } from '../../services/model/register-user-request';
+import { vi } from 'vitest';
+import { ProfileService } from '../../../../shared/services/profile.service';
+import { StateService } from '../../../../shared/services/state/state.service';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
+  const profileService = {
+    find: vi.fn().mockReturnValue(of(null))
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -16,7 +24,10 @@ describe('RegisterComponent', () => {
       providers: [
         { provide: HttpClient, useValue: mockHttpClient },
         { provide: HttpHandler, useValue: mockHttpHandler },
-        { provide: ActivatedRoute, useValue: {params: from([{id: 'x'}])} }
+        { provide: ActivatedRoute, useValue: {params: from([{id: 'x'}])} },
+        { provide: AuthenticationService },
+        { provide: ProfileService, useValue: profileService },
+        { provide: StateService }
       ]
     })
     .compileComponents();
@@ -58,5 +69,36 @@ describe('RegisterComponent', () => {
 
     errorMessages = fixture.nativeElement.querySelectorAll('ul.error-messages li') as HTMLLIElement[];
     expect(errorMessages.length).toBeGreaterThan(0);
+  });
+
+  it('passes expected values to expected URL when registering', () => {
+    // @ts-ignore mock method format
+    mockHttpClient.post = vi.fn();
+    fixture.detectChanges();
+    const userRequest: RegisterUserRequest = {
+      user: {
+        username: 'username1',
+        email: 'some@email.com',
+        password: 'somePassword1234'
+      }
+    };
+    const usernameField = fixture.nativeElement.querySelector('input[formControlName=username]') as HTMLInputElement;
+    const emailField = fixture.nativeElement.querySelector('input[formControlName=email]') as HTMLInputElement;
+    const passwordField = fixture.nativeElement.querySelector('input[formControlName=password]') as HTMLInputElement;
+    const submitButton = fixture.nativeElement.querySelector('button[type=submit]') as HTMLButtonElement;
+
+    usernameField.value = userRequest.user.username;
+    emailField.value = userRequest.user.email;
+    passwordField.value = userRequest.user.password;
+    usernameField.dispatchEvent(new Event('input'));
+    emailField.dispatchEvent(new Event('input'));
+    passwordField.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    submitButton.click();
+    fixture.detectChanges();
+
+    const expectedUrl = `${environment.remoteApiHost}/api/users`;
+    expect(mockHttpClient.post).toHaveBeenCalledWith(expectedUrl, userRequest);
   });
 });

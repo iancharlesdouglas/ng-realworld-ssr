@@ -44,7 +44,7 @@
             <fieldset class="form-group">
               <input
                 class="form-control form-control-lg"
-                type="password"
+                type="password" formControlName="password"
                 placeholder="New Password"
               />
             </fieldset>
@@ -53,7 +53,7 @@
         </form>
         <hr />
 
-        <button (click)="logOut()" class="btn btn-outline-danger">Or click here to logout.</button>
+        <button (click)="logOut()" class="btn btn-outline-danger" id="logout-button">Or click here to logout.</button>
       </div>
     </div>
   </div>

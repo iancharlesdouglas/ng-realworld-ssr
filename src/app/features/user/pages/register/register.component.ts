@@ -42,7 +42,7 @@ export class RegisterComponent implements OnInit {
   attemptRegistration(): void {
     this.submitted = true;
     if (this.form.valid) {
-      const user$ = this.authenticationService.login({ user: this.form.value });
+      const user$ = this.authenticationService.register({ user: this.form.value });
       this.error$ = user$.pipe(catchError(() => {
         return of('A problem occurred while registering you');
       }), tap(result => {
