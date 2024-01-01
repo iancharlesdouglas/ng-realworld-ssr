@@ -30,6 +30,7 @@ describe('ArticlesComponent', () => {
         return null;
       }
     }
+    // @ts-expect-error IntersectionObserver mocking
     window.IntersectionObserver = MockIntersectionObserver;
   });
 

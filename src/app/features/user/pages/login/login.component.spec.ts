@@ -11,7 +11,6 @@ import { environment } from '../../../../../environments/environment';
 import { StateService } from '../../../../shared/services/state/state.service';
 
 describe('LoginComponent', () => {
-  let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
 
   beforeEach(async () => {
@@ -27,11 +26,10 @@ describe('LoginComponent', () => {
     })
     .compileComponents();
 
-    // @ts-ignore mock method format
+    // @ts-expect-error mock method format
     mockHttpClient.post = vi.fn();
 
     fixture = TestBed.createComponent(LoginComponent);
-    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 

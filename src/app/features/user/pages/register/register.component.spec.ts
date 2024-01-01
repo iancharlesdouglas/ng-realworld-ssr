@@ -12,7 +12,6 @@ import { ProfileService } from '../../../../shared/services/profile.service';
 import { StateService } from '../../../../shared/services/state/state.service';
 
 describe('RegisterComponent', () => {
-  let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
   const profileService = {
     find: vi.fn().mockReturnValue(of(null))
@@ -33,7 +32,6 @@ describe('RegisterComponent', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(RegisterComponent);
-    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
@@ -72,7 +70,7 @@ describe('RegisterComponent', () => {
   });
 
   it('passes expected values to expected URL when registering', () => {
-    // @ts-ignore mock method format
+    // @ts-expect-error mock method format
     mockHttpClient.post = vi.fn();
     fixture.detectChanges();
     const userRequest: RegisterUserRequest = {

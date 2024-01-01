@@ -12,7 +12,6 @@ import { environment } from '../../../../../environments/environment';
 import { vi } from 'vitest';
 
 describe('SettingsComponent', () => {
-  let component: SettingsComponent;
   let fixture: ComponentFixture<SettingsComponent>;
   const stateService = new StateService();
   const userPersistenceService = new UserPersistenceService(stateService, {});
@@ -35,7 +34,6 @@ describe('SettingsComponent', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(SettingsComponent);
-    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
@@ -74,7 +72,7 @@ describe('SettingsComponent', () => {
   });
 
   it('submits password only if password field is filled in', () => {
-    // @ts-ignore mock method format
+    // @ts-expect-error mock method format
     mockHttpClient.put = vi.fn();
     fixture.detectChanges();
     const settingsWithoutPassword: SettingsWithoutPassword = {
