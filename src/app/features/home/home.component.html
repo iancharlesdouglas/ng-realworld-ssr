@@ -5,5 +5,32 @@
       <p>A place to share your knowledge</p>
     </div>
   </div>
-  <app-articles [articles]="articles" [tags]="tags" [pages]="pages" [page$]="page$" [user$]="user$" (pageChanged)="pageSelected($event)"></app-articles>
+  <div class="container page">
+    <div class="row">
+      <div class="col-md-9">
+        <app-articles [articles]="articles" [pages]="pages" [page$]="page$" [user$]="user$" (pageChanged)="pageSelected($event)">
+          <div class="feed-toggle">
+            <ul class="nav nav-pills outline-active">
+              @if ((user$ | async)) {
+                <li class="nav-item">
+                  <a [routerLink]="['/']" [queryParams]="{filter: Feed.your}" class="nav-link" [ngClass]="{active: (feed$ | async) === Feed.your}"
+                    id="your-feed-link">Your Feed</a>
+                </li>
+              }
+              <!-- TODO: tag-search feed -->
+              <li class="nav-item">
+                <a [routerLink]="['/']" [queryParams]="{filter: Feed.global}" class="nav-link" [ngClass]="{active: (feed$ | async) === Feed.global}"
+                  id="global-feed-link">Global Feed</a>
+              </li>
+            </ul>
+          </div>
+      </app-articles>
+    </div>
+    <div class="col-md-3">
+      <div class="sidebar">
+        <p>Popular Tags</p>
+        <app-tags [tags]="tags"></app-tags>
+      </div>
+    </div>
+  </div>
 </div>

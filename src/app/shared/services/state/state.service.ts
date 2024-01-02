@@ -5,6 +5,7 @@ import { State, initialState } from "../../model/state";
 import { deepFreeze } from './util/deep-freeze';
 import { Store } from './store';
 import { select$ } from './util/select';
+import { Feed } from '../../model/feed';
 
 /**
  * State service
@@ -25,6 +26,11 @@ export class StateService {
   page$: Observable<number>;
 
   /**
+   * Home page feed
+   */
+  homePageFeed$: Observable<Feed | undefined>;
+
+  /**
    * Creates a new instance
    */
   constructor() {
@@ -32,6 +38,7 @@ export class StateService {
     this.lastState = initialState;
     this.user$ = select$(this.state$, state => state.user);
     this.page$ = select$(this.state$, state => state.page);
+    this.homePageFeed$ = select$(this.state$, state => state.homePageFeed);
   }
 
   /**
@@ -60,6 +67,14 @@ export class StateService {
     const newState = {...this.lastState, user};
     this.setState(newState);
     return newState;
+  }
+
+  /**
+   * Sets the home page feed
+   * @param homePageFeed Home page feed
+   */
+  async setHomePageFeed(homePageFeed: Feed | undefined): Promise<void> {
+    this.setState({...this.lastState, homePageFeed});
   }
 
   /**

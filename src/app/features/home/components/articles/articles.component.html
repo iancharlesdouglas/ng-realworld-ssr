@@ -1,58 +1,30 @@
-<div class="container page">
-  <div class="row">
-    <!-- TODO: move the layout columns into the parent component -->
-    <div class="col-md-9">
+<ng-content></ng-content>
 
-    <!-- TODO: project the feed selection into the articles component -->
-    <div class="feed-toggle">
-        <ul class="nav nav-pills outline-active">
-          @if ((user$ | async)) {
-            <li class="nav-item">
-              <a class="nav-link" href="" id="your-feed-link">Your Feed</a>
-            </li>
-          }
-          <!-- TODO: tag-search feed -->
-          <li class="nav-item">
-            <a class="nav-link active" href="" id="global-feed-link">Global Feed</a>
-          </li>
-        </ul>
-      </div>
-
-      @for (article of articles | async; track article.slug) {
-        <div class="article-preview">
-          <div class="article-meta">
-            <app-authorship [article]="article"></app-authorship>
-            <button class="btn btn-outline-primary btn-sm pull-xs-right favorite-the-article">
-              <i class="ion-heart"></i> {{ article.favoritesCount }}
-            </button>
-          </div>
-          <a [routerLink]="['/article', article.slug]" class="preview-link">
-            <h1>{{ article.title }}</h1>
-            <p>{{ article.description }}</p>
-            <span>Read more...</span>
-            <ul class="tag-list">
-              @for (tag of article.tagList; track tag) {
-                <li class="tag-default tag-pill tag-outline">{{ tag }}</li>
-              }
-            </ul>
-          </a>
-        </div>
-      } @empty {
-        <div class="articles-placeholder"></div>
-      }
-
-      @defer(on viewport) {
-        <app-pagination [pages]="pages" [page$]="page$" (pageChanged)="pageSelected($event)"></app-pagination>
-      } @placeholder {
-        <div></div>
-      }
+@for (article of articles | async; track article.slug) {
+  <div class="article-preview">
+    <div class="article-meta">
+      <app-authorship [article]="article"></app-authorship>
+      <button class="btn btn-outline-primary btn-sm pull-xs-right favorite-the-article">
+        <i class="ion-heart"></i> {{ article.favoritesCount }}
+      </button>
     </div>
-
-    <div class="col-md-3">
-      <div class="sidebar">
-        <p>Popular Tags</p>
-        <app-tags [tags]="tags"></app-tags>
-      </div>
-    </div>
+    <a [routerLink]="['/article', article.slug]" class="preview-link">
+      <h1>{{ article.title }}</h1>
+      <p>{{ article.description }}</p>
+      <span>Read more...</span>
+      <ul class="tag-list">
+        @for (tag of article.tagList; track tag) {
+          <li class="tag-default tag-pill tag-outline">{{ tag }}</li>
+        }
+      </ul>
+    </a>
   </div>
-</div>
+} @empty {
+  <div class="articles-placeholder"></div>
+}
+
+@defer(on viewport) {
+  <app-pagination [pages]="pages" [page$]="page$" (pageChanged)="pageSelected($event)"></app-pagination>
+} @placeholder {
+  <div></div>
+}

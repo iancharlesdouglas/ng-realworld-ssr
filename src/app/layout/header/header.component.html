@@ -1,9 +1,9 @@
 <nav class="navbar navbar-light">
   <div class="container">
-    <a class="navbar-brand" href="/">conduit</a>
+    <a class="navbar-brand" [routerLink]="['/']" title="Go to home page">conduit</a>
     <ul class="nav navbar-nav pull-xs-right">
       <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/']" ruoterLinkActive="active">Home</a>
+        <a class="nav-link" [routerLink]="['/']" routerLinkActive="active">Home</a>
       </li>
       @if (user$ | async; as user) {
         <li class="nav-item">
