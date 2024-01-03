@@ -54,6 +54,11 @@ export class StateService {
   setState(state: State): void {
     this.state$.next(deepFreeze(state));
     this.lastState = state;
+    console.log('state set', state);
+  }
+
+  getLastState(): State {
+    return this.lastState;
   }
 
   /**
@@ -79,7 +84,7 @@ export class StateService {
    * Sets the home page feed
    * @param homePageFeed Home page feed
    */
-  async setHomePageFeed(homePageFeed: Feed | undefined): Promise<void> {
+  setHomePageFeed(homePageFeed: Feed | undefined): void {
     this.setState({...this.lastState, homePageFeed});
   }
 
@@ -87,7 +92,7 @@ export class StateService {
    * Sets the search tag
    * @param tag Tag
    */
-  async setTag(tag: string): Promise<void> {
+  setTag(tag: string): void {
     this.setState({...this.lastState, tag});
   }
 

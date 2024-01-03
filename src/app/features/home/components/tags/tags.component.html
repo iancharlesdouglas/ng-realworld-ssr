@@ -1,6 +1,6 @@
 <div class="tag-list">
   @for (tag of tags | async; track tag) {
-    <a [routerLink]="['/']" [queryParams]="{filter: Feed.tag, tag}"  class="tag-pill tag-default">{{ tag }}</a>
+    <a [routerLink]="['/']" [queryParams]="{filter: Feed.tag, tag}" class="tag-pill tag-default">{{ tag }}</a>
   } @empty {
     Loading tags...
   }

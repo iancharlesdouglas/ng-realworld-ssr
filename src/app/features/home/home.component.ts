@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { HomeService } from './services/home.service';
 import { Article } from '../../shared/model/article';
 import { ArticlesComponent } from './components/articles/articles.component';
-import { EMPTY, Observable, Subscription, combineLatest, filter, map, merge, partition, range, tap, toArray } from 'rxjs';
+import { EMPTY, Observable, Subscription, combineLatest, distinct, distinctUntilChanged, filter, forkJoin, map, merge, partition, range, tap, toArray } from 'rxjs';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { StateService } from '../../shared/services/state/state.service';
 import { User } from '../../shared/model/user';
@@ -34,9 +34,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   Feed = Feed;
 
   constructor(private readonly homeService: HomeService, private readonly stateService: StateService, private readonly activatedRoute: ActivatedRoute) {
+    console.log('home page c..tor');
     this.user$ = this.stateService.user$;
     this.page$ = this.stateService.page$;
     this.tag$ = this.stateService.tag$;
+    console.log('state (last)', this.stateService.getLastState());
     const feedFromStateOrRoute$ = merge(this.activatedRoute.queryParamMap.pipe(
       map(params => {
         if (params.has('filter') && Object.keys(Feed).includes(params.get('filter')!)) {
@@ -45,11 +47,14 @@ export class HomeComponent implements OnInit, OnDestroy {
         return {feed: undefined, tag: undefined};
       }),
       filter(({feed}) => !!feed)),
-      combineLatest([this.stateService.homePageFeed$, this.stateService.tag$]).pipe(
+      forkJoin([this.stateService.homePageFeed$, this.stateService.tag$]).pipe(
+        tap(x => console.log('got state service', x)),
         map(([feed, tag]) => ({feed, tag}))));
     const feedsTags$ = feedFromStateOrRoute$.pipe(
       map(({feed, tag}) => ({feed: feed || Feed.global, tag})),
+      distinct(),
       tap(({feed, tag}) => {
+        console.log('have feed, tag', feed, tag);
         this.stateService.setHomePageFeed(feed);
         if (tag) {
           this.stateService.setTag(tag);
