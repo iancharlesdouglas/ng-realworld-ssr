@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { HomeService } from './services/home.service';
 import { Article } from '../../shared/model/article';
 import { ArticlesComponent } from './components/articles/articles.component';
-import { EMPTY, Observable, Subscription, filter, map, merge, range, tap, toArray } from 'rxjs';
+import { EMPTY, Observable, Subscription, combineLatest, filter, map, merge, range, tap, toArray } from 'rxjs';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { StateService } from '../../shared/services/state/state.service';
 import { User } from '../../shared/model/user';
@@ -27,7 +27,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   private pageSub?: Subscription;
   user$: Observable<User | undefined>;
   feed$: Observable<Feed | undefined | null>;
-  feed: Feed = Feed.global;
   pageSize = 10;
   pages: Observable<number[]> = EMPTY;
   tags: Observable<string[]> = EMPTY;
@@ -48,11 +47,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.feed$ = feedFromStateOrRoute$.pipe(
       map(feed => feed || Feed.global),
       tap(feed => {
-        this.feed = feed;
         this.stateService.setHomePageFeed(feed);
       }));
   }
-
 
   async ngOnInit(): Promise<void> {
     this.getArticles();
@@ -64,15 +61,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private async getArticles() {
-    this.pageSub = this.page$.subscribe(page => {
-      this.articles = this.homeService.getArticles(this.feed!, page, this.pageSize).pipe(
-        tap((response) => {
-          this.pages = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
-            .pipe(toArray());
-        }),
-        map(response => response.articles),
-      );
-    });
+    this.pageSub = combineLatest([this.page$, this.feed$]).pipe(tap(([page, feed]) => {
+      if (feed) {
+        this.articles = this.homeService.getArticles(feed, page, this.pageSize).pipe(
+          tap((response) => {
+            this.pages = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
+              .pipe(toArray());
+          }),
+          map(response => response.articles)
+        );
+      }
+    })).subscribe();
   }
 
   /**
