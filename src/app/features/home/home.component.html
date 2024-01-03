@@ -17,7 +17,12 @@
                     id="your-feed-link">Your Feed</a>
                 </li>
               }
-              <!-- TODO: tag-search feed -->
+              @if ((tag$ | async)) {
+                <li class="nav-item">
+                  <a [routerLink]="['/']" [queryParams]="{filter: Feed.tag, tag: (tag$ | async)}" class="nav=link" [ngClass]="{active: (feed$ | async) === Feed.tag}"
+                    id="tag-feed-link">#{{tag$ | async}}</a>
+                </li>
+              }
               <li class="nav-item">
                 <a [routerLink]="['/']" [queryParams]="{filter: Feed.global}" class="nav-link" [ngClass]="{active: (feed$ | async) === Feed.global}"
                   id="global-feed-link">Global Feed</a>

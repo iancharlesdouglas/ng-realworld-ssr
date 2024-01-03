@@ -20,12 +20,13 @@ export class HomeService {
    * @param feed Feed
    * @param page Page
    * @param pageSize Page size
+   * @param tag Tag
    * @returns Articles response object
    */
-  getArticles(feed: Feed, page: number, pageSize: number): Observable<ArticlesApiResponse> {
+  getArticles(feed: Feed, page: number, pageSize: number, tag?: string): Observable<ArticlesApiResponse> {
     const host = feed === Feed.global ? environment.host : environment.remoteApiHost;
-    console.log('getting articles for feed', feed);
-    const url = `${host}/api/articles?offset=${page * pageSize}&limit=${pageSize}`;
+    const tagQuery = tag ? `&tag=${tag}` : '';
+    const url = `${host}/api/articles?offset=${page * pageSize}&limit=${pageSize}${tagQuery}`;
     return this.http.get<ArticlesApiResponse>(url);
   }
 

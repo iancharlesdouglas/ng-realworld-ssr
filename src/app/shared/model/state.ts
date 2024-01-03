@@ -9,9 +9,10 @@ export type State = {
   page: number;
   homePageFeed?: Feed;
   profilePageFeed?: Feed;
+  tag: string;
 };
 
 /**
  * Initial state
  */
-export const initialState: State = { page: 0, homePageFeed: Feed.global };
+export const initialState: State = { page: 0, homePageFeed: Feed.global, tag: '' };

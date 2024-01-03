@@ -31,6 +31,11 @@ export class StateService {
   homePageFeed$: Observable<Feed | undefined>;
 
   /**
+   * Tag for search
+   */
+  tag$: Observable<string>;
+
+  /**
    * Creates a new instance
    */
   constructor() {
@@ -39,6 +44,7 @@ export class StateService {
     this.user$ = select$(this.state$, state => state.user);
     this.page$ = select$(this.state$, state => state.page);
     this.homePageFeed$ = select$(this.state$, state => state.homePageFeed);
+    this.tag$ = select$(this.state$, state => state.tag);
   }
 
   /**
@@ -75,6 +81,14 @@ export class StateService {
    */
   async setHomePageFeed(homePageFeed: Feed | undefined): Promise<void> {
     this.setState({...this.lastState, homePageFeed});
+  }
+
+  /**
+   * Sets the search tag
+   * @param tag Tag
+   */
+  async setTag(tag: string): Promise<void> {
+    this.setState({...this.lastState, tag});
   }
 
   /**

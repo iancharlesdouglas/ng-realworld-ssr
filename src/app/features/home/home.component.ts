@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { HomeService } from './services/home.service';
 import { Article } from '../../shared/model/article';
 import { ArticlesComponent } from './components/articles/articles.component';
-import { EMPTY, Observable, Subscription, combineLatest, filter, map, merge, range, tap, toArray } from 'rxjs';
+import { EMPTY, Observable, Subscription, combineLatest, filter, map, merge, partition, range, tap, toArray } from 'rxjs';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { StateService } from '../../shared/services/state/state.service';
 import { User } from '../../shared/model/user';
@@ -30,25 +30,33 @@ export class HomeComponent implements OnInit, OnDestroy {
   pageSize = 10;
   pages: Observable<number[]> = EMPTY;
   tags: Observable<string[]> = EMPTY;
+  tag$: Observable<string | undefined>;
   Feed = Feed;
 
   constructor(private readonly homeService: HomeService, private readonly stateService: StateService, private readonly activatedRoute: ActivatedRoute) {
     this.user$ = this.stateService.user$;
     this.page$ = this.stateService.page$;
+    this.tag$ = this.stateService.tag$;
     const feedFromStateOrRoute$ = merge(this.activatedRoute.queryParamMap.pipe(
       map(params => {
         if (params.has('filter') && Object.keys(Feed).includes(params.get('filter')!)) {
-          return params.get('filter') as Feed;
+          return {feed: params.get('filter') as Feed, tag: params.get('tag') as string};
         }
-        return undefined;
+        return {feed: undefined, tag: undefined};
       }),
-      filter(feed => !!feed)),
-      this.stateService.homePageFeed$);
-    this.feed$ = feedFromStateOrRoute$.pipe(
-      map(feed => feed || Feed.global),
-      tap(feed => {
+      filter(({feed}) => !!feed)),
+      combineLatest([this.stateService.homePageFeed$, this.stateService.tag$]).pipe(
+        map(([feed, tag]) => ({feed, tag}))));
+    const feedsTags$ = feedFromStateOrRoute$.pipe(
+      map(({feed, tag}) => ({feed: feed || Feed.global, tag})),
+      tap(({feed, tag}) => {
         this.stateService.setHomePageFeed(feed);
+        if (tag) {
+          this.stateService.setTag(tag);
+        }
       }));
+    this.feed$ = feedsTags$.pipe(map(({feed}) => feed));
+    this.tag$ = feedsTags$.pipe(map(({tag}) => tag));
   }
 
   async ngOnInit(): Promise<void> {
@@ -61,9 +69,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private async getArticles() {
-    this.pageSub = combineLatest([this.page$, this.feed$]).pipe(tap(([page, feed]) => {
+    this.pageSub = combineLatest([this.page$, this.feed$, this.tag$]).pipe(tap(([page, feed, tag]) => {
       if (feed) {
-        this.articles = this.homeService.getArticles(feed, page, this.pageSize).pipe(
+        this.articles = this.homeService.getArticles(feed, page, this.pageSize, tag).pipe(
           tap((response) => {
             this.pages = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
               .pipe(toArray());
