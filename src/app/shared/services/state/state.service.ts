@@ -5,7 +5,7 @@ import { State, initialState } from "../../model/state";
 import { deepFreeze } from './util/deep-freeze';
 import { Store } from './store';
 import { select$ } from './util/select';
-import { Feed } from '../../model/feed';
+import { ActiveFeed } from '../../model/feed';
 
 /**
  * State service
@@ -28,12 +28,7 @@ export class StateService {
   /**
    * Home page feed
    */
-  homePageFeed$: Observable<Feed | undefined>;
-
-  /**
-   * Tag for search
-   */
-  tag$: Observable<string>;
+  homePageFeed$: Observable<ActiveFeed | undefined>;
 
   /**
    * Creates a new instance
@@ -44,7 +39,6 @@ export class StateService {
     this.user$ = select$(this.state$, state => state.user);
     this.page$ = select$(this.state$, state => state.page);
     this.homePageFeed$ = select$(this.state$, state => state.homePageFeed);
-    this.tag$ = select$(this.state$, state => state.tag);
   }
 
   /**
@@ -84,16 +78,8 @@ export class StateService {
    * Sets the home page feed
    * @param homePageFeed Home page feed
    */
-  setHomePageFeed(homePageFeed: Feed | undefined): void {
+  setHomePageFeed(homePageFeed: ActiveFeed | undefined): void {
     this.setState({...this.lastState, homePageFeed});
-  }
-
-  /**
-   * Sets the search tag
-   * @param tag Tag
-   */
-  setTag(tag: string): void {
-    this.setState({...this.lastState, tag});
   }
 
   /**

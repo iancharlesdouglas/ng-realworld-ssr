@@ -2,12 +2,12 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { HomeService } from './services/home.service';
 import { Article } from '../../shared/model/article';
 import { ArticlesComponent } from './components/articles/articles.component';
-import { EMPTY, Observable, Subscription, combineLatest, distinct, distinctUntilChanged, filter, forkJoin, map, merge, partition, range, tap, toArray } from 'rxjs';
+import { EMPTY, Observable, Subscription, combineLatest, map, merge, range, tap, toArray } from 'rxjs';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { StateService } from '../../shared/services/state/state.service';
 import { User } from '../../shared/model/user';
 import { TagsComponent } from './components/tags/tags.component';
-import { Feed } from '../../shared/model/feed';
+import { ActiveFeed, Feed } from '../../shared/model/feed';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 
 /**
@@ -26,42 +26,31 @@ export class HomeComponent implements OnInit, OnDestroy {
   page$: Observable<number>;
   private pageSub?: Subscription;
   user$: Observable<User | undefined>;
-  feed$: Observable<Feed | undefined | null>;
+  feed$: Observable<ActiveFeed | undefined>;
   pageSize = 10;
   pages: Observable<number[]> = EMPTY;
   tags: Observable<string[]> = EMPTY;
-  tag$: Observable<string | undefined>;
   Feed = Feed;
 
   constructor(private readonly homeService: HomeService, private readonly stateService: StateService, private readonly activatedRoute: ActivatedRoute) {
-    console.log('home page c..tor');
     this.user$ = this.stateService.user$;
     this.page$ = this.stateService.page$;
-    this.tag$ = this.stateService.tag$;
-    console.log('state (last)', this.stateService.getLastState());
-    const feedFromStateOrRoute$ = merge(this.activatedRoute.queryParamMap.pipe(
+
+    // TODO - filter out route events
+    const feedFromRoute$ = this.activatedRoute.queryParamMap.pipe(
       map(params => {
         if (params.has('filter') && Object.keys(Feed).includes(params.get('filter')!)) {
-          return {feed: params.get('filter') as Feed, tag: params.get('tag') as string};
+          return {feed: params.get('filter') as Feed, tag: params.get('tag') as string} as ActiveFeed | undefined;
         }
-        return {feed: undefined, tag: undefined};
+        return {feed: Feed.global, tag: undefined} as ActiveFeed | undefined;
       }),
-      filter(({feed}) => !!feed)),
-      forkJoin([this.stateService.homePageFeed$, this.stateService.tag$]).pipe(
-        tap(x => console.log('got state service', x)),
-        map(([feed, tag]) => ({feed, tag}))));
-    const feedsTags$ = feedFromStateOrRoute$.pipe(
-      map(({feed, tag}) => ({feed: feed || Feed.global, tag})),
-      distinct(),
-      tap(({feed, tag}) => {
-        console.log('have feed, tag', feed, tag);
-        this.stateService.setHomePageFeed(feed);
-        if (tag) {
-          this.stateService.setTag(tag);
+      tap(feed => {
+        if (feed?.feed !== Feed.global) {
+          this.stateService.setHomePageFeed(feed);
         }
       }));
-    this.feed$ = feedsTags$.pipe(map(({feed}) => feed));
-    this.tag$ = feedsTags$.pipe(map(({tag}) => tag));
+
+    this.feed$ = merge(feedFromRoute$, this.stateService.homePageFeed$);
   }
 
   async ngOnInit(): Promise<void> {
@@ -74,9 +63,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private async getArticles() {
-    this.pageSub = combineLatest([this.page$, this.feed$, this.tag$]).pipe(tap(([page, feed, tag]) => {
+    this.pageSub = combineLatest([this.page$, this.feed$]).pipe(tap(([page, feed]) => {
       if (feed) {
-        this.articles = this.homeService.getArticles(feed, page, this.pageSize, tag).pipe(
+        this.articles = this.homeService.getArticles(feed.feed, page, this.pageSize, feed.tag).pipe(
           tap((response) => {
             this.pages = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
               .pipe(toArray());

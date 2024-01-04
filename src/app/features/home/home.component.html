@@ -13,18 +13,18 @@
             <ul class="nav nav-pills outline-active">
               @if ((user$ | async)) {
                 <li class="nav-item">
-                  <a [routerLink]="['/']" [queryParams]="{filter: Feed.your}" class="nav-link" [ngClass]="{active: (feed$ | async) === Feed.your}"
+                  <a [routerLink]="['/']" [queryParams]="{filter: Feed.your}" class="nav-link" [ngClass]="{active: (feed$ | async)?.feed === Feed.your}"
                     id="your-feed-link">Your Feed</a>
                 </li>
               }
               <li class="nav-item">
-                <a [routerLink]="['/']" [queryParams]="{filter: Feed.global}" class="nav-link" [ngClass]="{active: (feed$ | async) === Feed.global}"
+                <a [routerLink]="['/']" [queryParams]="{filter: Feed.global}" class="nav-link" [ngClass]="{active: (feed$ | async)?.feed === Feed.global}"
                   id="global-feed-link">Global Feed</a>
               </li>
-              @if ((tag$ | async)) {
+              @if ((feed$ | async)?.tag) {
                 <li class="nav-item">
-                  <a [routerLink]="['/']" [queryParams]="{filter: Feed.tag, tag: (tag$ | async)}" class="nav-link" [ngClass]="{active: (feed$ | async) === Feed.tag}"
-                    id="tag-feed-link">#{{tag$ | async}}</a>
+                  <a [routerLink]="['/']" [queryParams]="{filter: Feed.tag, tag: (feed$ | async)?.tag}" class="nav-link"
+                    [ngClass]="{active: (feed$ | async)?.feed === Feed.tag}" id="tag-feed-link">#{{(feed$ | async)?.tag}}</a>
                 </li>
               }
             </ul>

@@ -8,3 +8,11 @@ export enum Feed {
   favorited = 'favorited',
   tag = 'tag'
 }
+
+/**
+ * Active feed
+ */
+export type ActiveFeed = {
+  feed: Feed,
+  tag?: string
+};
