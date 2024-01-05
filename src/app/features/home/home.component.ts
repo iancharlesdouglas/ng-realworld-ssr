@@ -42,10 +42,13 @@ export class HomeComponent implements OnInit, OnDestroy {
         if (params.has('filter') && Object.keys(Feed).includes(params.get('filter')!)) {
           return {feed: params.get('filter') as Feed, tag: params.get('tag') as string} as ActiveFeed | undefined;
         }
-        return {feed: Feed.global, tag: undefined} as ActiveFeed | undefined;
+        return undefined;
       }),
       tap(feed => {
-        this.stateService.setHomePageFeed(feed);
+        if (feed) {
+          this.stateService.setHomePageFeed(feed);
+          this.stateService.setPage(0);
+        }
       })).subscribe();
 
     this.feed$ = this.stateService.homePageFeed$;
