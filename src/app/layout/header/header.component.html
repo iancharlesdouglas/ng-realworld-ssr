@@ -7,12 +7,12 @@
       </li>
       @if (user$ | async; as user) {
         <li class="nav-item">
-          <a class="nav-link" href="/editor">
+          <a class="nav-link" [routerLink]="['editor']" title="Create new article">
             <i class="ion-compose"></i>New Article
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/settings">
+          <a class="nav-link" [routerLink]="['settings']" title="Go to Settings page">
             <i class="ion-gear-a"></i>Settings
           </a>
         </li>

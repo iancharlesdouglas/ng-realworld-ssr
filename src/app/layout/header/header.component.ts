@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { AsyncPipe, NgClass } from '@angular/common';
-import { NavigationEnd, Router, RouterLink } from '@angular/router';
-import { EMPTY, Observable, distinctUntilChanged, filter, map } from 'rxjs';
+import { RouterLink } from '@angular/router';
+import { EMPTY, Observable } from 'rxjs';
 import { User } from '../../shared/model/user';
 
 /**
@@ -18,10 +18,4 @@ import { User } from '../../shared/model/user';
 export class HeaderComponent {
   @Input() user$: Observable<User | undefined> = EMPTY;
   @Input() loggedIn = false;
-  url$: Observable<string>;
-
-  constructor(private readonly router: Router) {
-    this.url$ = this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd), map(event => event as NavigationEnd), map(event => event.url), distinctUntilChanged());
-  }
 }

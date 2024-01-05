@@ -79,6 +79,7 @@ export class StateService {
    * @param homePageFeed Home page feed
    */
   setHomePageFeed(homePageFeed: ActiveFeed | undefined): void {
+    console.log('setting hoem page feed', homePageFeed?.feed);
     this.setState({...this.lastState, homePageFeed});
   }
 

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { HomeService } from './services/home.service';
 import { Article } from '../../shared/model/article';
 import { ArticlesComponent } from './components/articles/articles.component';
-import { EMPTY, Observable, Subscription, combineLatest, map, merge, range, tap, toArray } from 'rxjs';
+import { EMPTY, Observable, Subscription, combineLatest, distinctUntilChanged, map, range, tap, toArray } from 'rxjs';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { StateService } from '../../shared/services/state/state.service';
 import { User } from '../../shared/model/user';
@@ -25,6 +25,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   articlesCount = 0;
   page$: Observable<number>;
   private pageSub?: Subscription;
+  private routeSub?: Subscription;
   user$: Observable<User | undefined>;
   feed$: Observable<ActiveFeed | undefined>;
   pageSize = 10;
@@ -36,8 +37,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.user$ = this.stateService.user$;
     this.page$ = this.stateService.page$;
 
-    // TODO - filter out route events
-    const feedFromRoute$ = this.activatedRoute.queryParamMap.pipe(
+    this.routeSub = this.activatedRoute.queryParamMap.pipe(
       map(params => {
         if (params.has('filter') && Object.keys(Feed).includes(params.get('filter')!)) {
           return {feed: params.get('filter') as Feed, tag: params.get('tag') as string} as ActiveFeed | undefined;
@@ -45,12 +45,10 @@ export class HomeComponent implements OnInit, OnDestroy {
         return {feed: Feed.global, tag: undefined} as ActiveFeed | undefined;
       }),
       tap(feed => {
-        if (feed?.feed !== Feed.global) {
-          this.stateService.setHomePageFeed(feed);
-        }
-      }));
+        this.stateService.setHomePageFeed(feed);
+      })).subscribe();
 
-    this.feed$ = merge(feedFromRoute$, this.stateService.homePageFeed$);
+    this.feed$ = this.stateService.homePageFeed$;
   }
 
   async ngOnInit(): Promise<void> {
@@ -60,11 +58,13 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.pageSub?.unsubscribe();
+    this.routeSub?.unsubscribe();
   }
 
   private async getArticles() {
-    this.pageSub = combineLatest([this.page$, this.feed$]).pipe(tap(([page, feed]) => {
+    this.pageSub = combineLatest([this.page$, this.feed$]).pipe(distinctUntilChanged(), tap(([page, feed]) => {
       if (feed) {
+        console.log('getting articles');
         this.articles = this.homeService.getArticles(feed.feed, page, this.pageSize, feed.tag).pipe(
           tap((response) => {
             this.pages = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
