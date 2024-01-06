@@ -9,6 +9,7 @@ import { User } from '../../shared/model/user';
 import { TagsComponent } from './components/tags/tags.component';
 import { ActiveFeed, Feed } from '../../shared/model/feed';
 import { RouterLink, ActivatedRoute } from '@angular/router';
+import { filterParam } from '../../shared/model/filter-param';
 
 /**
  * Home page component, incl. banner and list of articles
@@ -22,7 +23,7 @@ import { RouterLink, ActivatedRoute } from '@angular/router';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   articles: Observable<Article[]> = EMPTY;
-  articlesCount = 0;
+  // articlesCount = 0;
   page$: Observable<number>;
   private pageSub?: Subscription;
   private routeSub?: Subscription;
@@ -39,8 +40,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.routeSub = this.activatedRoute.queryParamMap.pipe(
       map(params => {
-        if (params.has('filter') && Object.keys(Feed).includes(params.get('filter')!)) {
-          return {feed: params.get('filter') as Feed, tag: params.get('tag') as string} as ActiveFeed | undefined;
+        if (params.has(filterParam) && Object.keys(Feed).includes(params.get(filterParam)!)) {
+          return {feed: params.get(filterParam) as Feed, tag: params.get('tag') as string} as ActiveFeed | undefined;
         }
         return undefined;
       }),
@@ -67,7 +68,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   private async getArticles() {
     this.pageSub = combineLatest([this.page$, this.feed$]).pipe(distinctUntilChanged(), tap(([page, feed]) => {
       if (feed) {
-        console.log('getting articles');
         this.articles = this.homeService.getArticles(feed.feed, page, this.pageSize, feed.tag).pipe(
           tap((response) => {
             this.pages = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)

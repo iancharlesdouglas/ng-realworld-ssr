@@ -5,7 +5,7 @@ import { State, initialState } from "../../model/state";
 import { deepFreeze } from './util/deep-freeze';
 import { Store } from './store';
 import { select$ } from './util/select';
-import { ActiveFeed } from '../../model/feed';
+import { ActiveFeed, Feed } from '../../model/feed';
 
 /**
  * State service
@@ -21,7 +21,7 @@ export class StateService {
   user$: Observable<User | undefined>;
 
   /**
-   * Articles page no. observable
+   * Home page articles - page no. observable
    */
   page$: Observable<number>;
 
@@ -29,6 +29,16 @@ export class StateService {
    * Home page feed
    */
   homePageFeed$: Observable<ActiveFeed | undefined>;
+
+  /**
+   * Profile page articles - page no. observable
+   */
+  profilePage$: Observable<number>;
+
+  /**
+   * Profile page feed
+   */
+  profilePageFeed$: Observable<Feed | undefined>;
 
   /**
    * Creates a new instance
@@ -39,6 +49,8 @@ export class StateService {
     this.user$ = select$(this.state$, state => state.user);
     this.page$ = select$(this.state$, state => state.page);
     this.homePageFeed$ = select$(this.state$, state => state.homePageFeed);
+    this.profilePage$ = select$(this.state$, state => state.profilePage);
+    this.profilePageFeed$ = select$(this.state$, state => state.profilePageFeed);
   }
 
   /**
@@ -56,7 +68,7 @@ export class StateService {
   }
 
   /**
-   * Sets the page in the state
+   * Sets the page no. for the home page list of articles
    * @param page Page
    */
   async setPage(page: number): Promise<void> {
@@ -79,8 +91,23 @@ export class StateService {
    * @param homePageFeed Home page feed
    */
   setHomePageFeed(homePageFeed: ActiveFeed | undefined): void {
-    console.log('setting hoem page feed', homePageFeed?.feed);
     this.setState({...this.lastState, homePageFeed});
+  }
+
+  /**
+   * Sets the page no. for the profile page list of articles
+   * @param page Page
+   */
+  setProfilePage(page: number): void {
+    this.setState({...this.lastState, profilePage: page});
+  }
+
+  /**
+   * Sets the profile page feed
+   * @param feed Feed
+   */
+  setProfilePageFeed(feed: Feed): void {
+    this.setState({...this.lastState, profilePageFeed: feed});
   }
 
   /**

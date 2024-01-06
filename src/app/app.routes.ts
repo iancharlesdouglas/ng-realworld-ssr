@@ -18,5 +18,8 @@ export const routes: Routes = [
   },
   {
     path: 'settings', loadComponent: () => import('./features/user/pages/settings/settings.component').then(comp => comp.SettingsComponent)
+  },
+  {
+    path: 'profile/:username', loadComponent: () => import('./features/profile/profile.component').then(comp => comp.ProfileComponent)
   }
 ];
