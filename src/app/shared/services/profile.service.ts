@@ -33,6 +33,7 @@ export class ProfileService {
    * @returns Articles response object
    */
   getArticles(username: string, feed: Feed, page: number, pageSize: number): Observable<ArticlesApiResponse> {
+    console.log('getting articles for', username, feed, page);
     const userParam = feed === Feed.authored ? `author=${username}` : `favorited=${username}`;
     const url = `${environment.remoteApiHost}/api/articles?offset=${page * pageSize}&limit=${pageSize}&${userParam}`;
     return this.http.get<ArticlesApiResponse>(url);

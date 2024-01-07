@@ -1,4 +1,5 @@
 <div class="profile-page">
+
   <div class="user-info">
     <div class="container">
       <div class="row">
@@ -30,36 +31,22 @@
   <div class="container">
     <div class="row">
       <div class="col-xs-12 col-md-10 offset-md-1">
-        <div class="articles-toggle">
-          <ul class="nav nav-pills outline-active">
-            <li class="nav-item">
-              <a [routerLink]="['.']" [queryParams]="{filter: Feed.authored}" class="nav-link active"
-                [ngClass]="{active: (feed$ | async) === Feed.authored}">My Articles</a>
-            </li>
-            <li class="nav-item">
-              <a [routerLink]="['.']" [queryParams]="{filter: Feed.favorited}" class="nav-link">Favorited Articles</a>
-            </li>
-          </ul>
-        </div>
-
         <app-articles [articles]="articles" [pages]="pages" [page$]="page$" [user$]="user$" (pageChanged)="pageSelected($event)">
-          <div class="feed-toggle">
+          <div class="articles-toggle">
             <ul class="nav nav-pills outline-active">
-              @if ((user$ | async)) {
-                <li class="nav-item">
-                  <a [routerLink]="['/']" [queryParams]="{filter: Feed.your}" class="nav-link" [ngClass]="{active: (feed$ | async)?.feed === Feed.your}"
-                    id="your-feed-link">Your Feed</a>
-                </li>
-              }
               <li class="nav-item">
-                <a [routerLink]="['/']" [queryParams]="{filter: Feed.global}" class="nav-link" [ngClass]="{active: (feed$ | async)?.feed === Feed.global}"
-                  id="global-feed-link">Global Feed</a>
+                <a [routerLink]="['.']" [queryParams]="{filter: Feed.authored}" class="nav-link"
+                  [ngClass]="{active: (feed$ | async) === Feed.authored}">My Articles</a>
+              </li>
+              <li class="nav-item">
+                <a [routerLink]="['.']" [queryParams]="{filter: Feed.favorited}" class="nav-link"
+                  [ngClass]="{active: (feed$ | async) === Feed.favorited}">Favorited Articles</a>
               </li>
             </ul>
           </div>
         </app-articles>
-
       </div>
     </div>
   </div>
+
 </div>

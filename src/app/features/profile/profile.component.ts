@@ -70,9 +70,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   private async getArticles() {
     this.pageSub = combineLatest([this.profile$, this.page$, this.feed$]).pipe(distinctUntilChanged(), tap(([profile, page, feed]) => {
+      console.log('profile ', profile, feed);
       if (feed) {
         this.articles = this.profileService.getArticles(profile.username, feed, page, this.pageSize).pipe(
           tap((response) => {
+            console.log('got articles', response.articles);
             this.pages = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
               .pipe(toArray());
           }),
