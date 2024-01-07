@@ -11,9 +11,9 @@
               {{profile.bio}}
             </p>
             @if ((user$ | async)?.username !== profile.username) {
-              <button class="btn btn-sm btn-outline-secondary action-btn">
+              <button class="btn btn-sm btn-outline-secondary action-btn" (click)="profile.following ? unfollow(profile.username) : follow(profile.username)">
                 <i class="ion-plus-round"></i>
-                &nbsp; Follow {{profile.username}}
+                &nbsp; {{ profile.following ? 'Unfollow' : 'Follow' }} {{ profile.username }}
               </button>
             }
             @if ((user$ | async)?.username === profile.username) {

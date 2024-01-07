@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { AuthenticationService } from '../../services/authentication.service';
 import { EMPTY, Observable, catchError, map, of, tap } from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
+import { FromPage } from '../../../../shared/model/from-page';
 
 /**
  * Login page
@@ -19,14 +20,20 @@ export class LoginComponent implements OnInit {
   form!: FormGroup;
   error$: Observable<string> = EMPTY;
   submitted = false;
+  fromPage: FromPage | undefined;
 
-  constructor(private readonly authenticationService: AuthenticationService, private readonly router: Router, private readonly formBuilder: FormBuilder) {}
+  constructor(
+    private readonly authenticationService: AuthenticationService,
+    private readonly router: Router,
+    private readonly formBuilder: FormBuilder)
+  { }
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
+    this.fromPage = history.state;
   }
 
   /**
@@ -43,7 +50,16 @@ export class LoginComponent implements OnInit {
         return of('A problem occurred while signing you in');
       }), tap(result => {
         if (typeof result !== 'string') {
-          this.router.navigate(['/']);
+          if (this.fromPage) {
+            const { url, queryParams } = this.fromPage;
+            if (url && queryParams) {
+              this.router.navigate(url.map(segment => segment.path), { queryParams });
+            } else {
+              this.router.navigate(['/']);
+            }
+          } else {
+            this.router.navigate(['/']);
+          }
         }
       }),
       map(result => result as string));

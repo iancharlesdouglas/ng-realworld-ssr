@@ -33,9 +33,28 @@ export class ProfileService {
    * @returns Articles response object
    */
   getArticles(username: string, feed: Feed, page: number, pageSize: number): Observable<ArticlesApiResponse> {
-    console.log('getting articles for', username, feed, page);
     const userParam = feed === Feed.authored ? `author=${username}` : `favorited=${username}`;
     const url = `${environment.remoteApiHost}/api/articles?offset=${page * pageSize}&limit=${pageSize}&${userParam}`;
     return this.http.get<ArticlesApiResponse>(url);
+  }
+
+  /**
+   * Follows an author
+   * @param username Author username
+   * @returns Author profile
+   */
+  follow(username: string): Observable<Profile> {
+    const url = `${environment.remoteApiHost}/api/profiles/${username}/follow`;
+    return this.http.post<ProfileResponse>(url, {}).pipe(map(response => response?.profile));
+  }
+
+  /**
+   * Unfollows an author
+   * @param username Author username
+   * @returns Author profile
+   */
+  unfollow(username: string): Observable<Profile> {
+    const url = `${environment.remoteApiHost}/api/profiles/${username}/follow`;
+    return this.http.delete<ProfileResponse>(url).pipe(map(response => response?.profile));
   }
 }

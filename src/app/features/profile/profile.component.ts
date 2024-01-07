@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProfileService } from '../../shared/services/profile.service';
-import { EMPTY, Observable, Subscription, combineLatest, concatAll, distinctUntilChanged, map, range, tap, toArray } from 'rxjs';
+import { EMPTY, Observable, Subscription, combineLatest, concatAll, distinctUntilChanged, firstValueFrom, map, range, tap, toArray } from 'rxjs';
 import { Profile } from '../../shared/model/profile';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { StateService } from '../../shared/services/state/state.service';
@@ -10,6 +10,7 @@ import { Feed } from '../../shared/model/feed';
 import { ArticlesComponent } from '../home/components/articles/articles.component';
 import { Article } from '../../shared/model/article';
 import { filterParam } from '../../shared/model/filter-param';
+import { FromPage } from '../../shared/model/from-page';
 
 /**
  * Author profile component, incl. list of articles
@@ -34,7 +35,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
   pageSize = 10;
   pages: Observable<number[]> = EMPTY;
 
-  constructor(private readonly activatedRoute: ActivatedRoute, private readonly profileService: ProfileService, private readonly stateService: StateService) {
+  constructor(
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly profileService: ProfileService,
+    private readonly stateService: StateService,
+    private readonly router: Router)
+  {
     this.profile$ = this.activatedRoute.params.pipe(
       map(params => this.profileService.find(params['username'])),
       concatAll()
@@ -70,11 +76,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   private async getArticles() {
     this.pageSub = combineLatest([this.profile$, this.page$, this.feed$]).pipe(distinctUntilChanged(), tap(([profile, page, feed]) => {
-      console.log('profile ', profile, feed);
       if (feed) {
         this.articles = this.profileService.getArticles(profile.username, feed, page, this.pageSize).pipe(
           tap((response) => {
-            console.log('got articles', response.articles);
             this.pages = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
               .pipe(toArray());
           }),
@@ -89,6 +93,29 @@ export class ProfileComponent implements OnInit, OnDestroy {
    * @param page Page
    */
   async pageSelected(page: number): Promise<void> {
-    await this.stateService.setProfilePage(page);
+    return this.stateService.setProfilePage(page);
+  }
+
+  /**
+   * Handles request to follow this profile
+   * @param username Profile username
+   */
+  async follow(username: string): Promise<void> {
+    const user = await firstValueFrom(this.user$);
+    if (user) {
+      this.profile$ = this.profileService.follow(username);
+    } else {
+      const { url, queryParams } = this.activatedRoute.snapshot;
+      const fromPage: FromPage = { url, queryParams };
+      this.router.navigate(['/login'], { state: fromPage });
+    }
+  }
+
+  /**
+   * Handles request to unfollow this profile
+   * @param username Profile username
+   */
+  unfollow(username: string): void {
+    this.profile$ = this.profileService.unfollow(username);
   }
 }
