@@ -24,12 +24,30 @@ export class ArticlesComponent {
   @Input() pages: Observable<number[]> = EMPTY;
   @Input() page$: Observable<number> = EMPTY;
   @Output() pageChanged = new EventEmitter<number>();
+  @Output() articleFavorited = new EventEmitter<Article>();
+  @Output() articleUnfavorited = new EventEmitter<Article>();
 
   /**
    * Handles page selection
    * @param page Page
    */
-  pageSelected(page: number): void {
+  handlePageSelected(page: number): void {
     this.pageChanged.emit(page);
+  }
+
+  /**
+   * Handles favoriting of an article
+   * @param article Article
+   */
+  handleArticleFavorited(article: Article): void {
+    this.articleFavorited.emit(article);
+  }
+
+  /**
+   * Handles unfavoriting of an article
+   * @param article Article
+   */
+  handleArticleUnfavorited(article: Article): void {
+    this.articleUnfavorited.emit(article);
   }
 }

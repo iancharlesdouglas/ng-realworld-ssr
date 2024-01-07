@@ -2,6 +2,6 @@
   <img [src]="article!.author.image" [alt]="'Image of ' + article!.author.username" />
 </a>
 <div class="info">
-  <a [routerLink]="['profile', article!.author.username]" [queryParams]="{filter: Feed.authored}" class="author author-name">{{ article!.author.username }}</a>
+  <a [routerLink]="['/profile', article!.author.username]" [queryParams]="{filter: Feed.authored}" class="author author-name">{{ article!.author.username }}</a>
   <span class="date">{{ article!.createdAt | date: 'MMMM dd yyyy' }}</span>
 </div>

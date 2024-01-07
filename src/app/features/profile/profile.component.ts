@@ -11,6 +11,7 @@ import { ArticlesComponent } from '../home/components/articles/articles.componen
 import { Article } from '../../shared/model/article';
 import { filterParam } from '../../shared/model/filter-param';
 import { FromPage } from '../../shared/model/from-page';
+import { ArticleService } from '../../shared/services/article.service';
 
 /**
  * Author profile component, incl. list of articles
@@ -34,11 +35,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
   feed$: Observable<Feed | undefined>;
   pageSize = 10;
   pages: Observable<number[]> = EMPTY;
+  private feed: Feed | undefined;
+  private page: number | undefined;
+  private profile: Profile | undefined;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
     private readonly profileService: ProfileService,
     private readonly stateService: StateService,
+    private readonly articleService: ArticleService,
     private readonly router: Router)
   {
     this.profile$ = this.activatedRoute.params.pipe(
@@ -75,6 +80,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   private async getArticles() {
+    if (this.pageSub) {
+      this.pageSub.unsubscribe();
+    }
     this.pageSub = combineLatest([this.profile$, this.page$, this.feed$]).pipe(distinctUntilChanged(), tap(([profile, page, feed]) => {
       if (feed) {
         this.articles = this.profileService.getArticles(profile.username, feed, page, this.pageSize).pipe(
@@ -84,6 +92,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
           }),
           map(response => response.articles)
         );
+        this.feed = feed;
+        this.page = page;
+        this.profile = profile;
       }
     })).subscribe();
   }
@@ -117,5 +128,37 @@ export class ProfileComponent implements OnInit, OnDestroy {
    */
   unfollow(username: string): void {
     this.profile$ = this.profileService.unfollow(username);
+  }
+
+  /**
+   * Handles favoriting an article
+   * @param article Article
+   */
+  async favoriteArticle(article: Article): Promise<void> {
+    this.articles = this.articleService.favoriteArticle(article).pipe(
+      map(() =>
+        this.profileService.getArticles(this.profile!.username, this.feed!, this.page!, this.pageSize).pipe(
+        tap((response) => {
+          this.pages = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
+            .pipe(toArray());
+        }),
+        map(response => response.articles))),
+      concatAll());
+  }
+
+  /**
+   * Handles unfavoriting an article
+   * @param article Article
+   */
+  async unfavoriteArticle(article: Article): Promise<void> {
+    this.articles = this.articleService.unfavoriteArticle(article).pipe(
+      map(() =>
+        this.profileService.getArticles(this.profile!.username, this.feed!, this.page!, this.pageSize).pipe(
+        tap((response) => {
+          this.pages = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
+            .pipe(toArray());
+        }),
+        map(response => response.articles))),
+      concatAll());
   }
 }

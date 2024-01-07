@@ -4,7 +4,9 @@
   <div class="article-preview">
     <div class="article-meta">
       <app-authorship [article]="article"></app-authorship>
-      <button class="btn btn-outline-primary btn-sm pull-xs-right favorite-the-article">
+      <button class="btn btn-outline-primary btn-sm pull-xs-right favorite-the-article" [ngClass]="{active: article.favorited}"
+        [title]="article.favorited ? 'Unfavorite this article' : 'Favorite this article'"
+        (click)="article.favorited ? handleArticleUnfavorited(article) : handleArticleFavorited(article)">
         <i class="ion-heart"></i> {{ article.favoritesCount }}
       </button>
     </div>
@@ -24,7 +26,7 @@
 }
 
 @defer(on viewport) {
-  <app-pagination [pages]="pages" [page$]="page$" (pageChanged)="pageSelected($event)"></app-pagination>
+  <app-pagination [pages]="pages" [page$]="page$" (pageChanged)="handlePageSelected($event)"></app-pagination>
 } @placeholder {
   <div></div>
 }

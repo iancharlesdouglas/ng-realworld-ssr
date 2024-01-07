@@ -21,4 +21,26 @@ export class ArticleService {
     const { remoteApiHost } = environment;
     return this.http.get<ArticleApiResponse>(`${remoteApiHost}/api/articles/${slug}`).pipe(map(response => response.article));
   }
+
+  /**
+   * Favorites an article
+   * @param article Article
+   * @returns Article
+   */
+  favoriteArticle(article: Article): Observable<Article> {
+    const { remoteApiHost } = environment;
+    return this.http.post<ArticleApiResponse>(`${remoteApiHost}/api/articles/${article.slug}/favorite`, {}).pipe(map(response => {
+      return response.article;
+    }));
+  }
+
+  /**
+   * Unfavorites an article
+   * @param article Article
+   * @returns Article
+   */
+  unfavoriteArticle(article: Article): Observable<Article> {
+    const { remoteApiHost } = environment;
+    return this.http.delete<ArticleApiResponse>(`${remoteApiHost}/api/articles/${article.slug}/favorite`).pipe(map(response => response.article));
+  }
 }
