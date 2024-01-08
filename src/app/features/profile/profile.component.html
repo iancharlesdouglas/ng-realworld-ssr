@@ -31,7 +31,7 @@
   <div class="container">
     <div class="row">
       <div class="col-xs-12 col-md-10 offset-md-1">
-        <app-articles [articles]="articles" [pages]="pages" [page$]="page$" [user$]="user$" (pageChanged)="pageSelected($event)"
+        <app-articles [articles$]="articles$" [pages$]="pages$" [page$]="page$" [user$]="user$" (pageChanged)="pageSelected($event)"
           (articleFavorited)="favoriteArticle($event)" (articleUnfavorited)="unfavoriteArticle($event)">
           <div class="articles-toggle">
             <ul class="nav nav-pills outline-active">

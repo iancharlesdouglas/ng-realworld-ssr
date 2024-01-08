@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProfileService } from '../../shared/services/profile.service';
-import { EMPTY, Observable, Subscription, combineLatest, concatAll, distinctUntilChanged, firstValueFrom, map, range, tap, toArray } from 'rxjs';
+import { EMPTY, Observable, ReplaySubject, Subscription, combineLatest, concatAll, distinctUntilChanged, firstValueFrom, map, range, tap, toArray } from 'rxjs';
 import { Profile } from '../../shared/model/profile';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { StateService } from '../../shared/services/state/state.service';
@@ -28,13 +28,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
   profile$: Observable<Profile>;
   user$: Observable<User | undefined>;
   Feed = Feed;
-  articles: Observable<Article[]> = EMPTY;
+  articles$ = new ReplaySubject<Article[]>();
   page$: Observable<number>;
   private pageSub?: Subscription;
   private routeSub?: Subscription;
   feed$: Observable<Feed | undefined>;
   pageSize = 10;
-  pages: Observable<number[]> = EMPTY;
+  pages$: Observable<number[]> = EMPTY;
   private feed: Feed | undefined;
   private page: number | undefined;
   private profile: Profile | undefined;
@@ -83,18 +83,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (this.pageSub) {
       this.pageSub.unsubscribe();
     }
-    this.pageSub = combineLatest([this.profile$, this.page$, this.feed$]).pipe(distinctUntilChanged(), tap(([profile, page, feed]) => {
+    this.pageSub = combineLatest([this.profile$, this.page$, this.feed$]).pipe(distinctUntilChanged(), tap(async ([profile, page, feed]) => {
       if (feed) {
-        this.articles = this.profileService.getArticles(profile.username, feed, page, this.pageSize).pipe(
+        const articles = await firstValueFrom(this.profileService.getArticles(profile.username, feed, page, this.pageSize).pipe(
           tap((response) => {
-            this.pages = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
+            this.pages$ = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
               .pipe(toArray());
           }),
           map(response => response.articles)
-        );
+        ));
         this.feed = feed;
         this.page = page;
         this.profile = profile;
+        this.articles$.next(articles);
       }
     })).subscribe();
   }
@@ -126,7 +127,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
    * Handles request to unfollow this profile
    * @param username Profile username
    */
-  unfollow(username: string): void {
+  async unfollow(username: string): Promise<void> {
     this.profile$ = this.profileService.unfollow(username);
   }
 
@@ -135,15 +136,17 @@ export class ProfileComponent implements OnInit, OnDestroy {
    * @param article Article
    */
   async favoriteArticle(article: Article): Promise<void> {
-    this.articles = this.articleService.favoriteArticle(article).pipe(
+    const articles = await firstValueFrom(this.articleService.favoriteArticle(article).pipe(
       map(() =>
         this.profileService.getArticles(this.profile!.username, this.feed!, this.page!, this.pageSize).pipe(
         tap((response) => {
-          this.pages = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
+          this.pages$ = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
             .pipe(toArray());
         }),
         map(response => response.articles))),
-      concatAll());
+      concatAll(),
+      tap(articles => this.articles$.next(articles))));
+    this.articles$.next(articles);
   }
 
   /**
@@ -151,14 +154,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
    * @param article Article
    */
   async unfavoriteArticle(article: Article): Promise<void> {
-    this.articles = this.articleService.unfavoriteArticle(article).pipe(
+    const articles = await firstValueFrom(this.articleService.unfavoriteArticle(article).pipe(
       map(() =>
         this.profileService.getArticles(this.profile!.username, this.feed!, this.page!, this.pageSize).pipe(
         tap((response) => {
-          this.pages = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
+          this.pages$ = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
             .pipe(toArray());
         }),
         map(response => response.articles))),
-      concatAll());
+      concatAll()));
+    this.articles$.next(articles);
   }
 }

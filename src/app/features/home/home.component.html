@@ -1,14 +1,17 @@
 <div class="home-page">
+
   <div class="banner">
     <div class="container">
       <h1 class="logo-font">conduit</h1>
       <p>A place to share your knowledge</p>
     </div>
   </div>
+
   <div class="container page">
+
     <div class="row">
       <div class="col-md-9">
-        <app-articles [articles]="articles" [pages]="pages" [page$]="page$" [user$]="user$" (pageChanged)="pageSelected($event)">
+        <app-articles [articles$]="articles$" [pages$]="pages$" [page$]="page$" [user$]="user$" (pageChanged)="pageSelected($event)">
           <div class="feed-toggle">
             <ul class="nav nav-pills outline-active">
               @if ((user$ | async)) {
@@ -31,11 +34,14 @@
         </div>
       </app-articles>
     </div>
+
     <div class="col-md-3">
       <div class="sidebar">
         <p>Popular Tags</p>
-        <app-tags [tags]="tags"></app-tags>
+        <app-tags [tags$]="tags$"></app-tags>
       </div>
     </div>
+
   </div>
+
 </div>

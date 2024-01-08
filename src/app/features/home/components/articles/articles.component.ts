@@ -19,9 +19,9 @@ import { User } from '../../../../shared/model/user';
   styleUrls: ['./articles.component.scss'],
 })
 export class ArticlesComponent {
-  @Input() articles: Observable<Article[]> = EMPTY;
+  @Input() articles$: Observable<Article[]> = EMPTY;
   @Input() user$: Observable<User | undefined> = EMPTY;
-  @Input() pages: Observable<number[]> = EMPTY;
+  @Input() pages$: Observable<number[]> = EMPTY;
   @Input() page$: Observable<number> = EMPTY;
   @Output() pageChanged = new EventEmitter<number>();
   @Output() articleFavorited = new EventEmitter<Article>();

@@ -11,7 +11,7 @@ import { EMPTY, Observable } from 'rxjs';
   styleUrl: './pagination.component.scss'
 })
 export class PaginationComponent {
-  @Input() pages: Observable<number[]> = EMPTY;
+  @Input() pages$: Observable<number[]> = EMPTY;
   @Input() page$: Observable<number> = EMPTY;
   @Output() pageChanged = new EventEmitter<number>();
 

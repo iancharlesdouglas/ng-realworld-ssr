@@ -22,16 +22,15 @@ import { filterParam } from '../../shared/model/filter-param';
   templateUrl: './home.component.html',
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  articles: Observable<Article[]> = EMPTY;
-  // articlesCount = 0;
+  articles$: Observable<Article[]> = EMPTY;
   page$: Observable<number>;
   private pageSub?: Subscription;
   private routeSub?: Subscription;
   user$: Observable<User | undefined>;
   feed$: Observable<ActiveFeed | undefined>;
   pageSize = 10;
-  pages: Observable<number[]> = EMPTY;
-  tags: Observable<string[]> = EMPTY;
+  pages$: Observable<number[]> = EMPTY;
+  tags$: Observable<string[]> = EMPTY;
   Feed = Feed;
 
   constructor(private readonly homeService: HomeService, private readonly stateService: StateService, private readonly activatedRoute: ActivatedRoute) {
@@ -57,7 +56,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   async ngOnInit(): Promise<void> {
     this.getArticles();
-    this.tags = this.homeService.getTags().pipe(map((response) => response.tags));
+    this.tags$ = this.homeService.getTags().pipe(map((response) => response.tags));
   }
 
   ngOnDestroy(): void {
@@ -68,9 +67,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   private async getArticles() {
     this.pageSub = combineLatest([this.page$, this.feed$]).pipe(distinctUntilChanged(), tap(([page, feed]) => {
       if (feed) {
-        this.articles = this.homeService.getArticles(feed.feed, page, this.pageSize, feed.tag).pipe(
+        this.articles$ = this.homeService.getArticles(feed.feed, page, this.pageSize, feed.tag).pipe(
           tap((response) => {
-            this.pages = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
+            this.pages$ = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
               .pipe(toArray());
           }),
           map(response => response.articles)

@@ -16,6 +16,6 @@ import { EMPTY, Observable } from 'rxjs';
   styleUrl: './tags.component.scss'
 })
 export class TagsComponent {
-  @Input() tags: Observable<string[]> = EMPTY;
+  @Input() tags$: Observable<string[]> = EMPTY;
   Feed = Feed;
 }
