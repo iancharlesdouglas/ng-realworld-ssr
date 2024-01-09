@@ -15,16 +15,12 @@ export class TtlCache {
   constructor(
     ttlSeconds: number,
     private readonly loaders: CacheLoader[]
-    // preloadEntries?: Map<string, CacheLoader>
   ) {
     this.cache = new NodeCache({
       stdTTL: ttlSeconds,
       checkperiod: ttlSeconds * 0.2,
       useClones: false,
     });
-    // if (preloadEntries) {
-    //   this.preloadCache(preloadEntries);
-    // }
   }
 
   /**
@@ -35,19 +31,6 @@ export class TtlCache {
   matches(path: string): CacheLoader | undefined {
     return this.loaders.find(loader => loader.matches(path));
   }
-
-  // private preloadCache(preloadEntries: Map<string, CacheLoader>) {
-  //   Array.from(preloadEntries.entries()).forEach(async (entry) => {
-  //     const [key, cacheLoader] = entry;
-  //     let value = await cacheLoader.load();
-  //     console.log('Preloading cache entry', key);
-  //     this.cache.set(key, value);
-  //     this.cache.on('expired', async (key: string) => {
-  //       value = await cacheLoader.load();
-  //       this.cache.set(key, value);
-  //     });
-  //   });
-  // }
 
   /**
    * Retrieves a value from the cache, or the store if it has not been cached

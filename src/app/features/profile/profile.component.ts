@@ -132,37 +132,33 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Handles favoriting an article
+   * Handles favoriting an article, and updates the articles
    * @param article Article
    */
   async favoriteArticle(article: Article): Promise<void> {
     const articles = await firstValueFrom(this.articleService.favoriteArticle(article).pipe(
-      map(() =>
-        this.profileService.getArticles(this.profile!.username, this.feed!, this.page!, this.pageSize).pipe(
-        tap((response) => {
-          this.pages$ = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
-            .pipe(toArray());
-        }),
-        map(response => response.articles))),
-      concatAll(),
-      tap(articles => this.articles$.next(articles))));
+      map(() => this.fetchArticles()),
+      concatAll()));
     this.articles$.next(articles);
   }
 
   /**
-   * Handles unfavoriting an article
+   * Handles unfavoriting an article, and updates the articles
    * @param article Article
    */
   async unfavoriteArticle(article: Article): Promise<void> {
     const articles = await firstValueFrom(this.articleService.unfavoriteArticle(article).pipe(
-      map(() =>
-        this.profileService.getArticles(this.profile!.username, this.feed!, this.page!, this.pageSize).pipe(
-        tap((response) => {
-          this.pages$ = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
-            .pipe(toArray());
-        }),
-        map(response => response.articles))),
+      map(() => this.fetchArticles()),
       concatAll()));
     this.articles$.next(articles);
+  }
+
+  private fetchArticles() {
+    return this.profileService.getArticles(this.profile!.username, this.feed!, this.page!, this.pageSize).pipe(
+      tap((response) => {
+        this.pages$ = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
+          .pipe(toArray());
+      }),
+      map(response => response.articles))
   }
 }

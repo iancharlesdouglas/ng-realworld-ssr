@@ -11,7 +11,8 @@
 
     <div class="row">
       <div class="col-md-9">
-        <app-articles [articles$]="articles$" [pages$]="pages$" [page$]="page$" [user$]="user$" (pageChanged)="pageSelected($event)">
+        <app-articles [articles$]="articles$" [pages$]="pages$" [page$]="page$" [user$]="user$" (pageChanged)="pageSelected($event)"
+          (articleFavorited)="favoriteArticle($event)" (articleUnfavorited)="unfavoriteArticle($event)">
           <div class="feed-toggle">
             <ul class="nav nav-pills outline-active">
               @if ((user$ | async)) {

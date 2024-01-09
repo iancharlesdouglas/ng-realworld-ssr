@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { HomeService } from './services/home.service';
 import { Article } from '../../shared/model/article';
 import { ArticlesComponent } from './components/articles/articles.component';
-import { EMPTY, Observable, Subscription, combineLatest, distinctUntilChanged, map, range, tap, toArray } from 'rxjs';
+import { EMPTY, Observable, ReplaySubject, Subscription, combineLatest, concatAll, distinctUntilChanged, firstValueFrom, map, range, tap, toArray } from 'rxjs';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { StateService } from '../../shared/services/state/state.service';
 import { User } from '../../shared/model/user';
@@ -10,6 +10,7 @@ import { TagsComponent } from './components/tags/tags.component';
 import { ActiveFeed, Feed } from '../../shared/model/feed';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { filterParam } from '../../shared/model/filter-param';
+import { ArticleService } from '../../shared/services/article.service';
 
 /**
  * Home page component, incl. banner and list of articles
@@ -22,7 +23,7 @@ import { filterParam } from '../../shared/model/filter-param';
   templateUrl: './home.component.html',
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  articles$: Observable<Article[]> = EMPTY;
+  articles$ = new ReplaySubject<Article[]>();
   page$: Observable<number>;
   private pageSub?: Subscription;
   private routeSub?: Subscription;
@@ -32,8 +33,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   pages$: Observable<number[]> = EMPTY;
   tags$: Observable<string[]> = EMPTY;
   Feed = Feed;
+  private feed: ActiveFeed | undefined;
+  private page: number | undefined;
 
-  constructor(private readonly homeService: HomeService, private readonly stateService: StateService, private readonly activatedRoute: ActivatedRoute) {
+  constructor(
+    private readonly homeService: HomeService,
+    private readonly stateService: StateService,
+    private readonly articleService: ArticleService,
+    private readonly activatedRoute: ActivatedRoute)
+  {
     this.user$ = this.stateService.user$;
     this.page$ = this.stateService.page$;
 
@@ -65,15 +73,18 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private async getArticles() {
-    this.pageSub = combineLatest([this.page$, this.feed$]).pipe(distinctUntilChanged(), tap(([page, feed]) => {
+    this.pageSub = combineLatest([this.page$, this.feed$]).pipe(distinctUntilChanged(), tap(async ([page, feed]) => {
       if (feed) {
-        this.articles$ = this.homeService.getArticles(feed.feed, page, this.pageSize, feed.tag).pipe(
+        const articles = await firstValueFrom(this.homeService.getArticles(feed.feed, page, this.pageSize, feed.tag).pipe(
           tap((response) => {
             this.pages$ = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
               .pipe(toArray());
           }),
           map(response => response.articles)
-        );
+        ));
+        this.feed = feed;
+        this.page = page;
+        this.articles$.next(articles);
       }
     })).subscribe();
   }
@@ -84,5 +95,37 @@ export class HomeComponent implements OnInit, OnDestroy {
    */
   async pageSelected(page: number): Promise<void> {
     await this.stateService.setPage(page);
+  }
+
+
+  /**
+   * Handles favoriting an article, and updates the articles
+   * @param article Article
+   */
+  async favoriteArticle(article: Article): Promise<void> {
+    const articles = await firstValueFrom(this.articleService.favoriteArticle(article).pipe(
+      map(() => this.fetchArticles()),
+      concatAll()));
+    this.articles$.next(articles);
+  }
+
+  /**
+   * Handles unfavoriting an article, and updates the articles
+   * @param article Article
+   */
+  async unfavoriteArticle(article: Article): Promise<void> {
+    const articles = await firstValueFrom(this.articleService.unfavoriteArticle(article).pipe(
+      map(() => this.fetchArticles()),
+      concatAll()));
+    this.articles$.next(articles);
+  }
+
+  private fetchArticles() {
+    return this.homeService.getArticles(this.feed?.feed!, this.page!, this.pageSize, undefined, true).pipe(
+      tap((response) => {
+        this.pages$ = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
+          .pipe(toArray());
+      }),
+      map(response => response.articles))
   }
 }

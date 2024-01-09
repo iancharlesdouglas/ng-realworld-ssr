@@ -10,10 +10,9 @@ import { onRequest } from "firebase-functions/v2/https";
 import { ArticlesLoader } from './src/app/shared/loaders/articles-loader';
 import { TagsLoader } from './src/app/shared/loaders/tags-loader';
 import { CacheLoader } from './src/app/server/cache-loader';
-import { keyframes } from '@angular/animations';
 
 // The Express app is exported so that it can be used by serverless Functions.
-export function createApp() {//}: express.Express {
+export function createApp() {
   const server = express();
   const serverDistFolder = dirname(fileURLToPath(import.meta.url));
   const browserDistFolder = resolve(serverDistFolder, '../browser');

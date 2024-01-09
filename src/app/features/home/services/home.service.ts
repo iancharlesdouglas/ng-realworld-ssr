@@ -21,10 +21,11 @@ export class HomeService {
    * @param page Page
    * @param pageSize Page size
    * @param tag Tag
+   * @param forceRemote Whether to forcibly call the remote endpoint instead of the cached own-origin server endpoint
    * @returns Articles response object
    */
-  getArticles(feed: Feed, page: number, pageSize: number, tag?: string): Observable<ArticlesApiResponse> {
-    const host = feed === Feed.global ? environment.host : environment.remoteApiHost;
+  getArticles(feed: Feed, page: number, pageSize: number, tag?: string, forceRemote = false): Observable<ArticlesApiResponse> {
+    const host = feed === Feed.global && !forceRemote ? environment.host : environment.remoteApiHost;
     const tagQuery = tag ? `&tag=${tag}` : '';
     const url = `${host}/api/articles?offset=${page * pageSize}&limit=${pageSize}${tagQuery}`;
     return this.http.get<ArticlesApiResponse>(url);
