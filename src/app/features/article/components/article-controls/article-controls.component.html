@@ -7,7 +7,7 @@
   <i class="ion-heart"></i>
   &nbsp; Favorite Post <span class="counter">({{ article!.favoritesCount | number }})</span>
 </button>
-@if (!!(user$ | async)) {
+@if (!!(user$ | async) && (user$ | async)?.username === article?.author?.username) {
   <button class="btn btn-sm btn-outline-secondary edit-control">
     <i class="ion-edit"></i> Edit Article
   </button>

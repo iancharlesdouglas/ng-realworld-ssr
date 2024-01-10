@@ -48,9 +48,7 @@ export function createApp() {
       const pathLoader = loaders.find(loader => loader.matches(path));
       if (pathLoader?.cacheable(path)) {
         const cached = await dataCache.get(path, pathLoader);
-        if (cached) {
-          res.send(cached);
-        }
+        res.send(cached);
       } else if (pathLoader) {
         const resource = await pathLoader.load(path);
         res.send(resource);
