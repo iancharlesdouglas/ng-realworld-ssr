@@ -40,22 +40,18 @@ export function createApp() {
     })
   );
 
-  // All regular routes use the Angular engine
+  // Other routes use SSR or failing that, Angular engine
   server.get(
     '*',
     async (req: any, res: any, next: any) => {
       const path = req.url as string;
       const pathLoader = loaders.find(loader => loader.matches(path));
-      console.log('request url', path);
       if (pathLoader?.cacheable(path)) {
-        console.log('path is cacheable', path);
         const cached = await dataCache.get(path, pathLoader);
         if (cached) {
-          console.log('sending cached response for', path);
           res.send(cached);
         }
       } else if (pathLoader) {
-        console.log('path is not cacheable; fetching resource', path);
         const resource = await pathLoader.load(path);
         res.send(resource);
       } else {

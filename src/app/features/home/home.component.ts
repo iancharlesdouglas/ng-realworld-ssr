@@ -121,11 +121,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private fetchArticles() {
-    return this.homeService.getArticles(this.feed?.feed!, this.page!, this.pageSize, undefined, true).pipe(
-      tap((response) => {
-        this.pages$ = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
-          .pipe(toArray());
-      }),
-      map(response => response.articles))
+    const feed = this.feed?.feed;
+    if (feed) {
+      return this.homeService.getArticles(feed, this.page!, this.pageSize, undefined, true).pipe(
+        tap((response) => {
+          this.pages$ = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
+            .pipe(toArray());
+        }),
+        map(response => response.articles));
+    }
+    return [];
   }
 }
