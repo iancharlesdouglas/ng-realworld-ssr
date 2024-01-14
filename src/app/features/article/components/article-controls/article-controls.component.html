@@ -1,6 +1,7 @@
-<button class="btn btn-sm btn-outline-secondary follow-control">
+<button class="btn btn-sm btn-outline-secondary follow-control"
+  (click)="article!.author.following ? unfollow(article!.author.username) : follow(article!.author.username)">
   <i class="ion-plus-round"></i>
-  &nbsp; Follow {{ article!.author.username }} <span class="counter"></span>
+  &nbsp; {{ article!.author.following ? 'Unfollow' : 'Follow' }} {{ article!.author.username }} <span class="counter"></span>
 </button>
 &nbsp;&nbsp;
 <button class="btn btn-sm btn-outline-primary favorite-control">

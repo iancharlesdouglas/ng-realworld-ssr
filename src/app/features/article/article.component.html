@@ -21,7 +21,7 @@
       <div class="article-actions">
         <div class="article-meta">
           <app-authorship [article]="article"></app-authorship>
-          <app-article-controls [article]="article" [user$]="user$"></app-article-controls>
+          <app-article-controls [article]="article" [user$]="user$" (followAuthor)="follow($event)" (unfollowAuthor)="unfollow($event)"></app-article-controls>
         </div>
       </div>
 

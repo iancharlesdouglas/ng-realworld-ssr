@@ -14,7 +14,7 @@ The **Firebase CLI** is a prerequisite to running locally or deploying.
 
 ## Developing
 ### Starting Firebase
-You need to start Firebase locally to run SSR on the local NodeJS server:
+You need to start Firebase locally to run SSR on NodeJS locally:
 ```
 firebase serve --only functions,hosting
 ```
