@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Article } from '../../../../shared/model/article';
 import { RouterLink } from '@angular/router';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -16,4 +16,22 @@ import { User } from '../../../../shared/model/user';
 export class ArticleHeaderComponent {
   @Input() article: Article | undefined;
   @Input() user$: Observable<User | undefined> = EMPTY;
+  @Output() followAuthor = new EventEmitter<string>();
+  @Output() unfollowAuthor = new EventEmitter<string>();
+
+  /**
+   * Handles follow author request
+   * @param username Username
+   */
+  follow(username: string): void {
+    this.followAuthor.emit(username);
+  }
+
+  /**
+   * Handles unfollow author request
+   * @param username Username
+   */
+  unfollow(username: string): void {
+    this.unfollowAuthor.emit(username);
+  }
 }
