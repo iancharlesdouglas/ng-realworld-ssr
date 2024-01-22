@@ -4,7 +4,7 @@ import { Observable, ReplaySubject, Subscription, concatAll, firstValueFrom, map
 import { Article } from '../../shared/model/article';
 import { ArticleService } from '../../shared/services/article.service';
 import { AsyncPipe } from '@angular/common';
-import { MarkdownPipe } from '../../layout/pipes/markdown-pipe';
+import { MarkdownPipe } from '../../shared/pipes/markdown-pipe';
 import { ArticleHeaderComponent } from './components/article-header/article-header.component';
 import { ArticleControlsComponent } from './components/article-controls/article-controls.component';
 import { AuthorshipComponent } from './components/authorship/authorship.component';
