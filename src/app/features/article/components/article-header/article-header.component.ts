@@ -18,6 +18,8 @@ export class ArticleHeaderComponent {
   @Input() user$: Observable<User | undefined> = EMPTY;
   @Output() followAuthor = new EventEmitter<string>();
   @Output() unfollowAuthor = new EventEmitter<string>();
+  @Output() articleFavorited = new EventEmitter<Article>();
+  @Output() articleUnfavorited = new EventEmitter<Article>();
 
   /**
    * Handles follow author request
@@ -34,4 +36,19 @@ export class ArticleHeaderComponent {
   unfollow(username: string): void {
     this.unfollowAuthor.emit(username);
   }
-}
+
+  /**
+   * Handles favoriting an article
+   * @param article Article
+   */
+  favorited(article: Article): void {
+    this.articleFavorited.emit(article);
+  }
+
+  /**
+   * Handles unfavoriting an article
+   * @param article Article
+   */
+  unfavorited(article: Article): void {
+    this.articleUnfavorited.emit(article);
+  }}

@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { Article } from '../../../../shared/model/article';
-import { DecimalPipe, AsyncPipe } from '@angular/common';
+import { DecimalPipe, AsyncPipe, NgClass } from '@angular/common';
 import { EMPTY, Observable } from 'rxjs';
 import { User } from '../../../../shared/model/user';
 
 @Component({
   selector: 'app-article-controls',
   standalone: true,
-  imports: [AsyncPipe, DecimalPipe],
+  imports: [AsyncPipe, DecimalPipe, NgClass],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './article-controls.component.html',
 })
@@ -16,6 +16,8 @@ export class ArticleControlsComponent {
   @Input() user$: Observable<User | undefined> = EMPTY;
   @Output() followAuthor = new EventEmitter<string>();
   @Output() unfollowAuthor = new EventEmitter<string>();
+  @Output() articleFavorited = new EventEmitter<Article>();
+  @Output() articleUnfavorited = new EventEmitter<Article>();
 
   /**
    * Handles follow request
@@ -31,5 +33,21 @@ export class ArticleControlsComponent {
    */
   unfollow(username: string): void {
     this.unfollowAuthor.emit(username);
+  }
+
+  /**
+   * Handles favoriting an article
+   * @param article Article
+   */
+  favorited(article: Article): void {
+    this.articleFavorited.emit(article);
+  }
+
+  /**
+   * Handles unfavoriting an article
+   * @param article Article
+   */
+  unfavorited(article: Article): void {
+    this.articleUnfavorited.emit(article);
   }
 }

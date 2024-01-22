@@ -4,9 +4,10 @@
   &nbsp; {{ article!.author.following ? 'Unfollow' : 'Follow' }} {{ article!.author.username }} <span class="counter"></span>
 </button>
 &nbsp;&nbsp;
-<button class="btn btn-sm btn-outline-primary favorite-control">
+<button (click)="article?.favorited ? unfavorited(article!) : favorited(article!)" class="btn btn-sm btn-outline-primary favorite-control"
+  [ngClass]="{active: article?.favorited}">
   <i class="ion-heart"></i>
-  &nbsp; Favorite Post <span class="counter">({{ article!.favoritesCount | number }})</span>
+  &nbsp; {{ article?.favorited ? 'Unfavorite' : 'Favorite'}} Post <span class="counter">({{ article!.favoritesCount | number }})</span>
 </button>
 @if (!!(user$ | async) && (user$ | async)?.username === article?.author?.username) {
   <button class="btn btn-sm btn-outline-secondary edit-control">

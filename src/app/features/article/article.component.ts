@@ -80,6 +80,26 @@ export class ArticleComponent implements OnDestroy {
     await this.refreshArticle();
   }
 
+  /**
+   * Handles favoriting of an article
+   * @param article Article
+   */
+  async favorited(article: Article): Promise<void> {
+    const article$ = this.articleService.favoriteArticle(article);
+    const favoritedArticle = await firstValueFrom(article$);
+    this.article$.next(favoritedArticle);
+  }
+
+  /**
+   * Handles unfavoriting of an article
+   * @param article Article
+   */
+  async unfavorited(article: Article): Promise<void> {
+    const article$ = this.articleService.unfavoriteArticle(article);
+    const unfavoritedArticle = await firstValueFrom(article$);
+    this.article$.next(unfavoritedArticle);
+  }
+
   ngOnDestroy(): void {
     this.articleSub?.unsubscribe();
   }
