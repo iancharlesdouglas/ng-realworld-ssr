@@ -8,7 +8,7 @@
 
       <div class="row article-content">
         <div class="col-md-12">
-          <p>{{ article.body | markdown }}</p>
+          <p [innerHTML]="article.body | markdown"></p>
           <ul class="tag-list">
             @for (tag of article.tagList; track tag) {
               <li class="tag-default tag-pill tag-outline">{{tag}}</li>

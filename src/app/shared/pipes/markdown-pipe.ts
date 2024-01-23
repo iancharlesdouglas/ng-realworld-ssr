@@ -7,6 +7,7 @@ import { marked } from "marked";
 @Pipe({ name: 'markdown', standalone: true })
 export class MarkdownPipe implements PipeTransform {
   transform(value: string) {
-    return marked.parseInline(value);
+    const broken = value.replaceAll('\\n', '  \n');
+    return marked.parseInline(broken);
   }
 }
