@@ -1,0 +1,52 @@
+<div class="editor-page">
+  <div class="container page">
+    <div class="row">
+      <div class="col-md-10 offset-md-1 col-xs-12">
+        @if ((form.invalid && (form.dirty || form.touched || submitted)) || (error$ | async)) {
+          <h5 class="error-messages">Errors</h5>
+          <ul class="error-messages">
+            @if (form.controls['title'].invalid && form.controls['title'].errors?.['required']) {
+              <li>Title is required</li>
+            }
+            @if (form.controls['body'].invalid && form.controls['body'].errors?.['required']) {
+              <li>Article body is required</li>
+            }
+            @if (error$ | async; as error) {
+              <li>{{ error }}</li>
+            }
+          </ul>
+        }
+
+        <form [formGroup]="form">
+          <fieldset>
+            <fieldset class="form-group">
+              <input type="text" formControlName="title" class="form-control form-control-lg" placeholder="Article Title" />
+            </fieldset>
+            <fieldset class="form-group">
+              <input type="text" formControlName="description" class="form-control" placeholder="What's this article about?" />
+            </fieldset>
+            <fieldset class="form-group">
+              <textarea
+                formControlName="body"
+                class="form-control"
+                rows="8"
+                placeholder="Write your article (in markdown)"
+              ></textarea>
+            </fieldset>
+            <fieldset class="form-group">
+              <input type="text" formControlName="tag" (keyup)="addTag($event)" class="form-control" placeholder="Enter tags" />
+              <div class="tag-list">
+                @for (tag of article!.tagList; track tag) {
+                  <span class="tag-default tag-pill"><button type="button" (click)="removeTag(tag)"><i class="ion-close-round"></i></button> {{tag}} </span>
+                }
+              </div>
+            </fieldset>
+            <button class="btn btn-lg pull-xs-right btn-primary" type="button">
+              Publish Article
+            </button>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -23,7 +23,7 @@
         <div class="article-meta">
           <app-authorship [article]="article"></app-authorship>
           <app-article-controls [article]="article" [user$]="user$" (followAuthor)="follow($event)" (unfollowAuthor)="unfollow($event)"
-            (articleFavorited)="favorited($event)" (articleUnfavorited)="unfavorited($event)"></app-article-controls>
+            (articleFavorited)="favorited($event)" (articleUnfavorited)="unfavorited($event)" (editArticle)="edit($event)"></app-article-controls>
         </div>
       </div>
 

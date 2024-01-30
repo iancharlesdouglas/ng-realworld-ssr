@@ -18,6 +18,7 @@ export class ArticleControlsComponent {
   @Output() unfollowAuthor = new EventEmitter<string>();
   @Output() articleFavorited = new EventEmitter<Article>();
   @Output() articleUnfavorited = new EventEmitter<Article>();
+  @Output() editArticle = new EventEmitter<Article>();
 
   /**
    * Handles follow request
@@ -49,5 +50,13 @@ export class ArticleControlsComponent {
    */
   unfavorited(article: Article): void {
     this.articleUnfavorited.emit(article);
+  }
+
+  /**
+   * Handles editing an article
+   * @param article Article
+   */
+  edit(article: Article): void {
+    this.editArticle.emit(article);
   }
 }

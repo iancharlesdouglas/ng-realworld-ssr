@@ -8,7 +8,15 @@ export const routes: Routes = [
     path: '', loadComponent: () => import('./features/home/home.component').then(comp => comp.HomeComponent),
   },
   {
-    path: 'article/:id', loadComponent: () => import('./features/article/article.component').then(comp => comp.ArticleComponent)
+    path: 'article/:id', loadComponent: () => import('./features/article/pages/article/article.component').then(comp => comp.ArticleComponent)
+  },
+  {
+    path: 'editor/:id', loadComponent: () => import('./features/article/pages/create-edit-article/create-edit-article.component')
+      .then(comp => comp.CreateEditArticleComponent)
+  },
+  {
+    path: 'editor', loadComponent: () => import('./features/article/pages/create-edit-article/create-edit-article.component')
+      .then(comp => comp.CreateEditArticleComponent)
   },
   {
     path: 'login', loadComponent: () => import('./features/user/pages/login/login.component').then(comp => comp.LoginComponent)

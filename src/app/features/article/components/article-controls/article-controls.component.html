@@ -9,11 +9,11 @@
   <i class="ion-heart"></i>
   &nbsp; {{ article?.favorited ? 'Unfavorite' : 'Favorite'}} Post <span class="counter">({{ article!.favoritesCount | number }})</span>
 </button>
-@if (!!(user$ | async) && (user$ | async)?.username === article?.author?.username) {
-  <button class="btn btn-sm btn-outline-secondary edit-control">
+<!-- @if (!!(user$ | async) && (user$ | async)?.username === article?.author?.username) { -->
+  <button (click)="edit(article!)" class="btn btn-sm btn-outline-secondary edit-control">
     <i class="ion-edit"></i> Edit Article
   </button>
   <button class="btn btn-sm btn-outline-danger delete-control">
     <i class="ion-trash-a"></i> Delete Article
   </button>
-}
+<!-- } -->

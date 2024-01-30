@@ -4,6 +4,7 @@ import { Observable, map } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
 import { ArticleApiResponse } from "../model/api/article-api-response";
+import { CreateEditArticle } from "../model/create-edit-article";
 
 /**
  * Controls access to backend services for articles
@@ -42,5 +43,29 @@ export class ArticleService {
   unfavoriteArticle(article: Article): Observable<Article> {
     const { remoteApiHost } = environment;
     return this.http.delete<ArticleApiResponse>(`${remoteApiHost}/api/articles/${article.slug}/favorite`).pipe(map(response => response.article));
+  }
+
+  /**
+   * Creates an article
+   * @param article Article
+   * @returns Created article
+   */
+  createArticle(article: CreateEditArticle): Observable<CreateEditArticle> {
+    const { remoteApiHost } = environment;
+    return this.http.post<Article>(`${remoteApiHost}/api/articles`, JSON.stringify(article)).pipe(map(response => {
+      return response;
+    }));
+  }
+
+  /**
+   * Updates an article
+   * @param article Article
+   * @returns Updated article
+   */
+  updateArticle(article: CreateEditArticle): Observable<CreateEditArticle> {
+    const { remoteApiHost } = environment;
+    return this.http.post<Article>(`${remoteApiHost}/api/articles/${article.slug}`, JSON.stringify(article)).pipe(map(response => {
+      return response;
+    }));
   }
 }

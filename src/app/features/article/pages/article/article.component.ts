@@ -1,18 +1,18 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, ReplaySubject, Subscription, concatAll, firstValueFrom, map } from 'rxjs';
-import { Article } from '../../shared/model/article';
-import { ArticleService } from '../../shared/services/article.service';
+import { Article } from '../../../../shared/model/article';
+import { ArticleService } from '../../../../shared/services/article.service';
 import { AsyncPipe } from '@angular/common';
-import { MarkdownPipe } from '../../shared/pipes/markdown-pipe';
-import { ArticleHeaderComponent } from './components/article-header/article-header.component';
-import { ArticleControlsComponent } from './components/article-controls/article-controls.component';
-import { AuthorshipComponent } from './components/authorship/authorship.component';
-import { ArticleCommentsComponent } from './components/article-comments/article-comments.component';
-import { User } from '../../shared/model/user';
-import { StateService } from '../../shared/services/state/state.service';
-import { ProfileService } from '../../shared/services/profile.service';
-import { FromPage } from '../../shared/model/from-page';
+import { MarkdownPipe } from '../../../../shared/pipes/markdown-pipe';
+import { ArticleHeaderComponent } from '../../components/article-header/article-header.component';
+import { ArticleControlsComponent } from '../../components/article-controls/article-controls.component';
+import { AuthorshipComponent } from '../../components/authorship/authorship.component';
+import { ArticleCommentsComponent } from '../../components/article-comments/article-comments.component';
+import { User } from '../../../../shared/model/user';
+import { StateService } from '../../../../shared/services/state/state.service';
+import { ProfileService } from '../../../../shared/services/profile.service';
+import { FromPage } from '../../../../shared/model/from-page';
 
 /**
  * Single article component
@@ -48,6 +48,10 @@ export class ArticleComponent implements OnDestroy {
 
   private fetchArticle(id: string): Observable<Article> {
     return this.articleService.getArticle(id);
+  }
+
+  ngOnDestroy(): void {
+    this.articleSub?.unsubscribe();
   }
 
   /**
@@ -100,7 +104,11 @@ export class ArticleComponent implements OnDestroy {
     this.article$.next(unfavoritedArticle);
   }
 
-  ngOnDestroy(): void {
-    this.articleSub?.unsubscribe();
+  /**
+   * Handles editing an article
+   * @param article Article
+   */
+  edit(article: Article): void {
+    this.router.navigate(['/editor', article.slug]);
   }
 }
