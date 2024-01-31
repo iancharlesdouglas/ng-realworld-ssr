@@ -1,7 +1,7 @@
 /**
  * An empty article
  */
-const EMPTY_ARTICLE = {
+export const EMPTY_ARTICLE = {
   slug: '',
   title: '',
   description: '',

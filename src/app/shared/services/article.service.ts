@@ -52,7 +52,7 @@ export class ArticleService {
    */
   createArticle(article: CreateEditArticle): Observable<CreateEditArticle> {
     const { remoteApiHost } = environment;
-    return this.http.post<Article>(`${remoteApiHost}/api/articles`, JSON.stringify(article)).pipe(map(response => {
+    return this.http.post<Article>(`${remoteApiHost}/api/articles/`, {article}).pipe(map(response => {
       return response;
     }));
   }
@@ -64,7 +64,7 @@ export class ArticleService {
    */
   updateArticle(article: CreateEditArticle): Observable<CreateEditArticle> {
     const { remoteApiHost } = environment;
-    return this.http.post<Article>(`${remoteApiHost}/api/articles/${article.slug}`, JSON.stringify(article)).pipe(map(response => {
+    return this.http.put<Article>(`${remoteApiHost}/api/articles/${article.slug}`, {article}).pipe(map(response => {
       return response;
     }));
   }

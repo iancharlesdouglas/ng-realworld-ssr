@@ -6,6 +6,7 @@ import { ArticleService } from '../../../../shared/services/article.service';
 import { CreateEditArticle } from '../../../../shared/model/create-edit-article';
 import { StateService } from '../../../../shared/services/state/state.service';
 import { AsyncPipe } from '@angular/common';
+import { EMPTY_ARTICLE } from '../../../../shared/model/empty-article';
 
 /**
  * Create/edit article page
@@ -53,7 +54,7 @@ export class CreateEditArticleComponent implements OnInit, OnDestroy {
       } as CreateEditArticle)),
       ).subscribe(article => {
         this.article = article;
-        this.form.patchValue({
+        this.form?.patchValue({
           ...article,
           body: article.body.replaceAll('\\n', '  \n'),
           tag: ''
@@ -102,10 +103,12 @@ export class CreateEditArticleComponent implements OnInit, OnDestroy {
   async attemptPublish(): Promise<void> {
     this.submitted = true;
     if (this.form.valid) {
-      this.article = {...this.article,
+      this.article = {
         title: this.form.get('title')?.value?.trim(),
         description: this.form.get('description')?.value.trim(),
         body: this.form.get('body')?.value?.trim(),
+        tagList: this.article.tagList,
+        slug: ''
       };
       if (this.article.slug) {
         this.article = await firstValueFrom(this.articleService.updateArticle(this.article));
