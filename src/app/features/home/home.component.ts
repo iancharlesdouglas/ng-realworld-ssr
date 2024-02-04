@@ -64,7 +64,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   async ngOnInit(): Promise<void> {
     this.getArticles();
-    this.tags$ = this.homeService.getTags().pipe(map((response) => response.tags));
+    this.tags$ = this.homeService.getTags().pipe(map((response) => response?.tags));
   }
 
   ngOnDestroy(): void {
@@ -77,10 +77,12 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (feed) {
         const articles = await firstValueFrom(this.homeService.getArticles(feed.feed, page, this.pageSize, feed.tag).pipe(
           tap((response) => {
-            this.pages$ = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
-              .pipe(toArray());
+            if (response) {
+              this.pages$ = range(0, Math.floor((response.articlesCount - 1) / this.pageSize) + 1)
+                .pipe(toArray());
+            }
           }),
-          map(response => response.articles)
+          map(response => response?.articles)
         ));
         this.feed = feed;
         this.page = page;

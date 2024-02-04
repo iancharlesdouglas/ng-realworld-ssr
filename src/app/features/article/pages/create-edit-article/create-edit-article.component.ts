@@ -98,7 +98,7 @@ export class CreateEditArticleComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Attempt to publish the article
+   * Attempt to publish the article, and show it as published once successful
    */
   async attemptPublish(): Promise<void> {
     this.submitted = true;
@@ -115,7 +115,7 @@ export class CreateEditArticleComponent implements OnInit, OnDestroy {
       } else {
         this.article = await firstValueFrom(this.articleService.createArticle(this.article));
       }
-      // TODO - navigate to non-editor display of article
+      this.router.navigate(['/article', this.article.slug]);
     }
   }
 }
