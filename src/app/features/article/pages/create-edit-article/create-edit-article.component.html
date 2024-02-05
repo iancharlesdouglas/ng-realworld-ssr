@@ -8,6 +8,9 @@
             @if (form.controls['title'].invalid && form.controls['title'].errors?.['required']) {
               <li>Title is required</li>
             }
+            @if (form.controls['description'].invalid && form.controls['description'].errors?.['required']) {
+              <li>Article description is required</li>
+            }
             @if (form.controls['body'].invalid && form.controls['body'].errors?.['required']) {
               <li>Article body is required</li>
             }
@@ -36,12 +39,12 @@
             <fieldset class="form-group">
               <input type="text" formControlName="tag" (keyup)="addTag($event)" class="form-control" placeholder="Enter tags" />
               <div class="tag-list">
-                @for (tag of article!.tagList; track tag) {
+                @for (tag of tags | async; track tag) {
                   <span class="tag-default tag-pill"><button type="button" (click)="removeTag(tag)"><i class="ion-close-round"></i></button> {{tag}} </span>
                 }
               </div>
             </fieldset>
-            <button class="btn btn-lg pull-xs-right btn-primary" type="button" (click)="attemptPublish()">
+            <button class="btn btn-lg pull-xs-right btn-primary" type="button" (click)="attemptPublish()" [disabled]="form.invalid || form.pristine">
               Publish Article
             </button>
           </fieldset>

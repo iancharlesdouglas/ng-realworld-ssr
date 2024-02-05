@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { EMPTY, Observable, Subscription, combineLatest, concatAll, firstValueFrom, map, of } from 'rxjs';
+import { EMPTY, Observable, ReplaySubject, Subscription, combineLatest, concatAll, firstValueFrom, map, of } from 'rxjs';
 import { ArticleService } from '../../../../shared/services/article.service';
 import { CreateEditArticle } from '../../../../shared/model/create-edit-article';
 import { StateService } from '../../../../shared/services/state/state.service';
@@ -22,7 +22,9 @@ import { EMPTY_ARTICLE } from '../../../../shared/model/empty-article';
 export class CreateEditArticleComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   error$: Observable<string> = EMPTY;
-  article: CreateEditArticle;
+  article: CreateEditArticle = EMPTY_ARTICLE;
+  tagCount = 0;
+  tags = new ReplaySubject<string[]>();
   submitted = false;
   private articleSub: Subscription;
   private articleSlug: string | undefined;
@@ -34,12 +36,11 @@ export class CreateEditArticleComponent implements OnInit, OnDestroy {
     private readonly articleService: ArticleService,
     private readonly stateService: StateService)
   {
-    this.article = EMPTY_ARTICLE;
     this.articleSub = combineLatest([this.activatedRoute.params, this.stateService.user$]).pipe(
-      map(([params, user]) => {
+      map(([params]) => {
         this.articleSlug = params['id'];
         if (this.articleSlug) {
-          return this.articleService.getArticle(this.articleSlug!);
+          return this.articleService.getArticle(this.articleSlug);
         } else {
           return of(EMPTY_ARTICLE)
         }
@@ -58,14 +59,16 @@ export class CreateEditArticleComponent implements OnInit, OnDestroy {
           ...article,
           body: article.body.replaceAll('\\n', '  \n'),
           tag: ''
-        })
+        });
+        this.tags.next(article.tagList);
       });
   }
 
   ngOnInit(): void {
+    console.log('oninit');
     this.form = this.formBuilder.group({
       title: ['', Validators.required],
-      description: '',
+      description: ['', Validators.required],
       body: ['', Validators.required],
       tag: ''
     });
@@ -82,6 +85,7 @@ export class CreateEditArticleComponent implements OnInit, OnDestroy {
   async removeTag(tag: string): Promise<void> {
     const withTagRemoved = {...this.article, tagList: this.article!.tagList.filter(existTag => existTag !== tag)} as CreateEditArticle;
     this.article = withTagRemoved;
+    this.tags.next(this.article.tagList);
   }
 
   /**
@@ -93,6 +97,7 @@ export class CreateEditArticleComponent implements OnInit, OnDestroy {
       const tag = this.form.get('tag')!.value.trim();
       const withTagAdded = {...this.article, tagList: [...this.article!.tagList.filter(existTag => existTag !== tag), tag]} as CreateEditArticle;
       this.article = withTagAdded;
+      this.tags.next(this.article.tagList);
       this.form.patchValue({tag: ''});
     }
   }
@@ -108,7 +113,7 @@ export class CreateEditArticleComponent implements OnInit, OnDestroy {
         description: this.form.get('description')?.value.trim(),
         body: this.form.get('body')?.value?.trim(),
         tagList: this.article.tagList,
-        slug: ''
+        slug: this.articleSlug || ''
       };
       if (this.article.slug) {
         this.article = await firstValueFrom(this.articleService.updateArticle(this.article));

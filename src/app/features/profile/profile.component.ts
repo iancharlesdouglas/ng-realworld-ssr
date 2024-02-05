@@ -161,4 +161,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
       }),
       map(response => response.articles))
   }
+
+  /**
+   * Handles editing profile
+   */
+  editProfile(): void {
+    this.router.navigate(['settings']);
+  }
 }

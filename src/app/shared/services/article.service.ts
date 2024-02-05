@@ -50,10 +50,10 @@ export class ArticleService {
    * @param article Article
    * @returns Created article
    */
-  createArticle(article: CreateEditArticle): Observable<CreateEditArticle> {
+  createArticle(article: CreateEditArticle): Observable<Article> {
     const { remoteApiHost } = environment;
-    return this.http.post<Article>(`${remoteApiHost}/api/articles/`, {article}).pipe(map(response => {
-      return response;
+    return this.http.post<ArticleApiResponse>(`${remoteApiHost}/api/articles/`, {article}).pipe(map(response => {
+      return response.article;
     }));
   }
 
@@ -62,10 +62,10 @@ export class ArticleService {
    * @param article Article
    * @returns Updated article
    */
-  updateArticle(article: CreateEditArticle): Observable<CreateEditArticle> {
+  updateArticle(article: CreateEditArticle): Observable<Article> {
     const { remoteApiHost } = environment;
-    return this.http.put<Article>(`${remoteApiHost}/api/articles/${article.slug}`, {article}).pipe(map(response => {
-      return response;
+    return this.http.put<ArticleApiResponse>(`${remoteApiHost}/api/articles/${article.slug}`, {article}).pipe(map(response => {
+      return response.article;
     }));
   }
 }

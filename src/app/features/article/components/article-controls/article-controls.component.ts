@@ -10,6 +10,7 @@ import { User } from '../../../../shared/model/user';
   imports: [AsyncPipe, DecimalPipe, NgClass],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './article-controls.component.html',
+  styleUrls: ['./article-controls.component.scss']
 })
 export class ArticleControlsComponent {
   @Input() article: Article | undefined;

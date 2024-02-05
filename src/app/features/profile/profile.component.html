@@ -11,13 +11,13 @@
               {{profile.bio}}
             </p>
             @if ((user$ | async)?.username !== profile.username) {
-              <button class="btn btn-sm btn-outline-secondary action-btn" (click)="profile.following ? unfollow(profile.username) : follow(profile.username)">
+              <button (click)="profile.following ? unfollow(profile.username) : follow(profile.username)" class="btn btn-sm btn-outline-secondary action-btn">
                 <i class="ion-plus-round"></i>
                 &nbsp; {{ profile.following ? 'Unfollow' : 'Follow' }} {{ profile.username }}
               </button>
             }
             @if ((user$ | async)?.username === profile.username) {
-              <button class="btn btn-sm btn-outline-secondary action-btn">
+              <button (click)="editProfile()" class="btn btn-sm btn-outline-secondary action-btn">
                 <i class="ion-gear-a"></i>
                 &nbsp; Edit Profile Settings
               </button>

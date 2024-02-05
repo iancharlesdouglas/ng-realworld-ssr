@@ -2,7 +2,7 @@
   @if (article$ | async; as article) {
 
     <app-article-header [article]="article" [user$]="user$" (followAuthor)="follow($event)" (unfollowAuthor)="unfollow($event)"
-      (articleFavorited)="favorited($event)" (articleUnfavorited)="unfavorited($event)"></app-article-header>
+      (articleFavorited)="favorited($event)" (articleUnfavorited)="unfavorited($event)" (edited)="edit($event)"></app-article-header>
 
     <div class="container page">
 
