@@ -136,10 +136,17 @@ export class ProfileComponent implements OnInit, OnDestroy {
    * @param article Article
    */
   async favoriteArticle(article: Article): Promise<void> {
-    const articles = await firstValueFrom(this.articleService.favoriteArticle(article).pipe(
-      map(() => this.fetchArticles()),
-      concatAll()));
-    this.articles$.next(articles);
+    const user = await firstValueFrom(this.user$);
+    if (user) {
+      const articles = await firstValueFrom(this.articleService.favoriteArticle(article).pipe(
+        map(() => this.fetchArticles()),
+        concatAll()));
+      this.articles$.next(articles);
+    } else {
+      const { url, queryParams } = this.activatedRoute.snapshot;
+      const fromPage: FromPage = { url, queryParams };
+      this.router.navigate(['/login'], { state: fromPage });
+    }
   }
 
   /**

@@ -2,7 +2,9 @@
   @if (article$ | async; as article) {
 
     <app-article-header [article]="article" [user$]="user$" (followAuthor)="follow($event)" (unfollowAuthor)="unfollow($event)"
-      (articleFavorited)="favorited($event)" (articleUnfavorited)="unfavorited($event)" (edited)="edit($event)"></app-article-header>
+      (articleFavorited)="favorited($event)" (articleUnfavorited)="unfavorited($event)" (editArticle)="edit($event)"
+      (deleteArticle)="delete($event)">
+    </app-article-header>
 
     <div class="container page">
 
@@ -23,7 +25,9 @@
         <div class="article-meta">
           <app-authorship [article]="article"></app-authorship>
           <app-article-controls [article]="article" [user$]="user$" (followAuthor)="follow($event)" (unfollowAuthor)="unfollow($event)"
-            (articleFavorited)="favorited($event)" (articleUnfavorited)="unfavorited($event)" (editArticle)="edit($event)"></app-article-controls>
+            (articleFavorited)="favorited($event)" (articleUnfavorited)="unfavorited($event)" (editArticle)="edit($event)"
+            (deleteArticle)="delete($event)">
+          </app-article-controls>
         </div>
       </div>
 

@@ -8,9 +8,10 @@ import { StateService } from '../../shared/services/state/state.service';
 import { User } from '../../shared/model/user';
 import { TagsComponent } from './components/tags/tags.component';
 import { ActiveFeed, Feed } from '../../shared/model/feed';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { filterParam } from '../../shared/model/filter-param';
 import { ArticleService } from '../../shared/services/article.service';
+import { FromPage } from '../../shared/model/from-page';
 
 /**
  * Home page component, incl. banner and list of articles
@@ -40,7 +41,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private readonly homeService: HomeService,
     private readonly stateService: StateService,
     private readonly articleService: ArticleService,
-    private readonly activatedRoute: ActivatedRoute)
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly router: Router)
   {
     this.user$ = this.stateService.user$;
     this.page$ = this.stateService.page$;
@@ -105,10 +107,17 @@ export class HomeComponent implements OnInit, OnDestroy {
    * @param article Article
    */
   async favoriteArticle(article: Article): Promise<void> {
-    const articles = await firstValueFrom(this.articleService.favoriteArticle(article).pipe(
-      map(() => this.fetchArticles()),
-      concatAll()));
-    this.articles$.next(articles);
+    const user = await firstValueFrom(this.user$);
+    if (user) {
+      const articles = await firstValueFrom(this.articleService.favoriteArticle(article).pipe(
+        map(() => this.fetchArticles()),
+        concatAll()));
+      this.articles$.next(articles);
+    } else {
+      const { url, queryParams } = this.activatedRoute.snapshot;
+      const fromPage: FromPage = { url, queryParams };
+      this.router.navigate(['/login'], { state: fromPage });
+    }
   }
 
   /**

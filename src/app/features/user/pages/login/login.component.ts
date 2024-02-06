@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
         if (typeof result !== 'string') {
           if (this.fromPage) {
             const { url, queryParams } = this.fromPage;
-            if (url && queryParams) {
+            if (url && queryParams && url.length > 0) {
               this.router.navigate(url.map(segment => segment.path), { queryParams });
             } else {
               this.router.navigate(['/']);

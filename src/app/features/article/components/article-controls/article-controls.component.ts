@@ -20,6 +20,7 @@ export class ArticleControlsComponent {
   @Output() articleFavorited = new EventEmitter<Article>();
   @Output() articleUnfavorited = new EventEmitter<Article>();
   @Output() editArticle = new EventEmitter<Article>();
+  @Output() deleteArticle = new EventEmitter<Article>();
 
   /**
    * Handles follow request
@@ -59,5 +60,13 @@ export class ArticleControlsComponent {
    */
   edit(article: Article): void {
     this.editArticle.emit(article);
+  }
+
+  /**
+   * Handles deleting an article
+   * @param article Article
+   */
+  delete(article: Article): void {
+    this.deleteArticle.emit(article);
   }
 }

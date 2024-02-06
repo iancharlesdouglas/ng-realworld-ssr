@@ -68,4 +68,14 @@ export class ArticleService {
       return response.article;
     }));
   }
+
+  /**
+   * Deletes an article
+   * @param article Article
+   * @returns Result
+   */
+  deleteArticle(article: CreateEditArticle): Observable<unknown> {
+    const { remoteApiHost } = environment;
+    return this.http.delete(`${remoteApiHost}/api/articles/${article.slug}`);
+  }
 }

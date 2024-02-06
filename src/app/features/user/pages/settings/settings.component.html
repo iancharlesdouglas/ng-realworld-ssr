@@ -48,7 +48,7 @@
                 placeholder="New Password"
               />
             </fieldset>
-            <button type="submit" class="btn btn-lg btn-primary pull-xs-right">Update Settings</button>
+            <button type="submit" [disabled]="form.pristine || form.invalid" class="btn btn-lg btn-primary pull-xs-right">Update Settings</button>
           </fieldset>
         </form>
         <hr />

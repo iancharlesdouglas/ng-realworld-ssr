@@ -111,4 +111,13 @@ export class ArticleComponent implements OnDestroy {
   edit(article: Article): void {
     this.router.navigate(['/editor', article.slug]);
   }
+
+  /**
+   * Handles deleting an article
+   * @param article Article
+   */
+  async delete(article: Article): Promise<void> {
+    await firstValueFrom(this.articleService.deleteArticle(article));
+    this.router.navigate(['/']);
+  }
 }

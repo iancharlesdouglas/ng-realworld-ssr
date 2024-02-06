@@ -60,7 +60,6 @@ export class StateService {
   setState(state: State): void {
     this.state$.next(deepFreeze(state));
     this.lastState = state;
-    console.log('state set', state);
   }
 
   getLastState(): State {
