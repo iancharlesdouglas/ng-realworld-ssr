@@ -4,6 +4,7 @@ import { EMPTY, Observable } from 'rxjs';
 import { User } from '../../../../shared/model/user';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { Comment } from '../../../../shared/model/comment';
 
 @Component({
   selector: 'app-article-comments',
@@ -14,5 +15,6 @@ import { RouterLink } from '@angular/router';
 })
 export class ArticleCommentsComponent {
   @Input() article: Article | undefined;
+  @Input() comments$: Observable<Comment[]> = EMPTY;
   @Input() user$: Observable<User | undefined> = EMPTY;
 }

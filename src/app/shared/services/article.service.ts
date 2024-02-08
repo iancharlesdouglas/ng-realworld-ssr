@@ -5,6 +5,8 @@ import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
 import { ArticleApiResponse } from "../model/api/article-api-response";
 import { CreateEditArticle } from "../model/create-edit-article";
+import { CommentsApiResponse } from "../model/api/comments-api-response";
+import { Comment } from "../model/comment";
 
 /**
  * Controls access to backend services for articles
@@ -30,9 +32,7 @@ export class ArticleService {
    */
   favoriteArticle(article: Article): Observable<Article> {
     const { remoteApiHost } = environment;
-    return this.http.post<ArticleApiResponse>(`${remoteApiHost}/api/articles/${article.slug}/favorite`, {}).pipe(map(response => {
-      return response.article;
-    }));
+    return this.http.post<ArticleApiResponse>(`${remoteApiHost}/api/articles/${article.slug}/favorite`, {}).pipe(map(response => response.article));
   }
 
   /**
@@ -52,9 +52,7 @@ export class ArticleService {
    */
   createArticle(article: CreateEditArticle): Observable<Article> {
     const { remoteApiHost } = environment;
-    return this.http.post<ArticleApiResponse>(`${remoteApiHost}/api/articles/`, {article}).pipe(map(response => {
-      return response.article;
-    }));
+    return this.http.post<ArticleApiResponse>(`${remoteApiHost}/api/articles/`, {article}).pipe(map(response => response.article));
   }
 
   /**
@@ -64,9 +62,7 @@ export class ArticleService {
    */
   updateArticle(article: CreateEditArticle): Observable<Article> {
     const { remoteApiHost } = environment;
-    return this.http.put<ArticleApiResponse>(`${remoteApiHost}/api/articles/${article.slug}`, {article}).pipe(map(response => {
-      return response.article;
-    }));
+    return this.http.put<ArticleApiResponse>(`${remoteApiHost}/api/articles/${article.slug}`, {article}).pipe(map(response => response.article));
   }
 
   /**
@@ -77,5 +73,15 @@ export class ArticleService {
   deleteArticle(article: CreateEditArticle): Observable<unknown> {
     const { remoteApiHost } = environment;
     return this.http.delete(`${remoteApiHost}/api/articles/${article.slug}`);
+  }
+
+  /**
+   * Fetches the comments for an article
+   * @param article Article
+   * @returns Comments
+   */
+  getComments(article: Article): Observable<Comment[]> {
+    const { remoteApiHost } = environment;
+    return this.http.get<CommentsApiResponse>(`${remoteApiHost}/api/articles/${article.slug}/comments`).pipe(map(response => response.comments));
   }
 }

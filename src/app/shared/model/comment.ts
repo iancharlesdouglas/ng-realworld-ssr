@@ -6,6 +6,7 @@ import { Authorship } from "./authorship";
  */
 export type Comment = Authorship & {
   id: number,
+  createdAt: Date,
   updatedAt: Date,
   body: string;
   author: Author;

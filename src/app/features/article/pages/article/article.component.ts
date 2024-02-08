@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Observable, ReplaySubject, Subscription, concatAll, firstValueFrom, map } from 'rxjs';
+import { EMPTY, Observable, ReplaySubject, Subscription, concatAll, firstValueFrom, map } from 'rxjs';
 import { Article } from '../../../../shared/model/article';
 import { ArticleService } from '../../../../shared/services/article.service';
 import { AsyncPipe } from '@angular/common';
@@ -13,6 +13,7 @@ import { User } from '../../../../shared/model/user';
 import { StateService } from '../../../../shared/services/state/state.service';
 import { ProfileService } from '../../../../shared/services/profile.service';
 import { FromPage } from '../../../../shared/model/from-page';
+import { Comment } from '../../../../shared/model/comment';
 
 /**
  * Single article component
@@ -26,6 +27,7 @@ import { FromPage } from '../../../../shared/model/from-page';
 })
 export class ArticleComponent implements OnDestroy {
   article$ = new ReplaySubject<Article>();
+  comments$: Observable<Comment[]> = EMPTY;
   user$: Observable<User | undefined>;
   private articleSlug: string | undefined;
   private articleSub: Subscription | undefined;
@@ -42,7 +44,10 @@ export class ArticleComponent implements OnDestroy {
         return this.fetchArticle(this.articleSlug!);
       }),
       concatAll(),
-    ).subscribe(article => this.article$.next(article));
+    ).subscribe(article => {
+      this.article$.next(article);
+      this.comments$ = this.articleService.getComments(article);
+    });
     this.user$ = this.stateService.user$;
   }
 
