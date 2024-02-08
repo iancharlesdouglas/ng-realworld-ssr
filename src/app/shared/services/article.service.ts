@@ -7,6 +7,7 @@ import { ArticleApiResponse } from "../model/api/article-api-response";
 import { CreateEditArticle } from "../model/create-edit-article";
 import { CommentsApiResponse } from "../model/api/comments-api-response";
 import { Comment } from "../model/comment";
+import { CommentApiResponse } from "../model/api/comment-api-response";
 
 /**
  * Controls access to backend services for articles
@@ -83,5 +84,28 @@ export class ArticleService {
   getComments(article: Article): Observable<Comment[]> {
     const { remoteApiHost } = environment;
     return this.http.get<CommentsApiResponse>(`${remoteApiHost}/api/articles/${article.slug}/comments`).pipe(map(response => response.comments));
+  }
+
+  /**
+   * Adds a comment by posting it to the backend API
+   * @param article Article
+   * @param comment Comment
+   * @returns Comment
+   */
+  addComment(article: Article, comment: string): Observable<Comment> {
+    const { remoteApiHost } = environment;
+    return this.http.post<CommentApiResponse>(`${remoteApiHost}/api/articles/${article.slug}/comments`, {comment: {body: comment}})
+      .pipe(map(response => response.comment));
+  }
+
+  /**
+   * Deletes a comment from an article
+   * @param article Article
+   * @param comment Comment
+   * @returns Result
+   */
+  deleteComment(article: Article, comment: Comment): Observable<unknown> {
+    const { remoteApiHost } = environment;
+    return this.http.delete(`${remoteApiHost}/api/articles/${article.slug}/comments/${comment.id}`);
   }
 }
