@@ -1,6 +1,7 @@
+import { CommentToDelete } from './../../model/comment-to-delete';
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { EMPTY, Observable, ReplaySubject, Subscription, concatAll, firstValueFrom, map } from 'rxjs';
+import { Observable, ReplaySubject, Subscription, concatAll, firstValueFrom, map } from 'rxjs';
 import { Article } from '../../../../shared/model/article';
 import { ArticleService } from '../../../../shared/services/article.service';
 import { AsyncPipe } from '@angular/common';
@@ -14,6 +15,7 @@ import { StateService } from '../../../../shared/services/state/state.service';
 import { ProfileService } from '../../../../shared/services/profile.service';
 import { FromPage } from '../../../../shared/model/from-page';
 import { Comment } from '../../../../shared/model/comment';
+import { CommentToAdd } from '../../model/comment-to-add';
 
 /**
  * Single article component
@@ -27,7 +29,7 @@ import { Comment } from '../../../../shared/model/comment';
 })
 export class ArticleComponent implements OnDestroy {
   article$ = new ReplaySubject<Article>();
-  comments$: Observable<Comment[]> = EMPTY;
+  comments$ = new ReplaySubject<Comment[]>;
   user$: Observable<User | undefined>;
   private articleSlug: string | undefined;
   private articleSub: Subscription | undefined;
@@ -44,9 +46,10 @@ export class ArticleComponent implements OnDestroy {
         return this.fetchArticle(this.articleSlug!);
       }),
       concatAll(),
-    ).subscribe(article => {
+    ).subscribe(async article => {
       this.article$.next(article);
-      this.comments$ = this.articleService.getComments(article);
+      const comments = await firstValueFrom(this.articleService.getComments(article));
+      this.comments$.next(comments);
     });
     this.user$ = this.stateService.user$;
   }
@@ -124,5 +127,22 @@ export class ArticleComponent implements OnDestroy {
   async delete(article: Article): Promise<void> {
     await firstValueFrom(this.articleService.deleteArticle(article));
     this.router.navigate(['/']);
+  }
+
+  /**
+   * Posts a comment on an article
+   * @param commentToAdd Article with comment to add
+   */
+  async postComment(commentToAdd: CommentToAdd): Promise<void> {
+    const savedComment = await firstValueFrom(this.articleService.addComment(commentToAdd.article, commentToAdd.comment));
+    const existingComments = await firstValueFrom(this.comments$);
+    const updatedComments = [...existingComments, savedComment];
+    this.comments$.next(updatedComments);
+  }
+
+  async removeComment(commentToDelete: CommentToDelete): Promise<void> {
+    const result = await firstValueFrom(this.articleService.deleteComment(commentToDelete.article, commentToDelete.comment));
+    const updatedComments = await firstValueFrom(this.articleService.getComments(commentToDelete.article));
+    this.comments$.next(updatedComments);
   }
 }

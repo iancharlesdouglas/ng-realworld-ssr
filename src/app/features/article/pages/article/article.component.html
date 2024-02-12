@@ -31,7 +31,8 @@
         </div>
       </div>
 
-      <app-article-comments [article]="article" [comments$]="comments$" [user$]="user$"></app-article-comments>
+      <app-article-comments [article]="article" [comments$]="comments$" [user$]="user$"
+        (addComment)="postComment($event)" (deleteComment)="removeComment($event)"></app-article-comments>
     </div>
   }
 </div>
