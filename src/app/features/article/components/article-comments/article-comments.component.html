@@ -10,7 +10,7 @@
       </div>
       <div class="card-footer">
         <img [src]="(user$ | async)?.image" class="comment-author-img" alt="Your image" />
-        <button [disabled]="this.formGroup.invalid && this.formGroup.dirty" class="btn btn-sm btn-primary">Post Comment</button>
+        <button [disabled]="this.formGroup.invalid" class="btn btn-sm btn-primary">Post Comment</button>
       </div>
     </form>
 
