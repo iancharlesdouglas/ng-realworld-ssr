@@ -38,6 +38,10 @@ describe('SettingsComponent', () => {
   });
 
   it('requires valid username and email to be supplied', () => {
+    const usernameField = fixture.nativeElement.querySelector('input[formControlName=username]') as HTMLInputElement;
+    usernameField.value = '';
+    usernameField.dispatchEvent(new Event('input'));
+
     let errorMessages = fixture.nativeElement.querySelectorAll('ul.error-messages li') as HTMLLIElement[];
     expect(errorMessages.length).toBe(0);
 
@@ -48,7 +52,6 @@ describe('SettingsComponent', () => {
     errorMessages = fixture.nativeElement.querySelectorAll('ul.error-messages li') as HTMLLIElement[];
     expect(errorMessages.length).toBe(2);
 
-    const usernameField = fixture.nativeElement.querySelector('input[formControlName=username]') as HTMLInputElement;
     const emailField = fixture.nativeElement.querySelector('input[formControlName=email]') as HTMLInputElement;
     const passwordField = fixture.nativeElement.querySelector('input[formControlName=password]') as HTMLInputElement;
 

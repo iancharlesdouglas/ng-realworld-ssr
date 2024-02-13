@@ -53,7 +53,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.user$ = this.stateService.user$;
     this.page$ = this.stateService.profilePage$;
 
-    this.routeSub = this.activatedRoute.queryParamMap.pipe(
+    this.routeSub = this.activatedRoute.queryParamMap?.pipe(
       map(params => {
         if (params.has(filterParam) && Object.keys(Feed).includes(params.get(filterParam)!)) {
           return params.get(filterParam) as Feed;

@@ -1,6 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProfileComponent } from './profile.component';
+import { ActivatedRoute } from '@angular/router';
+import { from } from 'rxjs';
+import { HttpClient, HttpHandler } from '@angular/common/http';
+import { mockHttpClient, mockHttpHandler } from '../../shared/tests/mock-http-client';
 
 describe('ProfileComponent', () => {
   let component: ProfileComponent;
@@ -8,10 +12,15 @@ describe('ProfileComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProfileComponent]
+      imports: [ProfileComponent],
+      providers: [
+        { provide: ActivatedRoute, useValue: {params: from([{id: 'x'}])} },
+        { provide: HttpClient, useValue: mockHttpClient },
+        { provide: HttpHandler, useValue: mockHttpHandler },
+      ]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(ProfileComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

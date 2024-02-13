@@ -67,7 +67,7 @@ It is an adequate article.
         following: true
       }
     }];
-    component.articles = of(articles);
+    component.articles$ = of(articles);
     fixture.detectChanges();
 
     const favoriteButton = fixture.debugElement.nativeElement.querySelectorAll('.favorite-the-article')[0] as HTMLButtonElement;
