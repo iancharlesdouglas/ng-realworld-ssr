@@ -106,8 +106,10 @@ export class CreateEditArticleComponent implements OnInit, OnDestroy {
    * Attempt to publish the article, and show it as published once successful
    */
   async attemptPublish(): Promise<void> {
+    console.log('attempting publish');
     this.submitted = true;
     if (this.form.valid) {
+      console.log('form valid');
       this.article = {
         title: this.form.get('title')?.value?.trim(),
         description: this.form.get('description')?.value.trim(),
@@ -116,8 +118,10 @@ export class CreateEditArticleComponent implements OnInit, OnDestroy {
         slug: this.articleSlug || ''
       };
       if (this.article.slug) {
+        console.log('updating article', this.article.slug);
         this.article = await firstValueFrom(this.articleService.updateArticle(this.article));
       } else {
+        console.log('creating article');
         this.article = await firstValueFrom(this.articleService.createArticle(this.article));
       }
       this.router.navigate(['/article', this.article.slug]);

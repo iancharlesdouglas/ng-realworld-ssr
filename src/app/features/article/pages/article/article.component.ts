@@ -140,8 +140,12 @@ export class ArticleComponent implements OnDestroy {
     this.comments$.next(updatedComments);
   }
 
+  /**
+   * Removes a comment from an article
+   * @param commentToDelete Comment to remove
+   */
   async removeComment(commentToDelete: CommentToDelete): Promise<void> {
-    const result = await firstValueFrom(this.articleService.deleteComment(commentToDelete.article, commentToDelete.comment));
+    await firstValueFrom(this.articleService.deleteComment(commentToDelete.article, commentToDelete.comment));
     const updatedComments = await firstValueFrom(this.articleService.getComments(commentToDelete.article));
     this.comments$.next(updatedComments);
   }
