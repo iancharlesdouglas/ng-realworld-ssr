@@ -2,7 +2,6 @@ import { ArticleService } from './../../../../shared/services/article.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreateEditArticleComponent } from './create-edit-article.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { from, of } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { StateService } from '../../../../shared/services/state/state.service';
@@ -15,17 +14,17 @@ describe('CreateEditArticleComponent', () => {
   let component: CreateEditArticleComponent;
   let fixture: ComponentFixture<CreateEditArticleComponent>;
 
-  beforeEach(async () => {
+  const setUpComponent = async (slug = '') => {
     const user: User = { username: 'x', email: 'x@y.com', token: 'some_token' };
     const stateService = new StateService();
     stateService.setUser(user);
     const router = {
       navigate: vi.fn()
     };
-      await TestBed.configureTestingModule({
-      imports: [CreateEditArticleComponent, HttpClientTestingModule],
+    await TestBed.configureTestingModule({
+      imports: [CreateEditArticleComponent],
       providers: [
-        { provide: ActivatedRoute, useValue: {params: from([{id: ''}])} },
+        { provide: ActivatedRoute, useValue: {params: from([{id: slug}])} },
         { provide: StateService, useValue: stateService },
         { provide: HttpClient, useValue: mockHttpClient },
         { provide: HttpHandler, useValue: mockHttpHandler },
@@ -38,17 +37,15 @@ describe('CreateEditArticleComponent', () => {
     fixture = TestBed.createComponent(CreateEditArticleComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+  };
 
-  it('should retrieve an existing article as per the URL parameter', () => {
-  });
-
-  it('should post an article when a new one is published', () => {
+  it('should post an article to the server when a new one is published', async () => {
+    await setUpComponent();
     const title = 'Test Article';
     const description = 'Test article description';
     const body = 'Test article body';
     const tagList: string[] = [];
-    const articleRequest = {
+    const article = {
       title,
       description,
       body,
@@ -56,7 +53,7 @@ describe('CreateEditArticleComponent', () => {
       slug: ''
     };
 
-    mockHttpClient.post = vi.fn().mockReturnValue(of(articleRequest));
+    mockHttpClient.post = vi.fn().mockReturnValue(of(article));
 
     const titleInput = fixture.nativeElement.querySelector('input[formControlName=title]') as HTMLInputElement;
     titleInput.value = title;
@@ -76,10 +73,57 @@ describe('CreateEditArticleComponent', () => {
 
     const expectedUrl = `${environment.remoteApiHost}/api/articles/`;
 
-    expect(mockHttpClient.post).toHaveBeenCalledWith(expectedUrl, {article: articleRequest});
+    expect(mockHttpClient.post).toHaveBeenCalledWith(expectedUrl, {article});
   });
 
-  it('should add a tag when one is typed in', () => {
-    throw 'not implemented';
+  it('should put an article on the server when an existing one is updated', async () => {
+    const slug = 'test-article-123';
+    await setUpComponent(slug);
+    const title = 'Test Article';
+    const description = 'Test article description';
+    const body = 'Test article body';
+    const tagList: string[] = [];
+    const article = {
+      title,
+      description,
+      body,
+      tagList,
+      slug
+    };
+
+    mockHttpClient.put = vi.fn().mockReturnValue(of(article));
+
+    const titleInput = fixture.nativeElement.querySelector('input[formControlName=title]') as HTMLInputElement;
+    titleInput.value = title;
+    titleInput.dispatchEvent(new Event('input'));
+
+    const descriptionInput = fixture.nativeElement.querySelector('input[formControlName=description]') as HTMLInputElement;
+    descriptionInput.value = description;
+    descriptionInput.dispatchEvent(new Event('input'));
+
+    const bodyTextArea = fixture.nativeElement.querySelector('textarea[formControlName=body]') as HTMLTextAreaElement;
+    bodyTextArea.value = body;
+    bodyTextArea.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    const publishButton = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
+    publishButton.click();
+
+    const expectedUrl = `${environment.remoteApiHost}/api/articles/${slug}`;
+
+    expect(mockHttpClient.put).toHaveBeenCalledWith(expectedUrl, {article});
+  });
+
+  it('should add a tag when one is typed in', async () => {
+    await setUpComponent();
+    const tag = 'cool';
+
+    const tagInput = fixture.nativeElement.querySelector('input[formControlName=tag]') as HTMLInputElement;
+    tagInput.value = tag;
+    tagInput.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    const tagSpan = fixture.nativeElement.querySelector('span.tag-pill') as HTMLSpanElement;
+    expect(tagSpan).toBeDefined();
   });
 });
