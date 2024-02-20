@@ -19,7 +19,7 @@ import { EMPTY_ARTICLE } from '../../../../shared/model/empty-article';
   templateUrl: './create-edit-article.component.html',
   styleUrl: './create-edit-article.component.scss'
 })
-export class CreateEditArticleComponent implements OnInit, OnDestroy {
+export class CreateEditArticleComponent implements OnDestroy {
   form!: FormGroup;
   error$: Observable<string> = EMPTY;
   article: CreateEditArticle = EMPTY_ARTICLE;
@@ -36,6 +36,13 @@ export class CreateEditArticleComponent implements OnInit, OnDestroy {
     private readonly articleService: ArticleService,
     private readonly stateService: StateService)
   {
+    this.form = this.formBuilder.group({
+      title: ['', Validators.required],
+      description: ['', Validators.required],
+      body: ['', Validators.required],
+      tag: ''
+    });
+
     this.articleSub = combineLatest([this.activatedRoute.params, this.stateService.user$]).pipe(
       map(([params]) => {
         this.articleSlug = params['id'];
@@ -62,16 +69,6 @@ export class CreateEditArticleComponent implements OnInit, OnDestroy {
         });
         this.tags.next(article.tagList);
       });
-  }
-
-  ngOnInit(): void {
-    console.log('oninit');
-    this.form = this.formBuilder.group({
-      title: ['', Validators.required],
-      description: ['', Validators.required],
-      body: ['', Validators.required],
-      tag: ''
-    });
   }
 
   ngOnDestroy(): void {

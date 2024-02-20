@@ -9,6 +9,7 @@ import { User } from '../../../../shared/model/user';
 import { mockHttpClient, mockHttpHandler } from '../../../../shared/tests/mock-http-client';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { vi } from 'vitest';
+import { CreateEditArticle } from '../../../../shared/model/create-edit-article';
 
 describe('CreateEditArticleComponent', () => {
   let component: CreateEditArticleComponent;
@@ -45,7 +46,7 @@ describe('CreateEditArticleComponent', () => {
     const description = 'Test article description';
     const body = 'Test article body';
     const tagList: string[] = [];
-    const article = {
+    const article: CreateEditArticle = {
       title,
       description,
       body,
@@ -83,7 +84,7 @@ describe('CreateEditArticleComponent', () => {
     const description = 'Test article description';
     const body = 'Test article body';
     const tagList: string[] = [];
-    const article = {
+    const article: CreateEditArticle = {
       title,
       description,
       body,
