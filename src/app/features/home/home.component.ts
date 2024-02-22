@@ -49,14 +49,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.routeSub = this.activatedRoute.queryParamMap.pipe(
       map(params => {
-        if (params.has(filterParam) && Object.keys(Feed).includes(params.get(filterParam)!)) {
+                if (params.has(filterParam) && Object.keys(Feed).includes(params.get(filterParam)!)) {
           return {feed: params.get(filterParam) as Feed, tag: params.get('tag') as string} as ActiveFeed | undefined;
         }
         return undefined;
       }),
       tap(feed => {
         if (feed) {
-          this.stateService.setHomePageFeed(feed);
+                    this.stateService.setHomePageFeed(feed);
           this.stateService.setPage(0);
         }
       })).subscribe();
