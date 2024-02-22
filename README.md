@@ -2,7 +2,9 @@
 
 Angular RealWorld (Conduit) implementation with SSR including server-side data caching.
 
-Achieves a Lighthouse score in the upper nineties and a TTI generally under 1 second.
+Achieves a Lighthouse score in the upper nineties and a TTI generally under 1 second:
+
+![ng-realworld-lighthouse-perf-score](https://github.com/iancharlesdouglas/ng-realworld-ssr/assets/3481593/fe576667-e9f2-4a0f-b70d-1445cac7110b)
 
 ## Demo
 [Demo page](https://ng-realworld-ssr-project.web.app/)
