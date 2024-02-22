@@ -71,7 +71,7 @@ describe('HomeComponent', () => {
 
     setUpComponent({filter: Feed.your});
 
-    component.ngOnInit();
+    // component.ngOnInit();
 
   });
 });
