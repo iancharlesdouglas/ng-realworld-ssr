@@ -20,7 +20,9 @@ describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
 
-  mockIntersectionObserver();
+  beforeAll(() => {
+    mockIntersectionObserver();
+  });
 
   const setUpComponent = async ({filter}: {filter: string}) => {
     const user: User = { username: 'x', email: 'x@y.com', token: 'some_token' };

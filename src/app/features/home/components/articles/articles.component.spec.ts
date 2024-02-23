@@ -9,6 +9,10 @@ describe('ArticlesComponent', () => {
   let component: ArticlesComponent;
   let fixture: ComponentFixture<ArticlesComponent>;
 
+  beforeAll(() => {
+    mockIntersectionObserver();
+  });
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ArticlesComponent],
@@ -18,7 +22,6 @@ describe('ArticlesComponent', () => {
 
     fixture = TestBed.createComponent(ArticlesComponent);
     component = fixture.componentInstance;
-    mockIntersectionObserver();
   });
 
   it('shows Your Feed only when logged in', () => {

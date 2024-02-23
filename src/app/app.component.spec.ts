@@ -2,8 +2,13 @@ import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { from } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { mockIntersectionObserver } from './shared/tests/mock-intersection-observer';
 
 describe('AppComponent', () => {
+  beforeAll(() => {
+    mockIntersectionObserver();
+  });
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
