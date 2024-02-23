@@ -4,7 +4,7 @@ import { SettingsComponent } from './settings.component';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { mockHttpClient, mockHttpHandler } from '../../../../shared/tests/mock-http-client';
 import { ActivatedRoute, Router } from '@angular/router';
-import { from } from 'rxjs';
+import { from, of } from 'rxjs';
 import { StateService } from '../../../../shared/services/state/state.service';
 import { SettingsWithoutPassword } from './model/settings-without-password';
 import { SettingsWithPassword } from './model/settings-with-password';
@@ -74,9 +74,8 @@ describe('SettingsComponent', () => {
     expect(errorMessages.length).toBeGreaterThan(0);
   });
 
-  it('submits password only if password field is filled in', () => {
-    // @ts-expect-error mock method format
-    mockHttpClient.put = vi.fn();
+  it('updates settings using the back end but does not submit password if password field is not filled in', () => {
+    mockHttpClient.put = vi.fn().mockReturnValue(of({user: {}}));
     fixture.detectChanges();
     const settingsWithoutPassword: SettingsWithoutPassword = {
       user: {
@@ -84,13 +83,6 @@ describe('SettingsComponent', () => {
         email: 'some@email.com',
         bio: 'My biography',
         image: 'https://some-image-service.com/my-image.png',
-      }
-    };
-    const settingsWithPassword: SettingsWithPassword = {
-      ...settingsWithoutPassword,
-      user: {
-        ...settingsWithoutPassword.user,
-        password: 'password123'
       }
     };
 
@@ -116,11 +108,42 @@ describe('SettingsComponent', () => {
 
     const expectedUrl = `${environment.remoteApiHost}/api/user`;
     expect(mockHttpClient.put).toHaveBeenCalledWith(expectedUrl, settingsWithoutPassword);
+  });
 
+  it('updates settings using the back end including password if password field is filled in', () => {
+    mockHttpClient.put = vi.fn().mockReturnValue(of({user: {}}));
+    fixture.detectChanges();
+    const settingsWithPassword: SettingsWithPassword = {
+      user: {
+        username: 'username1',
+        email: 'some@email.com',
+        bio: 'My biography',
+        image: 'https://some-image-service.com/my-image.png',
+        password: 'password123'
+      }
+    };
+
+    const usernameField = fixture.nativeElement.querySelector('input[formControlName=username]') as HTMLInputElement;
+    const emailField = fixture.nativeElement.querySelector('input[formControlName=email]') as HTMLInputElement;
+    const bioField = fixture.nativeElement.querySelector('textarea[formControlName=bio]') as HTMLTextAreaElement;
+    const imageField = fixture.nativeElement.querySelector('input[formControlName=image]') as HTMLInputElement;
     const passwordField = fixture.nativeElement.querySelector('input[formControlName=password]') as HTMLInputElement;
+    const submitButton = fixture.nativeElement.querySelector('button[type=submit]') as HTMLButtonElement;
+
+    usernameField.value = settingsWithPassword.user.username;
+    emailField.value = settingsWithPassword.user.email;
+    bioField.value = settingsWithPassword.user.bio!;
+    imageField.value = settingsWithPassword.user.image!;
+
+    usernameField.dispatchEvent(new Event('input'));
+    emailField.dispatchEvent(new Event('input'));
+    bioField.dispatchEvent(new Event('input'));
+    imageField.dispatchEvent(new Event('input'));
     passwordField.value = settingsWithPassword.user.password;
     passwordField.dispatchEvent(new Event('input'));
     fixture.detectChanges();
+
+    const expectedUrl = `${environment.remoteApiHost}/api/user`;
 
     submitButton.click();
     fixture.detectChanges();

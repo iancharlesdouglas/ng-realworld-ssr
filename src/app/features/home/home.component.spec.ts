@@ -14,10 +14,13 @@ import { environment } from "../../../environments/environment";
 import { TagsApiResponse } from "../../shared/model/api/tags-api-response";
 import { filterParam } from "../../shared/model/filter-param";
 import { Feed } from "../../shared/model/feed";
+import { mockIntersectionObserver } from "../../shared/tests/mock-intersection-observer";
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
+
+  mockIntersectionObserver();
 
   const setUpComponent = async ({filter}: {filter: string}) => {
     const user: User = { username: 'x', email: 'x@y.com', token: 'some_token' };
@@ -25,12 +28,15 @@ describe('HomeComponent', () => {
     stateService.setUser(user);
     const router = {
       navigate: vi.fn(),
+      events: of([]),
+      createUrlTree: vi.fn(),
+      serializeUrl: vi.fn()
     };
     const params = new Map([[filterParam, filter]]);
     await TestBed.configureTestingModule({
       imports: [HomeComponent],
       providers: [
-        { provide: ActivatedRoute, useValue: {queryParamMap: of(params)} },
+        { provide: ActivatedRoute, useValue: {queryParamMap: of(params), params: from([{id: 'x'}])} },
         { provide: StateService, useValue: stateService },
         { provide: HttpClient, useValue: mockHttpClient },
         { provide: HttpHandler, useValue: mockHttpHandler },
@@ -45,7 +51,7 @@ describe('HomeComponent', () => {
     fixture.detectChanges();
   };
 
-  it('shows personalised feed when the "your" filter exists in the query string', () => {
+  it('shows personalised feed when the "your" filter exists in the query string', async () => {
     const article: Article = {
       slug: 'article-123',
       title: 'An article',
@@ -69,9 +75,16 @@ describe('HomeComponent', () => {
       }
     });
 
-    setUpComponent({filter: Feed.your});
+    await setUpComponent({filter: Feed.your});
 
-    // component.ngOnInit();
+    await fixture.whenStable();
+    fixture.detectChanges();
 
+    const articles = fixture.nativeElement.querySelectorAll('.article-preview') as HTMLDivElement[];
+    expect(articles.length).toBe(1);
+
+    const articleHeadings = fixture.nativeElement.querySelectorAll('.article-preview h1') as HTMLHeadingElement[];
+    expect(articleHeadings.length).toBe(1);
+    expect(articleHeadings[0].textContent).toEqual(article.title);
   });
 });

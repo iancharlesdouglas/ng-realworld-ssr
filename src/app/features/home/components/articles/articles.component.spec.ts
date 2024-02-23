@@ -3,6 +3,7 @@ import { ArticlesComponent } from "./articles.component";
 import { Article } from "../../../../shared/model/article";
 import { EMPTY, from, of } from "rxjs";
 import { ActivatedRoute } from "@angular/router";
+import { mockIntersectionObserver } from "../../../../shared/tests/mock-intersection-observer";
 
 describe('ArticlesComponent', () => {
   let component: ArticlesComponent;
@@ -17,21 +18,7 @@ describe('ArticlesComponent', () => {
 
     fixture = TestBed.createComponent(ArticlesComponent);
     component = fixture.componentInstance;
-
-     // IntersectionObserver isn't available in test environment
-    class MockIntersectionObserver {
-      observe() {
-        return null;
-      }
-      unobserve() {
-        return null;
-      }
-      disconnect() {
-        return null;
-      }
-    }
-    // @ts-expect-error IntersectionObserver mocking
-    window.IntersectionObserver = MockIntersectionObserver;
+    mockIntersectionObserver();
   });
 
   it('shows Your Feed only when logged in', () => {

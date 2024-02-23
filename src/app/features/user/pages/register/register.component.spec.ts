@@ -70,8 +70,7 @@ describe('RegisterComponent', () => {
   });
 
   it('passes expected values to expected URL when registering', () => {
-    // @ts-expect-error mock method format
-    mockHttpClient.post = vi.fn();
+    mockHttpClient.post = vi.fn().mockReturnValue(of({user: {}}));
     fixture.detectChanges();
     const userRequest: RegisterUserRequest = {
       user: {

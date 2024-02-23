@@ -3,7 +3,7 @@ import { LoginComponent } from './login.component';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { mockHttpClient, mockHttpHandler } from '../../../../shared/tests/mock-http-client';
 import { ActivatedRoute } from '@angular/router';
-import { from, throwError } from 'rxjs';
+import { from, of, throwError } from 'rxjs';
 import { expect, vi } from 'vitest';
 import { AuthenticationService } from '../../services/authentication.service';
 import { LoginUserRequest } from '../../services/model/login-user-request';
@@ -73,6 +73,7 @@ describe('LoginComponent', () => {
   });
 
   it('logs in with the service if valid email and password are supplied', () => {
+    mockHttpClient.post = vi.fn().mockReturnValue(of({user: {}}));
     const emailField = fixture.nativeElement.querySelector('input[formControlName=email]') as HTMLInputElement;
     const passwordField = fixture.nativeElement.querySelector('input[formControlName=password]') as HTMLInputElement;
     const userRequest: LoginUserRequest = {
@@ -116,6 +117,7 @@ describe('LoginComponent', () => {
   });
 
   it('passes expected values to expected URL when logging in', () => {
+    mockHttpClient.post = vi.fn().mockReturnValue(of({user: {}}));
     fixture.detectChanges();
     const userRequest: LoginUserRequest = {
       user: {
