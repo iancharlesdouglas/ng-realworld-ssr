@@ -2,7 +2,7 @@
 
 @if (!!(user$ | async); as user) {
 
-  <div class="col-xs-12 col-md-8 offset-md-2">
+  <div class="col-xs-12 col-md-8 offset-md-2 comments">
 
     <form [formGroup]="formGroup" (ngSubmit)="postComment()" class="card comment-form">
       <div class="card-block">
@@ -15,7 +15,7 @@
     </form>
 
     @for(comment of comments$ | async; track comment.id) {
-      <div class="card">
+      <div class="card comment">
         <div class="card-block">
           <p class="card-text">
             {{ comment.body }}
