@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpHandler } from '@angular/common/http';
-import { from, of } from 'rxjs';
+import { EMPTY, from, of } from 'rxjs';
 import { mockHttpClient, mockHttpHandler } from '../../../../shared/tests/mock-http-client';
 import { ArticleComponent } from './article.component';
 import { User } from '../../../../shared/model/user';
 import { StateService } from '../../../../shared/services/state/state.service';
-import { vi } from 'vitest';
+import { expect, vi } from 'vitest';
 import { ArticleService } from '../../../../shared/services/article.service';
 import { environment } from '../../../../../environments/environment';
 import { Article } from '../../../../shared/model/article';
@@ -75,9 +75,8 @@ describe('ArticleComponent', () => {
     mockHttpClient.get = vi.fn().mockImplementation(url => {
       if (url === `${environment.remoteApiHost}/api/articles/${slug}`) {
         return of({article});
-      } else {
-        return of({comments});
       }
+      return of({comments});
     });
 
     await setUpComponent(slug);
@@ -94,13 +93,73 @@ describe('ArticleComponent', () => {
     expect(commentParagraphs[0].textContent?.trim()).toEqual(comments[0].body);
   });
 
-  // it('should favorite an article when requested', () => {
-  //   throw 'not implemented';
-  // });
+  it('should favorite an article when requested', async () => {
+    const slug = '1234';
+    const article: Article = {
+      slug,
+      title: 'Lorem Ipsum',
+      description: 'Lorem ipsum tacitus atsale',
+      body: 'Lorem ipsum tamantes tacistus ipto decitus maxi.',
+      tagList: [],
+      author: {
+        username: 'joebloggs25',
+        following: false
+      },
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      favorited: false,
+      favoritesCount: 101
+    };
+    mockHttpClient.post = vi.fn().mockReturnValue(of(article));
+    mockHttpClient.get = vi.fn().mockImplementation(url => {
+      if (url === `${environment.remoteApiHost}/api/articles/${slug}`) {
+        return of({article});
+      }
+      return of([]);
+    });
+    await setUpComponent(slug);
+    await fixture.whenStable();
+    fixture.detectChanges();
 
-  // it('should unfavorite an article when requested', () => {
-  //   throw 'not implemented';
-  // });
+    const favoriteControl = fixture.nativeElement.querySelector('.favorite-control') as HTMLButtonElement;
+    favoriteControl.click();
+
+    expect(mockHttpClient.post).toHaveBeenCalledWith(`${environment.remoteApiHost}/api/articles/${article.slug}/favorite`, expect.anything());
+  });
+
+  it('should unfavorite an article when requested', async () => {
+    const slug = '1234';
+    const article: Article = {
+      slug,
+      title: 'Lorem Ipsum',
+      description: 'Lorem ipsum tacitus atsale',
+      body: 'Lorem ipsum tamantes tacistus ipto decitus maxi.',
+      tagList: [],
+      author: {
+        username: 'joebloggs25',
+        following: false
+      },
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      favorited: true,
+      favoritesCount: 101
+    };
+    mockHttpClient.delete = vi.fn().mockReturnValue(of(article));
+    mockHttpClient.get = vi.fn().mockImplementation(url => {
+      if (url === `${environment.remoteApiHost}/api/articles/${slug}`) {
+        return of({article});
+      }
+      return of([]);
+    });
+    await setUpComponent(slug);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const favoriteControl = fixture.nativeElement.querySelector('.favorite-control') as HTMLButtonElement;
+    favoriteControl.click();
+
+    expect(mockHttpClient.delete).toHaveBeenCalledWith(`${environment.remoteApiHost}/api/articles/${article.slug}/favorite`);
+  });
 
   // it('should action following of an author when requested', () => {
   //   throw 'not implemented';
