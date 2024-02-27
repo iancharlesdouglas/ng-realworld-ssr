@@ -41,7 +41,6 @@ describe('ArticleComponent', () => {
 
     fixture = TestBed.createComponent(ArticleComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   };
 
   it('should retrieve an article with its comments', async () => {
@@ -82,15 +81,17 @@ describe('ArticleComponent', () => {
     });
 
     await setUpComponent(slug);
+    await fixture.whenStable();
+    fixture.detectChanges();
 
     const bodyParagraph = fixture.nativeElement.querySelector('.article-content') as HTMLParagraphElement;
     expect(bodyParagraph.textContent).toEqual(article.body);
 
     const commentsSection = fixture.nativeElement.querySelector('.comments') as HTMLDivElement;
     expect(commentsSection).toBeDefined();
-    // const commentParagraphs = fixture.nativeElement.querySelectorAll('.comment p.card-text') as HTMLParagraphElement[];
-    // expect(commentParagraphs.length).toEqual(comments.length);
-    // expect(commentParagraphs[0].textContent).toEqual(comments[0].body);
+    const commentParagraphs = fixture.nativeElement.querySelectorAll('.comments .card.comment p.card-text') as HTMLParagraphElement[];
+    expect(commentParagraphs.length).toBe(comments.length);
+    expect(commentParagraphs[0].textContent?.trim()).toEqual(comments[0].body);
   });
 
   // it('should favorite an article when requested', () => {
@@ -104,4 +105,8 @@ describe('ArticleComponent', () => {
   // it('should action following of an author when requested', () => {
   //   throw 'not implemented';
   // });
+
+  // it('should navigate to the edit link when requested', () => {
+
+//   });
 });

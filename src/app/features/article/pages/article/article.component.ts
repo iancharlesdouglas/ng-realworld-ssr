@@ -1,5 +1,5 @@
 import { CommentToDelete } from './../../model/comment-to-delete';
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, ReplaySubject, Subscription, concatAll, firstValueFrom, map } from 'rxjs';
 import { Article } from '../../../../shared/model/article';
