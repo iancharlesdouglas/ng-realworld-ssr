@@ -16,7 +16,17 @@ export default defineConfig(({ mode }) => ({
     setupFiles: ['src/test.ts'],
     environment: 'jsdom',
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    coverage: { provider: 'v8' },
+    coverage: {
+      provider: 'v8',
+      exclude: [
+        'src/**/model/**/*.ts',
+        'src/environments/environment.prod.ts',
+        'src/**/app.routes.ts',
+        'src/**/*.config*.ts',
+        'ng-realworld-ssr/node_modules/**/*',
+        '**/*.js'
+      ]
+    },
   },
   define: {
     'import.meta.vitest': mode !== 'production',
