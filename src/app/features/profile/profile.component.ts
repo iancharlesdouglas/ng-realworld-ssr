@@ -71,7 +71,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
-    this.getArticles();
+    return this.getArticles();
   }
 
   ngOnDestroy(): void {

@@ -9,9 +9,7 @@ describe('ArticlesComponent', () => {
   let component: ArticlesComponent;
   let fixture: ComponentFixture<ArticlesComponent>;
 
-  beforeAll(() => {
-    mockIntersectionObserver();
-  });
+  beforeAll(mockIntersectionObserver);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

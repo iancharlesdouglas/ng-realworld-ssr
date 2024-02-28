@@ -1,5 +1,5 @@
 import { CommentToDelete } from './../../model/comment-to-delete';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, ReplaySubject, Subscription, concatAll, firstValueFrom, map } from 'rxjs';
 import { Article } from '../../../../shared/model/article';
@@ -18,7 +18,7 @@ import { Comment } from '../../../../shared/model/comment';
 import { CommentToAdd } from '../../model/comment-to-add';
 
 /**
- * Single article component
+ * Single article viewing component
  */
 @Component({
   selector: 'app-article',
