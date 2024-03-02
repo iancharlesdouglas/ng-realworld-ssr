@@ -20,10 +20,15 @@ export default defineConfig(({ mode }) => ({
       provider: 'v8',
       exclude: [
         'src/**/model/**/*.ts',
+        'src/main.server.ts',
+        'src/main.ts',
         'src/environments/environment.prod.ts',
         'src/**/app.routes.ts',
         'src/**/*.config*.ts',
+        'functions/src/*',
         'ng-realworld-ssr/node_modules/**/*',
+        '*.d.ts',
+        'server.ts',
         '**/*.js'
       ]
     },

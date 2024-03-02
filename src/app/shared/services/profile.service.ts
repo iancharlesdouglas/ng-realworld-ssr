@@ -45,7 +45,6 @@ export class ProfileService {
    */
   follow(username: string): Observable<Profile> {
     const url = `${environment.remoteApiHost}/api/profiles/${username}/follow`;
-    console.log('follow service call to url', url);
     return this.http.post<ProfileResponse>(url, {}).pipe(map(response => response?.profile));
   }
 

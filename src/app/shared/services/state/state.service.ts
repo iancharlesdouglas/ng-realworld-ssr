@@ -1,5 +1,4 @@
 import { User } from '../../model/user';
-import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { State, initialState } from "../../model/state";
 import { deepFreeze } from './util/deep-freeze';
@@ -9,8 +8,8 @@ import { ActiveFeed, Feed } from '../../model/feed';
 
 /**
  * State service
+ * Injected in app.config file
  */
-@Injectable({providedIn: 'root'})
 export class StateService {
   private state$: Store<State>;
   private lastState: State;

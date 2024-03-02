@@ -3,6 +3,7 @@ import { AppComponent } from './app.component';
 import { from } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { mockIntersectionObserver } from './shared/tests/mock-intersection-observer';
+import { StateService } from './shared/services/state/state.service';
 
 describe('AppComponent', () => {
   beforeAll(() => {
@@ -13,7 +14,8 @@ describe('AppComponent', () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
       providers: [
-        { provide: ActivatedRoute, useValue: {params: from([{id: 'x'}])} }
+        { provide: ActivatedRoute, useValue: {params: from([{id: 'x'}])} },
+        { provide: StateService, useValue: new StateService() }
       ]
     }).compileComponents();
   });

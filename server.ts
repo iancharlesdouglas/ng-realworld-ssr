@@ -11,7 +11,10 @@ import { ArticlesLoader } from './src/app/shared/loaders/articles-loader';
 import { TagsLoader } from './src/app/shared/loaders/tags-loader';
 import { CacheLoader } from './src/app/server/cache-loader';
 
-// The Express app is exported so that it can be used by serverless Functions.
+/**
+ * Express app. to serve Angular as well as cached data resources
+ * @returns Express app (exported for serverless function hosting)
+ */
 export function createApp() {
   const server = express();
   const serverDistFolder = dirname(fileURLToPath(import.meta.url));
@@ -74,4 +77,7 @@ export function createApp() {
   return onRequest(server);
 }
 
+/**
+ * Express app.
+ */
 export const app = createApp();

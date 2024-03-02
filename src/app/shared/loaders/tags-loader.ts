@@ -16,8 +16,8 @@ export class TagsLoader extends CacheLoader {
         const { remoteApiHost } = environment;
         const response = await fetch(`${remoteApiHost}/api/tags`);
         if (response.ok) {
-          const articlesPayload = await response.json();
-          return articlesPayload;
+          const tagsPayload = await response.json();
+          return tagsPayload;
         } else {
           return null;
         }
