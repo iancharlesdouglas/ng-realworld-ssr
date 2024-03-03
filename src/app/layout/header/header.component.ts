@@ -8,14 +8,14 @@ import { User } from '../../shared/model/user';
  * Application header incl. sign in/sign up links
  */
 @Component({
-  selector: 'app-header',
-  standalone: true,
-  imports: [AsyncPipe, NgClass, RouterLink],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+	selector: 'app-header',
+	standalone: true,
+	imports: [AsyncPipe, NgClass, RouterLink],
+	changeDetection: ChangeDetectionStrategy.OnPush,
+	templateUrl: './header.component.html',
+	styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
-  @Input() user$: Observable<User | undefined> = EMPTY;
-  @Input() loggedIn = false;
+	@Input() user$: Observable<User | undefined> = EMPTY;
+	@Input() loggedIn = false;
 }

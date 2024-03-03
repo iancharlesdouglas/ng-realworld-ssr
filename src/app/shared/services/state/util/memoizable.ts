@@ -1,4 +1,4 @@
-import { naiveObjectComparison } from "./naive-object-comparison";
+import { naiveObjectComparison } from './naive-object-comparison';
 
 /**
  * Mapper function
@@ -18,8 +18,8 @@ export type Memoizable<R> = (previous: R, current: R) => boolean;
  * @see naiveObjectComparison
  */
 export const defaultMemoizable = <R>(previous: R, current: R) => {
-  if (typeof previous === 'object' && typeof current === 'object') {
-    return naiveObjectComparison(previous, current);
-  }
-  return previous === current;
+	if (typeof previous === 'object' && typeof current === 'object') {
+		return naiveObjectComparison(previous, current);
+	}
+	return previous === current;
 };

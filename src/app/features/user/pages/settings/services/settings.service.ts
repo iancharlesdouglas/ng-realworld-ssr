@@ -9,17 +9,17 @@ import { environment } from '../../../../../../environments/environment';
 /**
  * Settings service which saves settings to the back end
  */
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class SettingsService {
-  constructor(private readonly http: HttpClient) {}
+	constructor(private readonly http: HttpClient) {}
 
-  /**
-   * Updates the given settings
-   * @param settings Settings to update
-   * @returns User response from service
-   */
-  updateSettings(settings: SettingsWithPassword | SettingsWithoutPassword): Observable<UserResponse> {
-    const url = `${environment.remoteApiHost}/api/user`;
-    return this.http.put<UserResponse>(url, settings);
-  }
+	/**
+	 * Updates the given settings
+	 * @param settings Settings to update
+	 * @returns User response from service
+	 */
+	updateSettings(settings: SettingsWithPassword | SettingsWithoutPassword): Observable<UserResponse> {
+		const url = `${environment.remoteApiHost}/api/user`;
+		return this.http.put<UserResponse>(url, settings);
+	}
 }

@@ -5,11 +5,16 @@
  * @see object.freeze
  */
 export const deepFreeze = <T extends object>(inObject: T) => {
-  Object.freeze(inObject);
-  Object.entries(inObject).forEach(([key, value]) => {
-    if (Object.prototype.hasOwnProperty.call(inObject, key) && value != null && typeof value === 'object' && !Object.isFrozen(value)) {
-      deepFreeze(value);
-    }
-  });
-  return inObject;
+	Object.freeze(inObject);
+	for (const [key, value] of Object.entries(inObject)) {
+		if (
+			Object.prototype.hasOwnProperty.call(inObject, key) &&
+			value != undefined &&
+			typeof value === 'object' &&
+			!Object.isFrozen(value)
+		) {
+			deepFreeze(value);
+		}
+	}
+	return inObject;
 };

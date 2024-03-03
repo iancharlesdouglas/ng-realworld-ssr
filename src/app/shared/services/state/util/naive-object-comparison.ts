@@ -5,4 +5,4 @@
  * @returns True if they are naively the same
  */
 export const naiveObjectComparison: <T>(object1: T, object2: T) => boolean = (object1, object2) =>
-  JSON.stringify(object1) === JSON.stringify(object2);
+	JSON.stringify(object1) === JSON.stringify(object2);

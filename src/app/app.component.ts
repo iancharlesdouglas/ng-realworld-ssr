@@ -10,30 +10,26 @@ import { Observable } from 'rxjs';
 import { User } from './shared/model/user';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CommonModule,
-    RouterOutlet,
-    HeaderComponent,
-    FooterComponent,
-    HomeComponent,
-  ],
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+	selector: 'app-root',
+	standalone: true,
+	changeDetection: ChangeDetectionStrategy.OnPush,
+	imports: [CommonModule, RouterOutlet, HeaderComponent, FooterComponent, HomeComponent],
+	templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit {
-  user$: Observable<User | undefined>;
+	user$: Observable<User | undefined>;
 
-  constructor(private readonly stateService: StateService, private readonly userPersistenceService: UserPersistenceService) {
-    this.user$ = this.stateService.user$;
-  }
+	constructor(
+		private readonly stateService: StateService,
+		private readonly userPersistenceService: UserPersistenceService,
+	) {
+		this.user$ = this.stateService.user$;
+	}
 
-  ngOnInit(): void {
-    const user = this.userPersistenceService.loadUser();
-    if (user) {
-      this.stateService.setUser(user);
-    }
-  }
+	ngOnInit(): void {
+		const user = this.userPersistenceService.loadUser();
+		if (user) {
+			this.stateService.setUser(user);
+		}
+	}
 }

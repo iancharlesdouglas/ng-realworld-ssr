@@ -1,8 +1,8 @@
-import { User } from "../user"
+import { User } from '../user';
 
 /**
  * User response from service
  */
 export type UserResponse = {
-  user: User
+	user: User;
 };

@@ -1,47 +1,68 @@
 {
-  "root": true,
-  "ignorePatterns": [
-    "projects/**/*"
-  ],
-  "overrides": [
-    {
-      "files": [
-        "*.ts"
-      ],
-      "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
-        "plugin:@angular-eslint/recommended",
-        "plugin:@angular-eslint/template/process-inline-templates"
-      ],
-      "rules": {
-        "@angular-eslint/directive-selector": [
-          "error",
-          {
-            "type": "attribute",
-            "prefix": "app",
-            "style": "camelCase"
-          }
-        ],
-        "@angular-eslint/component-selector": [
-          "error",
-          {
-            "type": "element",
-            "prefix": "app",
-            "style": "kebab-case"
-          }
-        ]
-      }
-    },
-    {
-      "files": [
-        "*.html"
-      ],
-      "extends": [
-        "plugin:@angular-eslint/template/recommended",
-        "plugin:@angular-eslint/template/accessibility"
-      ],
-      "rules": {}
-    }
-  ]
+	"root": true,
+	"ignorePatterns": ["projects/**/*"],
+	"parser": "@typescript-eslint/parser",
+	"overrides": [
+		{
+			"files": ["*.ts"],
+			"extends": [
+				"eslint:recommended",
+				"plugin:@typescript-eslint/recommended",
+				"plugin:@angular-eslint/recommended",
+				"plugin:@angular-eslint/template/process-inline-templates",
+				"plugin:prettier/recommended",
+				"plugin:jsdoc/recommended",
+				"plugin:unicorn/recommended"
+			],
+			"rules": {
+				"@angular-eslint/directive-selector": [
+					"error",
+					{
+						"type": "attribute",
+						"prefix": "app",
+						"style": "camelCase"
+					}
+				],
+				"@angular-eslint/component-selector": [
+					"error",
+					{
+						"type": "element",
+						"prefix": "app",
+						"style": "kebab-case"
+					}
+				],
+				"arrow-body-style": ["error", "as-needed"],
+				"no-else-return": "error",
+				"no-var": "error",
+				"quotes": ["error", "single"],
+				"lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
+				"no-console": "error",
+				"no-irregular-whitespace": "error",
+				"no-param-reassign": 0,
+				"no-plusplus": 0,
+				"prettier/prettier": [
+					"error",
+					{
+						"arrowParens": "avoid",
+						"endOfLine": "auto",
+						"printWidth": 120,
+						"semi": true,
+						"singleQuote": true,
+						"tabWidth": 2,
+						"useTabs": true
+					}
+				],
+				"jsdoc/require-param-type": "off",
+				"jsdoc/require-returns-type": "off",
+				"@typescript-eslint/dot-notation": "off",
+				"@typescript-eslint/lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
+				"@typescript-eslint/no-empty-function": "off"
+			}
+		},
+		{
+			"files": ["*.html"],
+			"extends": ["plugin:@angular-eslint/template/recommended", "plugin:@angular-eslint/template/accessibility"],
+			"rules": {}
+		}
+	]
 }

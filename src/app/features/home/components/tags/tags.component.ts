@@ -8,14 +8,13 @@ import { EMPTY, Observable } from 'rxjs';
  * List of tags available to filter on
  */
 @Component({
-  selector: 'app-tags',
-  standalone: true,
-  imports: [AsyncPipe, RouterLink],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './tags.component.html',
-  styleUrl: './tags.component.scss'
+	selector: 'app-tags',
+	standalone: true,
+	imports: [AsyncPipe, RouterLink],
+	changeDetection: ChangeDetectionStrategy.OnPush,
+	templateUrl: './tags.component.html',
 })
 export class TagsComponent {
-  @Input() tags$: Observable<string[]> = EMPTY;
-  Feed = Feed;
+	@Input() tags$: Observable<string[]> = EMPTY;
+	Feed = Feed;
 }

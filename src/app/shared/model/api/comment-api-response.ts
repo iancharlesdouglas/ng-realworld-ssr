@@ -1,8 +1,8 @@
-import { Comment } from "../comment"
+import { Comment } from '../comment';
 
 /**
  * Comment API response
  */
 export type CommentApiResponse = {
-  comment: Comment;
+	comment: Comment;
 };

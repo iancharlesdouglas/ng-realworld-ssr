@@ -1,0 +1,15 @@
+name: lint-test-c8-build-on-push
+run-name: Push by ${{github.actor}} - lint, tests incl. coverage & build
+on: [push]
+jobs:
+  lint-test-c8-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: npm i
+      - run: npm run lint
+      - run: npm run test:c8
+      - run: npm run build

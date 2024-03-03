@@ -8,18 +8,18 @@ import { jwtInterceptor } from './shared/interceptors/jwt.interceptor';
 import { StateService } from './shared/services/state/state.service';
 
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideRouter(routes),
-    provideClientHydration(),
-    provideHttpClient(withFetch(), withInterceptors([jwtInterceptor])),
-    provideServiceWorker('ngsw-worker.js', {
-        enabled: !isDevMode(),
-        registrationStrategy: 'registerWhenStable:30000'
-    }),
-    provideServiceWorker('ngsw-worker.js', {
-        enabled: !isDevMode(),
-        registrationStrategy: 'registerWhenStable:30000'
-    }),
-    [{provide: StateService, useFactory: () => new StateService()}]
-],
+	providers: [
+		provideRouter(routes),
+		provideClientHydration(),
+		provideHttpClient(withFetch(), withInterceptors([jwtInterceptor])),
+		provideServiceWorker('ngsw-worker.js', {
+			enabled: !isDevMode(),
+			registrationStrategy: 'registerWhenStable:30000',
+		}),
+		provideServiceWorker('ngsw-worker.js', {
+			enabled: !isDevMode(),
+			registrationStrategy: 'registerWhenStable:30000',
+		}),
+		[{ provide: StateService, useFactory: () => new StateService() }],
+	],
 };

@@ -10,33 +10,39 @@ import { Feed } from '../../../shared/model/feed';
  * Provides services to the home page
  */
 @Injectable({
-  providedIn: 'root',
+	providedIn: 'root',
 })
 export class HomeService {
-  constructor(private readonly http: HttpClient) {}
+	constructor(private readonly http: HttpClient) {}
 
-  /**
-   * Retrieves articles
-   * @param feed Feed
-   * @param page Page
-   * @param pageSize Page size
-   * @param tag Tag
-   * @param forceRemote Whether to forcibly call the remote endpoint instead of the cached own-origin server endpoint
-   * @returns Articles response object
-   */
-  getArticles(feed: Feed, page: number, pageSize: number, tag?: string, forceRemote = false): Observable<ArticlesApiResponse> {
-    const host = feed === Feed.global && !forceRemote ? environment.host : environment.remoteApiHost;
-    const tagQuery = tag ? `&tag=${tag}` : '';
-    const url = `${host}/api/articles?offset=${page * pageSize}&limit=${pageSize}${tagQuery}`;
-    return this.http.get<ArticlesApiResponse>(url);
-  }
+	/**
+	 * Retrieves articles
+	 * @param feed Feed
+	 * @param page Page
+	 * @param pageSize Page size
+	 * @param tag Tag
+	 * @param forceRemote Whether to forcibly call the remote endpoint instead of the cached own-origin server endpoint
+	 * @returns Articles response object
+	 */
+	getArticles(
+		feed: Feed,
+		page: number,
+		pageSize: number,
+		tag?: string,
+		forceRemote = false,
+	): Observable<ArticlesApiResponse> {
+		const host = feed === Feed.global && !forceRemote ? environment.host : environment.remoteApiHost;
+		const tagQuery = tag ? `&tag=${tag}` : '';
+		const url = `${host}/api/articles?offset=${page * pageSize}&limit=${pageSize}${tagQuery}`;
+		return this.http.get<ArticlesApiResponse>(url);
+	}
 
-  /**
-   * Retrieves all tags
-   * @returns Tags response object
-   */
-  getTags(): Observable<TagsApiResponse> {
-    const url = `${environment.host}/api/tags`;
-    return this.http.get<TagsApiResponse>(url);
-  }
+	/**
+	 * Retrieves all tags
+	 * @returns Tags response object
+	 */
+	getTags(): Observable<TagsApiResponse> {
+		const url = `${environment.host}/api/tags`;
+		return this.http.get<TagsApiResponse>(url);
+	}
 }
