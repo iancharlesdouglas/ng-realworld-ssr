@@ -45,3 +45,4 @@ Thumbs.db
 # Firebase
 *.cache
 firebase-debug.log
+.nx/cache/18.3.3-nx.linux-x64-gnu.node
