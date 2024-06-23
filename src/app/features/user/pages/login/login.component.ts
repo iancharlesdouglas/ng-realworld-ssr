@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
 			email: ['', [Validators.required, Validators.email]],
 			password: ['', Validators.required],
 		});
-		this.fromPage = history.state;
+		this.fromPage = history?.state;
 	}
 
 	/**
