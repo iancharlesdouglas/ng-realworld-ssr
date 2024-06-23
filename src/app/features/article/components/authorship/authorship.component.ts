@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Article } from '../../../../shared/model/article';
 import { Feed } from '../../../../shared/model/feed';
@@ -9,6 +9,7 @@ import { Feed } from '../../../../shared/model/feed';
 	standalone: true,
 	imports: [DatePipe, RouterLink],
 	templateUrl: './authorship.component.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthorshipComponent {
 	@Input() article: Article | undefined;

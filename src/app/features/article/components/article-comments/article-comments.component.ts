@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { Article } from '../../../../shared/model/article';
 import { EMPTY, Observable } from 'rxjs';
 import { User } from '../../../../shared/model/user';
@@ -17,6 +17,7 @@ import { CommentToDelete } from '../../model/comment-to-delete';
 	standalone: true,
 	imports: [AsyncPipe, DatePipe, FormsModule, ReactiveFormsModule, RouterLink],
 	templateUrl: './article-comments.component.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ArticleCommentsComponent {
 	@Input() article: Article | undefined;

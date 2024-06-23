@@ -27,6 +27,7 @@
 		"express-compression": "^1.0.2",
 		"firebase-admin": "^11.11.1",
 		"firebase-functions": "^4.5.0",
+		"firebase-tools": "^13.11.4",
 		"luxon": "^3.4.4",
 		"marked": "^11.1.0",
 		"node-cache": "^5.1.2",

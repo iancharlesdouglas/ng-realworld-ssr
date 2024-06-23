@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { Article } from '../../../../shared/model/article';
 import { RouterLink } from '@angular/router';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -12,6 +12,7 @@ import { User } from '../../../../shared/model/user';
 	standalone: true,
 	imports: [DatePipe, DecimalPipe, RouterLink, ArticleControlsComponent, AuthorshipComponent],
 	templateUrl: './article-header.component.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ArticleHeaderComponent {
 	@Input() article: Article | undefined;
